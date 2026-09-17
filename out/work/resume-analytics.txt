@@ -1,0 +1,63 @@
+2:"$Sreact.fragment"
+3:I[9275,[],""]
+4:I[1343,[],""]
+5:I[231,["231","static/chunks/231-2f3140b8f551a3c6.js","798","static/chunks/app/work/%5Bslug%5D/page-3022d3846b9aa643.js"],""]
+7:I[3120,[],"OutletBoundary"]
+9:I[3120,[],"MetadataBoundary"]
+b:I[3120,[],"ViewportBoundary"]
+d:I[6130,[],""]
+1:HL["/_next/static/css/a337df498aff1715.css","style"]
+0:{"P":null,"b":"hBNkovLIaK0kFW6pv43QB","p":"","c":["","work","resume-analytics"],"i":false,"f":[[["",{"children":["work",{"children":[["slug","resume-analytics","d"],{"children":["__PAGE__?{\"slug\":\"resume-analytics\"}",{}]}]}]},"$undefined","$undefined",true],["",["$","$2","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/a337df498aff1715.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en-IN","className":"__variable_e2da63 __variable_ef64a7 __variable_6168ea","children":[["$","head",null,{"children":[["$","link",null,{"rel":"icon","href":"/favicon.svg","type":"image/svg+xml"}],["$","link",null,{"rel":"canonical","href":"https://aaryansingh.com/"}]]}],["$","body",null,{"className":"bg-paper text-ink font-archivo","lang":"en-IN","children":[["$","a",null,{"href":"#main","className":"skip-link","children":"Skip to main content"}],["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","main",null,{"id":"main","className":"py-32","children":["$","div",null,{"className":"grid-12 ","children":[["$","aside",null,{"className":"rail ","children":["$","div",null,{"className":"section-number ","aria-hidden":"true","children":"404"}]}],["$","div",null,{"className":"content-col ","children":[["$","h1",null,{"className":"text-masthead-desktop font-fraunces-light text-ink mb-4","children":"Not found"}],["$","p",null,{"className":"text-body text-ink mb-8","children":"The page you are looking for does not exist. It may have been moved, or it was never built."}],["$","$L5",null,{"href":"/","className":"text-accent font-space-mono","children":"Return to index"}]]}]]}]}],"notFoundStyles":[]}],["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\"@context\":\"https://schema.org\",\"@type\":\"Person\",\"name\":\"Aaryan Singh\",\"url\":\"https://aaryansingh.com\",\"sameAs\":[\"https://github.com/aaryxnblondead\",\"https://www.linkedin.com/in/aaryan-singh-1b068828b/\"],\"email\":\"aaryansingh2810@gmail.com\",\"address\":{\"@type\":\"PostalAddress\",\"addressLocality\":\"Mumbai\",\"addressCountry\":\"IN\"},\"jobTitle\":\"Applied Machine Learning Engineer\"}"}}]]}]]}]]}],{"children":["work",["$","$2","c",{"children":[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","work","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]]}],{"children":[["slug","resume-analytics","d"],["$","$2","c",{"children":[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","work","children","$0:f:0:1:2:children:2:children:0","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]]}],{"children":["__PAGE__",["$","$2","c",{"children":["$L6",null,["$","$L7",null,{"children":"$L8"}]]}],{},null]},null]},null]},null],["$","$2","h",{"children":[null,["$","$2","gR5v3qKPHSHmOto_wqrBX",{"children":[["$","$L9",null,{"children":"$La"}],["$","$Lb",null,{"children":"$Lc"}],null]}]]}]]],"m":"$undefined","G":"$d","s":false,"S":true}
+e:Taba,<p>The problem: Campus recruiters at a tier-2 engineering college in Mumbai receive 1,000+ resumes in a single placement cycle, all in PDF format with inconsistent templates. Hiring teams spend hours extracting skills, experience, and contact details manually.</p>
+<p>The constraint: The NER model had to handle Indian naming conventions, universities with varied spellings, and non-standard date formats, all without a GPU.</p>
+<p>What I built: The platform ingests PDFs through PyMuPDF, sends them to an LLM REST endpoint configured for structured extraction, and writes the results into a PostgreSQL database with JSONB columns for skills and experience. A LangChain-powered RAG chatbot lets recruiters ask natural-language questions like "Show me candidates who know Python and React and graduated after 2022."</p>
+<p>The architecture separates the ingestion pipeline (batch processing) from the query layer (real-time), and I implemented a caching layer for repeated entity extractions to keep the OpenAI cost under $15 per 100 resumes.</p>
+<p>Numbers:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+<th>Baseline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resumes processed</td>
+<td>1,243</td>
+<td>0 (manual)</td>
+</tr>
+<tr>
+<td>Average extraction accuracy</td>
+<td>92.1%</td>
+<td>67.3% (regex baseline)</td>
+</tr>
+<tr>
+<td>Parse time per resume</td>
+<td>4.2s</td>
+<td>22 min (manual)</td>
+</tr>
+<tr>
+<td>Recruiter query response</td>
+<td>1.8s</td>
+<td>8 min (manual search)</td>
+</tr>
+<tr>
+<td>Cost per batch of 100</td>
+<td>$14.20</td>
+<td>$350 (manual labor)</td>
+</tr>
+</tbody>
+</table>
+<p>What broke: The first deployment failed on resumes with two-column layouts because PyMuPDF concatenated both columns into a single text stream, which broke the entity boundaries. The fix required switching to a layout-aware PDF parser (pdfplumber) and adding a preprocessing step that detects column gutters.</p>
+<p>The second issue was less obvious: Indian university names vary wildly in their English spellings. "Fr. Conceicao Rodrigues College of Engineering" sometimes appears as "FCRCE" or "Rodrigues College." The NER model kept missing these, so I added a fuzzy string matcher against a seeded university registry with 200+ Indian institutions.</p>
+<p>What I'd do differently: Build the university registry before the ingestion pipeline. The entity accuracy was bottlenecked on domain-specific normalization, and I kept bolting fixes onto the extraction layer.</p>
+<p>Links:</p>
+<ul>
+<li>Repository: <a href="https://github.com/aaryxnblondead/resume-analytics">https://github.com/aaryxnblondead/resume-analytics</a></li>
+<li>Demo: <a href="http://resume-analytics.aaryansingh.com">http://resume-analytics.aaryansingh.com</a></li>
+</ul>
+6:["$","article",null,{"id":"main","className":"project-page py-16","children":["$","div",null,{"className":"grid-12 ","children":[["$","aside",null,{"className":"rail ","children":["$","div",null,{"className":"section-number text-accent font-space-mono font-bold text-xs uppercase sticky top-32","aria-hidden":"true","children":"04"}]}],["$","div",null,{"className":"content-col ","children":[["$","header",null,{"className":"mb-12","children":[["$","h1",null,{"className":"text-h1-desktop md:text-h1 text-ink mb-4","children":"AI-Powered Resume Analytics Platform"}],["$","p",null,{"className":"text-body text-ink max-w-prose","children":"Parses 1,000+ unstructured resumes into structured data with NER and serves a RAG chatbot for hiring team queries."}],["$","div",null,{"className":"mt-6","children":["$","table",null,{"className":"meta-table ","children":["$","tbody",null,{"children":[["$","tr","0",{"className":"meta-table-row","children":[["$","dt",null,{"children":"RUNTIME"}],["$","dd",null,{"children":"Sep 2024 - Dec 2024"}]]}],["$","tr","1",{"className":"meta-table-row","children":[["$","dt",null,{"children":"FORMAT"}],["$","dd",null,{"children":"Python / FastAPI / LLM REST / PostgreSQL"}]]}],["$","tr","2",{"className":"meta-table-row","children":[["$","dt",null,{"children":"RUN ON"}],["$","dd",null,{"children":"AWS EC2"}]]}],["$","tr","3",{"className":"meta-table-row","children":[["$","dt",null,{"children":"STATUS"}],["$","dd",null,{"children":"Shipped"}]]}],["$","tr","4",{"className":"meta-table-row","children":[["$","dt",null,{"children":"CREDIT"}],["$","dd",null,{"children":"Solo"}]]}]]}]}]}]]}],["$","div",null,{"className":"prose text-ink","dangerouslySetInnerHTML":{"__html":"$e"}}],["$","div",null,{"className":"rule-2 my-12","style":{"height":"2px"},"aria-hidden":"true"}],["$","footer",null,{"className":"mt-8 text-meta","children":[["$","$L5",null,{"href":"/","className":"text-accent","children":"← Back to index"}],["$","$L5",null,{"href":"https://github.com/aaryxnblondead/resume-analytics","className":"ml-4 text-accent","children":"Repository"}]]}]]}]]}]}]
+c:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"name":"theme-color","content":"#F2EEE6"}]]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","title","1",{"children":"AI-Powered Resume Analytics Platform | Aaryan Singh"}],["$","meta","2",{"name":"description","content":"Parses 1,000+ unstructured resumes into structured data with NER and serves a RAG chatbot for hiring team queries."}],["$","meta","3",{"name":"robots","content":"index, follow"}],["$","meta","4",{"name":"googlebot","content":"index, follow"}],["$","link","5",{"rel":"canonical","href":"https://aaryansingh.com"}]]
+8:null

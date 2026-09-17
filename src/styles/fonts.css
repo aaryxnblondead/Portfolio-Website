@@ -1,0 +1,25 @@
+/* Fraunces WONK axis - applied via CSS */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-wonk.woff2') format('woff2');
+  font-weight: 300 500;
+  font-display: optional;
+  font-style: normal;
+  font-feature-settings: "wonk" 1;
+  font-variation-settings: "wght" 300 500, "opsz" 144, "SOFT" 0;
+}
+
+/* Apply WONK to headlines */
+h1, h2 {
+  font-feature-settings: "wonk" 1;
+}
+
+/* Variable font fallback - will be overridden by WOFF2 if available */
+.font-fraunces-wonk {
+  font-feature-settings: "wonk" 1;
+}
+
+/* Optical sizing for masthead */
+.masthead-text {
+  font-variation-settings: "opsz" 144;
+}

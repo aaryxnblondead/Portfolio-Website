@@ -1,0 +1,62 @@
+---
+title: Anora
+slug: anora
+logLine: "Privacy-first wellness journaling with on-device ML inference that syncs across devices without a server in between."
+runtime: "Oct 2025 - May 2026"
+format: "Flutter / FastAPI / PostgreSQL / TFLite"
+runOn: "AWS App Runner, on-device ARM"
+status: "Shipped"
+credit: "Solo"
+metric:
+  value: "180ms"
+  label: "Avg on-device inference"
+---
+
+The problem: College students report worsening mental health during exam seasons, but existing journaling apps route sensitive entries through cloud services before insights surface. The privacy cost of the insight is too high.
+
+The constraint: On-device inference had to fit within a 10MB app bundle and stay under 200ms on a mid-range Android phone. The model also had to generalize across three languages: English, Hindi, and Marathi, with zero cloud round-trips.
+
+What I built: Anora stacks a quantized INT8 MentalBERT encoder inside a TFLite flatbuffer, running entirely in the Flutter process via the `tflite_flutter` plugin. The FastAPI backend handles only encrypted sync payloads and aggregate analytics. I implemented federated learning with secure aggregation using TensorFlow Federated so the shared model improves without any device exposing its journal entries.
+
+The architecture splits responsibilities cleanly: device-side inference returns sentiment, emotion tags, and reflection prompts locally. The server stores only encrypted blobs keyed by device salt. The shared aggregator model trains on synthetic gradients that are aggregated before hitting the coordinator.
+
+<div class="diagram">
+  <svg width="640" height="320" xmlns="http://www.w3.org/2000/svg">
+    <line x1="80" y1="160" x2="560" y2="160" stroke="#D4CCBD" stroke-width="1"/>
+    <rect x="40" y="110" width="80" height="100" fill="#E9E4D9" stroke="#D4CCBD" stroke-width="1"/>
+    <text x="80" y="165" font-family="monospace" font-size="11" text-anchor="middle" fill="#171412">Flutter App</text>
+    <rect x="180" y="110" width="100" height="100" fill="#E9E4D9" stroke="#D4CCBD" stroke-width="1"/>
+    <text x="230" y="165" font-family="monospace" font-size="11" text-anchor="middle" fill="#171412">TFLite</text>
+    <text x="230" y="180" font-family="monospace" font-size="9" text-anchor="middle" fill="#6B635A">INT8 MentalBERT</text>
+    <rect x="380" y="110" width="100" height="100" fill="#E9E4D9" stroke="#D4CCBD" stroke-width="1"/>
+    <text x="430" y="165" font-family="monospace" font-size="11" text-anchor="middle" fill="#171412">Secure</text>
+    <text x="430" y="180" font-family="monospace" font-size="9" text-anchor="middle" fill="#6B635A">Aggregation</text>
+    <rect x="520" y="110" width="80" height="100" fill="#E9E4D9" stroke="#D4CCBD" stroke-width="1"/>
+    <text x="560" y="165" font-family="monospace" font-size="11" text-anchor="middle" fill="#171412">FastAPI</text>
+    <text x="80" y="80" font-family="monospace" font-size="9" text-anchor="middle" fill="#6B635A">journal entry</text>
+    <path d="M80 110 L80 110" stroke="#6B635A" stroke-width="1" marker-end="url(#arrow)"/>
+    <text x="130" y="280" font-family="monospace" font-size="9" text-anchor="middle" fill="#6B635A">device inference: 180ms, encrypted sync</text>
+  </svg>
+</div>
+
+A second tradeoff: I shipped with English-only prompts first to hit the inference budget. Hindi and Marathi support landed six weeks later as a smaller update, which meant early adopters got a less useful experience.
+
+Numbers:
+
+| Metric | Value | Baseline |
+| --- | --- | --- |
+| On-device inference time | 180ms | 420ms (FP32 baseline) |
+| Model size reduction | 88% | 92MB FP32 model |
+| Sync latency (offline-capable) | 0ms | N/A, cloud-only sync |
+| Accuracy on emotion classification | 84.3% | 71.2% (rule-based keyword matching) |
+| Battery impact per session | 2.1% | 5.4% (cloud round-trip + server) |
+
+What broke: The first federated round used a fixed learning rate of 0.01, which caused client drift on devices with sparse journaling patterns. The model overfit to a handful of enthusiastic early testers and degraded sentiment tagging for infrequent writers. Rolling back to per-client adaptive rates fixed it, at the cost of two weeks of delayed training cycles.
+
+The second failure was more expensive: the initial TFLite delegate allocation was static, so on low-RAM phones the app crashed during onboarding. The fix required switching to dynamic delegates and deferring model load until after the first successful sync. That pushed the first release back by ten days.
+
+What I'd do differently: Start the multilingual prompt generation earlier. The English-only launch created churn that would have been avoidable with a language-agnostic prompt template system from the beginning.
+
+Links:
+
+- Repository: https://github.com/aaryxnblondead/anora

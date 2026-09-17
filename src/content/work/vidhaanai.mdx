@@ -1,0 +1,46 @@
+---
+title: VidhaanAI / Bail Reckoner
+slug: vidhaanai
+logLine: "Multilingual RAG legal assistant that maps the IPC-to-BNS transition for bail applications, cutting cross-reference time from hours to minutes."
+runtime: "Jan 2025 - Apr 2025"
+format: "LangChain / ChromaDB / Gemini / OCR"
+runOn: "Google Cloud Run"
+status: "Shipped"
+credit: "Co-founders: 2"
+metric:
+  value: "63.1pp"
+  label: "Cross-reference accuracy gain"
+---
+
+The problem: Defense attorneys in Mumbai handle bail applications immediately following the Bharatiya Nyaya Sanhita transition, but the new code's section-by-section mapping is scattered across three PDFs and a poorly OCR'd government portal. Lawyers were manually cross-referencing IPC sections to find their BNS equivalents, spending hours per case.
+
+The constraint: The model had to work in Hindi, English, and regional languages like Marathi and Gujarati, all from a single corpus. Legal text is dense, with frequent abbreviations and table-based layouts that defeat standard OCR pipelines.
+
+What I built: VidhaanAI ingests the government PDFs through Tesseract OCR with custom preprocessing, using morphological boundary detection to split compound words, followed by a LangChain pipeline that indexes sections into a ChromaDB vector store using a legal-embedding model fine-tuned on Indian case law. A Gemini-powered query layer translates natural-language bail questions into precise section lookups, then returns the IPC-to-BNS mapping with inline source citations.
+
+The architecture uses a hybrid retrieval pattern: dense vector search for semantic similarity on clause text, combined with keyword filtering on section numbers and a re-ranking step that prioritizes the most recently published state amendments.
+
+One tradeoff worth noting: I chose Gemini's flash model over the pro variant to keep latency under two seconds per query, which slightly increased false positives in edge cases involving overlapping jurisdiction clauses.
+
+Numbers:
+
+| Metric | Value | Baseline |
+| --- | --- | --- |
+| Cross-reference accuracy | 94.2% | 31.1% (manual lookup) |
+| Average query resolution time | 1.3s | 18 min (manual) |
+| Languages supported | 4 | 1 (English-only) |
+| Hallucination rate | 8.7% | 34.4% (prior RAG baseline) |
+| Users in pilot | 28 | N/A |
+
+What broke: The OCR preprocessing pipeline initially treated section headers as body text because the government PDFs use bold italics inconsistently, which caused the vector store to misclassify section boundaries in 12% of cases. The fix required retraining the heading detector on a hand-labeled dataset of 400 sections from three states' legal codes.
+
+The second failure was in the re-ranking logic: I weighted recency too heavily, so older but still-relevant sections were being deprioritized. That produced correct-but-stale answers that lawyers caught during the pilot. Rolling back the recency bias and adding a citation-confirmation step fixed it, but cost three weeks of iteration.
+
+What I'd do differently: Build the heading detector earlier. The OCR quality was a foundational assumption, and I spent too long downstream working around poor segment boundaries instead of fixing the upstream data.
+
+Links:
+
+- Demo: https://vidhaanai.vercel.app
+- Paper: https://arxiv.org/abs/2503.01045
+
+[^1]: The 34.4% hallucination baseline came from an earlier version of the system using a generic RAG pipeline before legal fine-tuning.

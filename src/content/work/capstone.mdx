@@ -1,0 +1,37 @@
+---
+title: '[CAPSTONE: NIFTY-50 Generative Model]'
+slug: capstone
+logLine: "Conditional diffusion model for NIFTY-50 financial time series, targeting sub-1.2s forecasting latency on edge GPUs."
+runtime: "Aug 2025 - Present"
+format: "PyTorch / ONNX / CUDA / QuantConnect"
+runOn: "On-device RTX 4090, cloud training"
+status: "In progress"
+credit: "Solo"
+metric:
+  value: "[FILL: metric]"
+  label: "[FILL: label]"
+---
+
+The problem: Quantitative trading teams need scenario-based forecasts of NIFTY-50 constituents under specific macroeconomic conditions, not point predictions, but conditional distributions that capture tail risk.
+
+The constraint: The model has to run on a 16GB GPU during backtesting windows of under two seconds per step, while still capturing cross-sectional dependencies across all fifty stocks.
+
+What I built: A conditional diffusion model that takes macro features (inflation, PMI, crude prices) as the conditioning signal and generates plausible NIFTY-50 paths using a structured attention mechanism over cross-sectional correlations.
+
+The architecture uses a U-Net backbone with cross-attention on the macro conditioning vector, trained on five years of daily NIFTY-50 data augmented with synthetic volatility surfaces to handle tail-event coverage.
+
+Numbers:
+
+| Metric | Value | Baseline |
+| --- | --- | --- |
+| Forecast latency | [FILL: value] | [FILL: baseline] |
+| Sharpe ratio improvement | [FILL: value] | [FILL: baseline] |
+| VaR coverage at 95% | [FILL: value] | [FILL: baseline] |
+
+What broke: Initial training diverged after the first 500 steps because the attention mask was leaking future macro values into the conditioning path.
+
+What I'd do differently: Separate the conditioning pipeline from the generation pipeline more strictly.
+
+Links:
+
+- Repository: https://github.com/aaryxnblondead/nifty-diffusion
