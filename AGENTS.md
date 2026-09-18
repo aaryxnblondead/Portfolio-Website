@@ -88,6 +88,9 @@ The portfolio includes an optional "Soundtrack" panel that shows now-playing and
 | `SPOTIFY_CLIENT_SECRET` | Worker secret: `cd worker && npx wrangler secret put SPOTIFY_CLIENT_SECRET` |
 | `SPOTIFY_REFRESH_TOKEN` | Worker secret: `cd worker && npx wrangler secret put SPOTIFY_REFRESH_TOKEN` |
 | `ALLOWED_ORIGINS` | `worker/wrangler.toml` `[vars]` section (comma-separated domains) |
+| `ALLOW_VERCEL_PREVIEWS` | `worker/wrangler.toml` `[vars]` section (`"true"` auto-allows `*.vercel.app` preview hosts) |
+
+Debug a broken feed by opening the worker URL with `?debug=1` (reports config presence and origin resolution, never secrets). The dock shows the worker's error message instead of vanishing.
 
 Generate the refresh token once with:
 ```bash

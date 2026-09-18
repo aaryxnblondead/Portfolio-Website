@@ -4,7 +4,8 @@ compatibility_date = "2025-09-01"
 
 [vars]
 SPOTIFY_CLIENT_ID = "cbeb6400a6d04536aca5f8708efa1bbe"
-ALLOWED_ORIGINS = "https://aaryansingh.com,https://aaryxnblondead.github.io,http://127.0.0.1:3000, http://localhost:3000, localhost:3000/"
+ALLOWED_ORIGINS = "https://aaryansingh.com,https://aaryansspace.vercel.app,https://aaryxnblondead.github.io,http://localhost:3000,http://127.0.0.1:3000"
+ALLOW_VERCEL_PREVIEWS = "true"
 
 # Secrets — set these with wrangler, never in this file:
 #   npx wrangler secret put SPOTIFY_CLIENT_SECRET
