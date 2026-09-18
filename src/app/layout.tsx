@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import "@/styles/components.css";
 import { fraunces, archivo, spaceMono } from "@/lib/fonts";
+import { Soundtrack } from "@/components/Soundtrack";
 
 export const metadata = {
   title: {
@@ -51,6 +52,8 @@ export default function RootLayout({
         </a>
 
         {children}
+
+        <Soundtrack />
 
         <SchemaJSON />
       </body>

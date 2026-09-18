@@ -1,38 +1,8 @@
 /* =========================================================================
-   components.css — right rail, Soundtrack panel, editorial furniture.
-   Import AFTER globals.css so these rules win where they overlap.
+   components.css — Soundtrack dock, icon pack, film-tape motif, editorial
+   furniture. Import AFTER globals.css so these rules win where they overlap.
    Tokens (--paper, --ink, --rule, --accent …) come from globals.css.
    ========================================================================= */
-
-/* ---------------------------------------------------------- 3-column grid */
-/* Content narrows from 8 to 7 columns; the Soundtrack takes 10–12.
-   Higher specificity than the base .content-col rule, so order is not relied on. */
-
-.layout-3col .content-col {
-  grid-column: 3 / span 7;
-}
-
-.rail-right {
-  grid-column: 10 / span 3;
-}
-
-.rail-right-inner {
-  position: sticky;
-  top: 32px;
-}
-
-@media (max-width: 1023px) {
-  .layout-3col .content-col,
-  .rail-right {
-    grid-column: 1 / -1;
-  }
-  .rail-right {
-    margin-top: 48px;
-  }
-  .rail-right-inner {
-    position: static;
-  }
-}
 
 /* --------------------------------------------------------------- utility */
 
@@ -47,14 +17,90 @@
   border: 0;
 }
 
-/* ===================================================== SOUNDTRACK PANEL === */
-
-.sdtk {
-  border-top: 2px solid var(--ink);
-  padding-top: 8px;
+/* Optional 3-column mode, free-standing utility — not required by the
+   Soundtrack dock (which is fixed-position and independent of the grid),
+   but handy if you want a genuine right rail somewhere on the page. */
+.layout-3col .content-col {
+  grid-column: 3 / span 7;
 }
 
-.sdtk p {
+.rail-right {
+  grid-column: 10 / span 3;
+}
+
+@media (max-width: 1023px) {
+  .layout-3col .content-col,
+  .rail-right {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ======================================================== SOUNDTRACK DOCK ==
+   Fixed to the right edge of the viewport, independent of the grid and of
+   scroll position — it never lives "below" the page. Collapsed to a slim
+   peekable tab by default; opens itself the moment something is playing.
+   The only animated property between states is `right` on a fixed element,
+   triggered by user action or a track change — never a continuous loop. */
+
+.sdtk-dock {
+  --sdtk-panel-w: 296px;
+  position: fixed;
+  top: 50%;
+  right: calc(-1 * var(--sdtk-panel-w));
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: stretch;
+  transition: right 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(-1px 0 0 var(--rule));
+}
+
+.sdtk-dock.is-open {
+  right: 0;
+}
+
+.sdtk-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 34px;
+  padding: 14px 0;
+  background-color: var(--paper);
+  border: 1px solid var(--rule);
+  border-right: none;
+  color: var(--ink);
+  cursor: pointer;
+  align-self: center;
+}
+
+.sdtk-tab:hover,
+.sdtk-tab:focus-visible {
+  color: var(--accent);
+}
+
+.sdtk-tab-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.sdtk-tab-vinyl.is-spinning {
+  animation: sdtk-spin 6s linear infinite;
+}
+
+.sdtk-panel {
+  width: var(--sdtk-panel-w);
+  max-height: 82vh;
+  overflow-y: auto;
+  background-color: var(--paper);
+  border: 1px solid var(--rule);
+  border-right: none;
+  padding: 20px;
+}
+
+.sdtk-panel p {
   max-width: none;
   margin: 0;
 }
@@ -65,6 +111,8 @@
   justify-content: space-between;
   gap: 8px;
   padding-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 12px;
 }
 
 .sdtk-head h2 {
@@ -95,13 +143,41 @@
   padding-bottom: 16px;
 }
 
+.sdtk-art-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
 .sdtk-art {
   display: block;
   width: 100%;
   height: auto;
   border: 1px solid var(--rule);
-  margin-bottom: 12px;
   background-color: var(--paper-sunk);
+}
+
+/* A vinyl sticker, not the art itself — the frame stays square and
+   zero-radius per the site's own rule; only this small illustrative mark
+   is allowed to be circular and to turn. */
+.sdtk-vinyl-sticker {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  padding: 3px;
+  background-color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--ink);
+}
+
+.sdtk-vinyl-sticker.is-spinning {
+  animation: sdtk-spin 5s linear infinite;
+}
+
+@keyframes sdtk-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .sdtk-state {
@@ -112,7 +188,7 @@
 }
 
 .sdtk-title {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-neue-machina);
   font-weight: 400;
   font-size: 1.125rem;
   line-height: 1.2;
@@ -163,7 +239,7 @@
   height: 100%;
   background-color: var(--accent);
   transform-origin: bottom;
-  animation: eq 900ms ease-in-out infinite alternate;
+  animation: sdtk-eq 900ms ease-in-out infinite alternate;
 }
 
 .sdtk-eq span:nth-child(2) {
@@ -174,7 +250,7 @@
   animation-duration: 1100ms;
 }
 
-@keyframes eq {
+@keyframes sdtk-eq {
   from {
     transform: scaleY(0.25);
   }
@@ -235,20 +311,146 @@
   padding: 8px 0 16px;
 }
 
-/* ----- skeleton ----- */
+/* ----- mobile: dock becomes a bottom-right pill instead of an edge panel --- */
 
-.sdtk-skeleton-art {
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: var(--paper-sunk);
-  border: 1px solid var(--rule);
-  margin-bottom: 12px;
+@media (max-width: 640px) {
+  .sdtk-dock {
+    top: auto;
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    transform: none;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    filter: none;
+  }
+
+  .sdtk-tab {
+    flex-direction: row;
+    width: auto;
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    align-self: flex-end;
+  }
+
+  .sdtk-tab-label {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+
+  .sdtk-panel {
+    width: 100%;
+    max-width: 360px;
+    max-height: min(70vh, 480px);
+    border: 1px solid var(--rule);
+    margin-bottom: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    pointer-events: none;
+  }
+
+  .sdtk-dock.is-open .sdtk-panel {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
 }
 
-.sdtk-skeleton-line {
-  height: 9px;
-  background-color: var(--paper-sunk);
-  margin-bottom: 8px;
+/* ==================================================== ICON PACK BEHAVIOUR ==
+   Icons carry no built-in color; they inherit currentColor from context.
+   Interactive icons get the same underline-adjacent hover language as the
+   site's text links: a color shift, never a background or shadow. */
+
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 150ms ease-in-out;
+}
+
+.icon-link:hover,
+.icon-link:focus-visible {
+  color: var(--accent);
+}
+
+.icon-link svg {
+  flex: none;
+}
+
+/* ======================================================== FILM-TAPE MOTIF ==
+   One scrolling divider per page, at most. Compositor-only motion
+   (`transform: translateX`), paused off-screen via IntersectionObserver,
+   and swapped for a static frame under reduced motion. */
+
+.filmstrip {
+  overflow: hidden;
+  max-width: 100%;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background-color: var(--ink);
+  margin: 64px 0;
+}
+
+.filmstrip-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: filmstrip-scroll 34s linear infinite;
+  animation-play-state: paused;
+}
+
+.filmstrip-track.is-running {
+  animation-play-state: running;
+}
+
+.filmstrip-run {
+  display: flex;
+}
+
+.filmstrip-frame {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 46px;
+  height: 64px;
+  padding: 4px 0;
+  flex: none;
+}
+
+.filmstrip-holes {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0 6px;
+}
+
+.filmstrip-holes::before,
+.filmstrip-holes::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background-color: var(--paper);
+  opacity: 0.7;
+}
+
+.filmstrip-cell {
+  display: block;
+  margin: 0 6px;
+  height: 100%;
+  border-left: 1px solid var(--paper-sunk);
+  border-right: 1px solid var(--paper-sunk);
+  opacity: 0.18;
+}
+
+@keyframes filmstrip-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* ================================================== EDITORIAL FURNITURE === */
@@ -287,7 +489,7 @@
 
 .dropcap {
   float: left;
-  font-family: var(--font-fraunces);
+  font-family: var(--font-neue-machina);
   font-weight: 300;
   font-variation-settings: "WONK" 1, "opsz" 144, "SOFT" 0;
   font-size: 3.6em;
@@ -305,7 +507,7 @@
 }
 
 .pullquote blockquote {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-neue-machina);
   font-weight: 300;
   font-size: 1.5rem;
   line-height: 1.25;
@@ -582,13 +784,18 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sdtk-eq span,
-  .ticker-track {
+  .ticker-track,
+  .sdtk-tab-vinyl.is-spinning,
+  .sdtk-vinyl-sticker.is-spinning,
+  .filmstrip-track {
     animation: none;
   }
   .sdtk-eq span {
     transform: scaleY(0.6);
   }
-  .sdtk-progress-fill {
+  .sdtk-progress-fill,
+  .sdtk-dock,
+  .sdtk-panel {
     transition: none;
   }
 }

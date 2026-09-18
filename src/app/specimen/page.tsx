@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { tokens } from "@/lib/tokens";
+import { FilmStrip } from "@/components/FilmStrip";
 
 export const metadata = {
   title: "Specimen | Aaryan Singh",
@@ -75,6 +76,8 @@ export default function SpecimenPage() {
               </div>
             </div>
           </section>
+
+          <FilmStrip />
 
           <section className="mb-16">
             <h2 className="text-h2-desktop mb-6">Colour Palette</h2>

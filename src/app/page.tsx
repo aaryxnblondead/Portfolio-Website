@@ -2,7 +2,8 @@ import Link from "next/link";
 import { getAllProjects } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable, SectionNumber, Metric } from "@/components/Grid";
 import { WipeIn } from "@/components/Motion";
-import { Soundtrack } from "@/components/Soundtrack";
+import { FilmStrip } from "@/components/FilmStrip";
+import { IconGithub, IconLinkedin } from "@/components/Icons";
 
 export const metadata = {
   title: "Aaryan Singh | Portfolio",
@@ -12,16 +13,15 @@ export const metadata = {
 const AVAILABILITY = "November 2026";
 
 const marginalia = [
-  "I still think about the heading detector bug from VidhaanAI.",
+  "I still think about the ways I could've improved VidhaanAI's inference from FIRs.",
   "On-device inference is a hard constraint, not a preference.",
   "The diffusion model is taking longer than I budgeted.",
-  "Multilingual NER always underperforms on Indian language transliterations.",
 ];
 
 const nowItems = [
   { label: "WORKING ON", value: "Capstone diffusion model for NIFTY-50 forecasting" },
   { label: "LEARNING", value: "Causal inference with instrumental variables" },
-  { label: "LOOKING FOR", value: "Quant finance or data analytics roles in Mumbai" },
+  { label: "LOOKING FOR", value: "Data analytics roles in Mumbai → Especially in Finance" },
   { label: "LAST UPDATED", value: "September 2026" },
 ];
 
@@ -82,6 +82,8 @@ export default async function HomePage() {
             </ContentColumn>
           </Grid>
         </section>
+
+        <FilmStrip />
 
         {/* ===== 02 Selected Work ===== */}
         <section>
@@ -203,20 +205,24 @@ export default async function HomePage() {
               <WipeIn>
                 <h2 className="text-h2-desktop text-ink mb-4">Contact</h2>
               </WipeIn>
-              <div className="grid gap-y-4">
-                {[
-                  { label: "ADDRESS", value: "MUMBAI, INDIA" },
-                  { label: "COORDS", value: "19°04&lsquo;N 72°52&lsquo;E" },
-                  { label: "EMAIL", value: "aaryansingh2810@gmail.com" },
-                  { label: "GITHUB", value: <Link href="https://github.com/aaryxnblondead" className="text-accent no-underline">github.com/aaryxnblondead</Link> },
-                  { label: "LINKEDIN", value: <Link href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" className="text-accent no-underline">linkedin.com/in/aaryan-singh</Link> },
-                ].map((item) => (
-                  <div key={item.label} className="grid grid-cols-2">
-                    <div className="label text-meta text-ink-muted font-space-mono">{item.label}</div>
-                    <div className="value text-meta text-ink font-space-mono-bold">{item.value}</div>
-                  </div>
-                ))}
-              </div>
+<div className="grid gap-y-4">
+                 {[
+                   { id: "location", label: "LOCATION", value: "MUMBAI, INDIA" },
+                   { id: "email", label: "EMAIL", value: <button type="button" data-copy-email="aaryansingh2810@gmail.com" className="text-accent text-left font-space-mono-bold">aaryansingh2810@gmail.com <span className="text-ink-muted"></span></button>},
+                   { id: "github", label: <IconGithub size={16} className="text-accent mr-2" />, value: <Link href="https://github.com/aaryxnblondead" className="text-accent no-underline">github.com/aaryxnblondead</Link> },
+                   { id: "linkedin", label: <IconLinkedin size={16} className="text-accent mr-2" />, value: <Link href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" className="text-accent no-underline">linkedin.com/in/aaryan-singh</Link> },
+                 ].map((item) => (
+                   <div key={item.id} className="grid grid-cols-2">
+                     <div className="label text-meta text-ink-muted font-space-mono">{item.label}</div>
+                     <div className="value text-meta text-ink font-space-mono-bold">{item.value}</div>
+                   </div>
+                 ))}
+               </div>
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `document.addEventListener("click",function(e){var b=e.target.closest("[data-copy-email]");if(!b)return;navigator.clipboard.writeText(b.dataset.copyEmail).then(function(){var t=b.innerHTML;b.innerHTML=b.dataset.copyEmail+' <span class="text-ink-muted">(copied)</span>';setTimeout(function(){b.innerHTML=t},1600)})})`,
+                }}
+              />
               <p className="text-body text-ink mt-4 max-w-prose">
                 {contactLine}
               </p>
@@ -239,7 +245,6 @@ export default async function HomePage() {
                 <Link href="/index-page" className="text-accent no-underline">Index</Link>
               </div>
 
-              <Soundtrack />
             </ContentColumn>
             {/* Deliberate grid break: running time extends into column 11 */}
             <div className="hidden md-block" style={{ gridColumn: "11" }}>

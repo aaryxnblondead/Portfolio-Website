@@ -1,3 +1,8 @@
 {
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/index-page/page": "app/index-page/page.js",
+  "/colophon/page": "app/colophon/page.js",
+  "/work/[slug]/page": "app/work/[slug]/page.js",
+  "/page": "app/page.js",
+  "/specimen/page": "app/specimen/page.js"
 }
