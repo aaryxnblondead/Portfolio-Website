@@ -44,10 +44,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </Rail>
         <ContentColumn>
           <header className="mb-12">
-            <h1 className="text-h1-desktop md:text-h1 text-ink mb-4">
+            <h1 className="text-h1-desktop text-ink mb-4">
               {metadata.title}
             </h1>
-            <p className="text-body text-ink max-w-prose">
+            <p className="text-body text-ink max-w-prose leading-tight">
               {metadata.logLine}
             </p>
             <div className="mt-6">
@@ -64,17 +64,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </header>
 
           <div
-            className="prose text-ink"
+            className="prose text-ink max-w-prose"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
 
           <SectionRule className="my-12" />
 
           <footer className="mt-8 text-meta">
-            <Link href="/" className="text-accent">
+            <Link href="/" className="text-accent font-space-mono">
               &larr; Back to index
             </Link>
-            <Link href={`https://github.com/aaryxnblondead/${metadata.slug}`} className="ml-4 text-accent">
+            <Link href={`https://github.com/aaryxnblondead/${metadata.slug}`} className="ml-4 text-accent font-space-mono">
               Repository
             </Link>
           </footer>

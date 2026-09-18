@@ -114,12 +114,12 @@ interface MetricProps {
 export function Metric({ value, label, className }: MetricProps) {
   return (
     <div className={`text-right ${className || ""}`}>
-      <dd className="text-metric text-ink font-space-mono-bold">
+      <div className="text-metric text-ink font-space-mono-bold">
         {value}
-      </dd>
-      <dt className="text-meta text-ink-muted">
+      </div>
+      <div className="text-meta text-ink-muted">
         {label}
-      </dt>
+      </div>
     </div>
   );
 }

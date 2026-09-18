@@ -1,8 +1,12 @@
 import { Fraunces } from "next/font/google";
 
+// Loaded as the true variable font (no fixed `weight` array) so the
+// opsz / SOFT / WONK axes are actually present in the served file.
+// A static-weight instance (the old config) carries none of these axes,
+// which is why "wonk" never showed up no matter what CSS was applied to it.
 const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  axes: ["opsz", "SOFT", "WONK"],
   variable: "--font-fraunces",
   display: "optional",
   fallback: ["Georgia", "serif"],

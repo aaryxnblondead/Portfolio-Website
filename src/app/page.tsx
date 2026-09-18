@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllProjects } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable, SectionNumber, Metric } from "@/components/Grid";
+import { WipeIn } from "@/components/Motion";
 
 export const metadata = {
   title: "Aaryan Singh | Portfolio",
@@ -32,8 +33,8 @@ export default async function HomePage() {
   return (
     <>
       <header>
-        <nav aria-label="Site navigation">
-          <ul className="text-meta font-space-mono flex justify-end gap-6 px-6 pt-6">
+        <nav aria-label="Site navigation" className="grid-12">
+          <ul className="col-span-full text-meta font-space-mono flex justify-end gap-6">
             <li><Link href="/index-page" className="text-accent no-underline">Index</Link></li>
             <li><Link href="/colophon" className="text-accent no-underline">Colophon</Link></li>
           </ul>
@@ -42,15 +43,17 @@ export default async function HomePage() {
 
       <main id="main" className="relative min-h-screen bg-paper">
         {/* ===== 00 Masthead ===== */}
-        <section className="pt-16 md:pt-24 pb-12">
+        <section className="pt-16 md-pt-24 pb-12">
           <Grid>
             <Rail>
               <SectionNumber number="00" />
             </Rail>
             <ContentColumn>
-              <h1 className="text-masthead-desktop md:text-masthead font-fraunces-light text-ink leading-tight-088">
-                Aaryan Singh
-              </h1>
+              <WipeIn>
+                <h1 className="text-masthead-desktop font-fraunces-light text-ink leading-tight-088">
+                  Aaryan Singh
+                </h1>
+              </WipeIn>
               <p className="text-meta text-ink-muted mt-4 font-space-mono">
                 MUMBAI · 19°04&lsquo;N 72°52&lsquo;E · AVAILABLE FROM {AVAILABILITY}
               </p>
@@ -63,7 +66,7 @@ export default async function HomePage() {
           <Grid>
             <Rail>
               <SectionNumber number="01" />
-              <aside className="mt-12 xl-block">
+              <aside className="mt-12">
                 {marginalia.slice(0, 2).map((note, i) => (
                   <p key={i} className="text-small italic text-ink-muted mb-4" style={{ fontSize: "13px" }}>
                     {note}
@@ -72,7 +75,7 @@ export default async function HomePage() {
               </aside>
             </Rail>
             <ContentColumn>
-              <p className="text-standfirst-desktop md:text-standfirst font-fraunces-light text-ink max-w-prose">
+              <p className="text-standfirst-desktop font-fraunces-light text-ink max-w-prose leading-tight">
                 I build applied machine learning systems that run where the data lives: on device, on edge hardware, or in the narrow gap between two cloud services. I co-founded a film festival in college and still think about how things get catalogued. I write first-person, I admit what broke, and I lead with the constraint before the outcome.
               </p>
             </ContentColumn>
@@ -91,21 +94,21 @@ export default async function HomePage() {
               ))}
             </Rail>
             <ContentColumn>
-              <div className="space-y-12">
+              <div className="space-y-16">
                 {featuredProjects.map((project, index) => (
                   <article key={project.slug} className={index % 2 === 1 ? "md-ml-6" : ""}>
                     <div className="mb-4 text-meta uppercase text-ink-muted font-space-mono">
                       {String(index + 1).padStart(2, "0")}
                     </div>
-                    <h2 className="text-h1-desktop md:text-h1 text-ink mb-2">
-                      <Link href={`/work/${project.slug}`} className="no-underline hover:text-accent transition-colors">
+                    <h2 className="text-h1-desktop text-ink mb-3">
+                      <Link href={`/work/${project.slug}`} className="no-underline title-link">
                         {project.title}
                       </Link>
                     </h2>
                     <p className="text-body text-ink mb-4 max-w-prose">
                       {project.logLine}
                     </p>
-                    <div className="mb-4">
+                    <div className="mb-6">
                       <MetaTable
                         rows={[
                           { label: "RUNTIME", value: project.runtime },
@@ -126,30 +129,40 @@ export default async function HomePage() {
 
         <SectionRule className="mt-16" />
 
-        {/* ===== 03 Off-screen ===== */}
+        {/* ===== 03 Production Credits ===== */}
         <section className="mt-16">
           <Grid>
             <Rail>
               <SectionNumber number="03" />
             </Rail>
             <ContentColumn>
-              <h2 className="text-h2-desktop md:text-h2 text-ink mb-8">Production Credits</h2>
+              <WipeIn>
+                <h2 className="text-h2-desktop text-ink mb-8">The Roles I&rsquo;ve Played</h2>
+              </WipeIn>
               <div className="space-y-8">
-                <div className="border-t border-rule pt-4">
-                  <dt className="text-meta text-ink-muted">CineCRCE National Short Film Festival</dt>
-                  <dd className="text-body text-ink mt-1">Co-founder and Production Lead</dd>
-                  <dd className="text-small text-ink-muted">Jan 2024 - May 2025, 300+ participants, ₹80,000 raised from zero, ₹60,000+ prize pool, 6+ sponsors</dd>
-                </div>
-                <div className="border-t border-rule pt-4">
-                  <dt className="text-meta text-ink-muted">Rotaract Club of CRCE</dt>
-                  <dd className="text-body text-ink mt-1">Community Outreach Coordinator</dd>
-                  <dd className="text-small text-ink-muted">Aug 2023 - Dec 2024, Heart &amp; Sole Virtual Run 8k: 1,500+ participants; Kalsubai Base Camp trek: 200+ students</dd>
-                </div>
-                <div className="border-t border-rule pt-4">
-                  <dt className="text-meta text-ink-muted">Students&rsquo; Council Technical Representative</dt>
-                  <dd className="text-body text-ink mt-1">Representative</dd>
-                  <dd className="text-small text-ink-muted">Jul 2023 - Jun 2024, ₹40,000+ secured in grants, platforms supporting 1,000+ users</dd>
-                </div>
+                {[
+                  {
+                    title: "CineCRCE National Short Film Festival",
+                    role: "Co-founder and Production Lead",
+                    dates: "Jan 2024 - May 2025, 300+ participants, ₹80,000 raised from zero, ₹60,000+ prize pool, 6+ sponsors"
+                  },
+{
+                    title: "Rotaract Club of CRCE",
+                    role: "Sergeant-At-Arms",
+                    dates: "Aug 2023 - Dec 2024, Heart & Sole Virtual Run 8k: 1,500+ participants; Kalsubai Base Camp trek: 200+ students"
+                  },
+                  {
+                    title: "Students' Council - Technical Representative",
+                    role: "Representative",
+                    dates: "Jul 2023 - Jun 2024, ₹40,000+ secured in grants, platforms supporting 1,000+ users"
+                  },
+                ].map((credit) => (
+                  <div key={credit.title} className="border-t border-rule pt-4">
+                    <div className="label text-meta text-ink-muted">{credit.title}</div>
+                    <div className="value text-body text-ink mt-1">{credit.role}</div>
+                    <div className="value text-small text-ink-muted">{credit.dates}</div>
+                  </div>
+                ))}
               </div>
             </ContentColumn>
           </Grid>
@@ -162,15 +175,17 @@ export default async function HomePage() {
               <SectionNumber number="04" />
             </Rail>
             <ContentColumn>
-              <h2 className="text-h2-desktop md:text-h2 text-ink mb-6">Now</h2>
-              <dl className="grid gap-y-4">
+              <WipeIn>
+                <h2 className="text-h2-desktop text-ink mb-6">Now</h2>
+              </WipeIn>
+              <div className="grid gap-y-4">
                 {nowItems.map((item) => (
                   <div key={item.label} className="grid grid-cols-2">
-                    <dt className="text-meta text-ink-muted font-space-mono">{item.label}</dt>
-                    <dd className="text-meta text-ink font-space-mono-bold">{item.value}</dd>
+                    <div className="label text-meta text-ink-muted font-space-mono">{item.label}</div>
+                    <div className="value text-meta text-ink font-space-mono-bold">{item.value}</div>
                   </div>
                 ))}
-              </dl>
+              </div>
             </ContentColumn>
           </Grid>
         </section>
@@ -184,33 +199,23 @@ export default async function HomePage() {
               <SectionNumber number="05" />
             </Rail>
             <ContentColumn>
-              <h2 className="text-h2-desktop md:text-h2 text-ink mb-4">Contact</h2>
-              <dl className="grid gap-y-4">
-                <div className="grid grid-cols-2">
-                  <dt className="text-meta text-ink-muted font-space-mono">ADDRESS</dt>
-                  <dd className="text-meta text-ink font-space-mono-bold">MUMBAI, INDIA</dd>
-                </div>
-                <div className="grid grid-cols-2">
-                  <dt className="text-meta text-ink-muted font-space-mono">COORDS</dt>
-                  <dd className="text-meta text-ink font-space-mono-bold">19°04&lsquo;N 72°52&lsquo;E</dd>
-                </div>
-                <div className="grid grid-cols-2">
-                  <dt className="text-meta text-ink-muted font-space-mono">EMAIL</dt>
-                  <dd className="text-meta text-ink font-space-mono-bold">aaryansingh2810@gmail.com</dd>
-                </div>
-                <div className="grid grid-cols-2">
-                  <dt className="text-meta text-ink-muted font-space-mono">GITHUB</dt>
-                  <dd className="text-meta text-ink font-space-mono-bold">
-                    <Link href="https://github.com/aaryxnblondead" className="text-accent no-underline">github.com/aaryxnblondead</Link>
-                  </dd>
-                </div>
-                <div className="grid grid-cols-2">
-                  <dt className="text-meta text-ink-muted font-space-mono">LINKEDIN</dt>
-                  <dd className="text-meta text-ink font-space-mono-bold">
-                    <Link href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" className="text-accent no-underline">linkedin.com/in/aaryan-singh</Link>
-                  </dd>
-                </div>
-              </dl>
+              <WipeIn>
+                <h2 className="text-h2-desktop text-ink mb-4">Contact</h2>
+              </WipeIn>
+              <div className="grid gap-y-4">
+                {[
+                  { label: "ADDRESS", value: "MUMBAI, INDIA" },
+                  { label: "COORDS", value: "19°04&lsquo;N 72°52&lsquo;E" },
+                  { label: "EMAIL", value: "aaryansingh2810@gmail.com" },
+                  { label: "GITHUB", value: <Link href="https://github.com/aaryxnblondead" className="text-accent no-underline">github.com/aaryxnblondead</Link> },
+                  { label: "LINKEDIN", value: <Link href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" className="text-accent no-underline">linkedin.com/in/aaryan-singh</Link> },
+                ].map((item) => (
+                  <div key={item.label} className="grid grid-cols-2">
+                    <div className="label text-meta text-ink-muted font-space-mono">{item.label}</div>
+                    <div className="value text-meta text-ink font-space-mono-bold">{item.value}</div>
+                  </div>
+                ))}
+              </div>
               <p className="text-body text-ink mt-4 max-w-prose">
                 {contactLine}
               </p>
@@ -218,7 +223,7 @@ export default async function HomePage() {
           </Grid>
         </section>
 
-      {/* ===== 06 Colophon Strip ===== */}
+      {/* ===== Colophon Strip ===== */}
       <footer>
         <section className="mt-12 border-t border-rule pt-8">
           <Grid>
@@ -233,7 +238,6 @@ export default async function HomePage() {
               </div>
             </ContentColumn>
             {/* Deliberate grid break: running time extends into column 11 */}
-            {/* Justification: Like a programme listing runtime and format, this meta line belongs in the margin, bleeding past the content column */}
             <div className="hidden md-block" style={{ gridColumn: "11" }}>
               <p className="text-meta text-ink-muted font-space-mono" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
                 RUNNING TIME: ~4 MIN READ
@@ -243,17 +247,6 @@ export default async function HomePage() {
         </section>
       </footer>
       </main>
-
-      {/* ===== Marginalia (Mobile) ===== */}
-      <aside className="xl-hidden">
-        <div className="px-6 space-y-4 mt-8 pb-12">
-          {marginalia.map((note, i) => (
-            <p key={i} className="text-small italic text-ink-muted" style={{ fontSize: "13px" }}>
-              {note}
-            </p>
-          ))}
-        </div>
-      </aside>
-    </>
+      </>
   );
 }

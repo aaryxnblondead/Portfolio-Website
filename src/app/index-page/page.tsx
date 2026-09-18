@@ -108,16 +108,16 @@ export default function IndexPage() {
           <SectionNumber number="IN" />
         </Rail>
         <ContentColumn>
-          <h1 className="text-h1-desktop md:text-h1 text-ink mb-8">Index</h1>
+          <h1 className="text-h1-desktop text-ink mb-8">Index</h1>
           <p className="text-small text-ink-muted font-space-mono mb-8">
             Alphabetical index of technologies, methods, and tools mentioned across the site.
           </p>
 
-          <dl className="grid-cols-1 md-grid-cols-2 gap-x-12 gap-y-2">
+          <div className="grid-cols-1 md-grid-cols-2 gap-x-12 gap-y-2">
             {indexEntries.map((entry) => (
               <div key={entry.term} className="border-b border-rule pt-1 pb-1">
-                <dt className="text-meta text-ink-muted font-space-mono">{entry.term}</dt>
-                <dd className="mt-1">
+                <div className="label text-meta text-ink-muted font-space-mono">{entry.term}</div>
+                <div className="value mt-1">
                   {entry.references.map((ref, i) => (
                     <span key={i} className="text-small">
                       <Link href={ref.url} className="text-accent no-underline">
@@ -126,10 +126,10 @@ export default function IndexPage() {
                       {i < entry.references.length - 1 && ", "}
                     </span>
                   ))}
-                </dd>
+                </div>
               </div>
             ))}
-          </dl>
+          </div>
 
           <div className="mt-12 pt-8 border-t border-rule">
             <Link href="/" className="text-accent text-meta font-space-mono no-underline">

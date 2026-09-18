@@ -1,5 +1,6 @@
+"use client";
+
 import { useIntersectionObserver, usePrefersReducedMotion } from "@/lib/hooks";
-import { use } from "react";
 
 interface WipeInProps {
   children: React.ReactNode;
@@ -7,70 +8,54 @@ interface WipeInProps {
   className?: string;
 }
 
+/**
+ * The signature entrance move: a hairline rule wipes left-to-right, then the
+ * headline beneath it fades in ~80ms behind. Uses the .wipe-* / .opacity-*
+ * classes already defined in globals.css (real CSS, not Tailwind arbitrary-
+ * value classNames — those never resolved to anything, since corePlugins is
+ * disabled and no plugin generates them).
+ */
 export function WipeIn({ children, delay = false, className }: WipeInProps) {
   const [ref, isVisible] = useIntersectionObserver();
   const prefersReduced = usePrefersReducedMotion();
 
-  const classes = [
-    "relative",
-    className || "",
-  ];
-
-  const ruleClasses = [
-    "absolute left-0 top-0 h-px w-full bg-rule transition-[clip-path] duration-[420ms]",
-    "cubic-bezier(0.16,_1,_0.3,_1) forwards",
-  ];
-
-  const headlineClasses = [
-    "relative",
-    className || "",
-    isVisible ? "opacity-100" : "opacity-0",
-    "transition-opacity duration-[200ms] ease-out",
-  ];
-
-  if (delay) {
-    headlineClasses.push(isVisible ? "delay-[80ms]" : "");
-  }
-
   if (prefersReduced) {
-    // Render final states immediately with no animation
     return (
-      <div ref={ref} className={classes.join(" ")}>
-        <div className="h-px w-full bg-rule mb-2" />
+      <div ref={ref} className={className || ""}>
+        <div className="rule mb-2" />
         {children}
       </div>
     );
   }
 
+  const ruleClass = ["rule", "mb-2", isVisible ? "wipe-enter-active" : "wipe-enter"].join(" ");
+  const headlineClass = [
+    className || "",
+    isVisible ? "opacity-enter-active" : "opacity-enter",
+    delay ? "wipe-delay-1" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div ref={ref} className={classes.join(" ")}>
-      {!isVisible ? (
-        <div className="h-px w-full bg-rule mb-2" />
-      ) : (
-        <div
-          className={[
-            "h-px w-full bg-rule mb-2 origin-left",
-            "animate-[wipe_420ms_cubic-bezier(0.16,_1,_0.3,_1)_forwards]",
-          ].join(" ")}
-        />
-      )}
-      <div className={headlineClasses.join(" ")}>{children}</div>
+    <div ref={ref}>
+      <div className={ruleClass} />
+      <div className={headlineClass}>{children}</div>
     </div>
   );
 }
 
 export function FadeIn({ children, className }: { children: React.ReactNode; className?: string }) {
   const [ref, isVisible] = useIntersectionObserver();
+  const prefersReduced = usePrefersReducedMotion();
+
+  const classes = [
+    className || "",
+    prefersReduced || isVisible ? "opacity-enter-active" : "opacity-enter",
+  ].join(" ");
 
   return (
-    <div
-      ref={ref}
-      className={[
-        className || "",
-        "transition-opacity duration-[200ms] ease-out",
-        isVisible ? "opacity-100" : "opacity-0",
-      ].join(" ")}
-    >
+    <div ref={ref} className={classes}>
       {children}
     </div>
   );
