@@ -20,18 +20,8 @@ What I built: A conditional diffusion model that takes macro features (inflation
 
 The architecture uses a U-Net backbone with cross-attention on the macro conditioning vector, trained on five years of daily NIFTY-50 data augmented with synthetic volatility surfaces to handle tail-event coverage.
 
-Numbers:
-
-| Metric | Value | Baseline |
-| --- | --- | --- |
-| Forecast latency | [FILL: value] | [FILL: baseline] |
-| Sharpe ratio improvement | [FILL: value] | [FILL: baseline] |
-| VaR coverage at 95% | [FILL: value] | [FILL: baseline] |
-
-What broke: Initial training diverged after the first 500 steps because the attention mask was leaking future macro values into the conditioning path.
-
-What I'd do differently: Separate the conditioning pipeline from the generation pipeline more strictly.
+Still working on gettin' it done!
 
 Links:
 
-- Repository: https://github.com/aaryxnblondead/nifty-diffusion
+- Repository: https://github.com/yash0238/Vortex-AI

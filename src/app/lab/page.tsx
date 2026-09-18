@@ -1,0 +1,7 @@
+import Link from "next/link";
+
+const experiments = [["001", "VidhaanAI retrieval", "FIRs → cited answers", "RAG / EVALUATION"], ["002", "Edge inference notes", "What survives without the cloud", "TFLITE / ARM"], ["003", "NIFTY diffusion", "Forecasting as a generative problem", "PYTORCH / TIME SERIES"], ["004", "Resume signal", "A smaller system for a noisy decision", "NLP / ANALYTICS"]];
+
+export default function LabPage() {
+  return <main className="neo-site neo-inner"><nav className="neo-nav"><Link href="/" className="neo-mark">AS / 26</Link><Link href="/about">About ↗</Link></nav><header className="neo-inner-header"><span className="neo-index">LAB / 00</span><h1 className="neo-display channel-split" data-text="Working notes">Working notes</h1><p className="neo-large-copy">Experiments with a number, a constraint, and a reason to exist.</p></header><div className="neo-lab-index">{experiments.map(([number, title, detail, tag]) => <article className="neo-lab-row" key={number}><span className="neo-index">{number}</span><div><h2 className="neo-subheading channel-split" data-text={title}>{title}</h2><p>{detail}</p></div><span className="neo-muted">{tag}</span><span className="neo-arrow">↗</span></article>)}</div><Link href="/" className="neo-arrow-link">← Return home</Link></main>;
+}

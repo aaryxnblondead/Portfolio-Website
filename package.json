@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/three": "^0.186.0",
     "gray-matter": "^4.0.3",
     "next": "15.0.0",
     "react": "18.3.1",
@@ -17,7 +18,8 @@
     "remark": "^15.0.1",
     "remark-footnotes": "^4.0.1",
     "remark-gfm": "^4.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@next/mdx": "^15.0.0",
