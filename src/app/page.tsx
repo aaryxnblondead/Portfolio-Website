@@ -48,7 +48,8 @@ export default function HomePage() {
         <div className="neo-threshold-footer neo-reveal neo-delay-4"><span>SCROLL TO ENTER</span><span className="neo-cross">＋</span><span className="neo-avail">AVAILABLE / NOV 2026</span></div>
       </section>
 
-      <section className="neo-project-stage" id="projects" aria-label="Projects">
+      <section className="neo-project-stage" id="projects" aria-labelledby="projects-title">
+        <div className="neo-section-heading"><span className="neo-index">01</span><h2 id="projects-title" className="neo-heading channel-split" data-text="Selected work">Selected work</h2><span className="neo-rule" /></div>
         <div className="neo-project-card-grid">
           {projects.map((project) => <article className="neo-project-card" key={project.slug}><div className="neo-project-number">{project.number}</div><h2><Link href={`/work/${project.slug}`}>{project.title}</Link></h2><p>{project.logLine}</p><MetaTable rows={[{ label: "RUNTIME", value: project.runtime }, { label: "FORMAT", value: project.format }, { label: "RUN ON", value: project.runOn }, { label: "STATUS", value: project.status }]} /><Metric value={project.metric[0]} label={project.metric[1]} /><Link href={`/work/${project.slug}`} className="neo-card-arrow" aria-label={`Open ${project.title}`}>↗</Link></article>)}
         </div>
