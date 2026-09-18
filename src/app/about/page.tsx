@@ -22,8 +22,6 @@ export default function AboutPage() {
       <aside className="neo-about-sticky">
         <span className="neo-index">ABOUT / 00</span>
         <h1 className="neo-display">Aaryan</h1>
-        <br></br>
-        <br></br>
         <p className="neo-muted">Computer Engineer / Mumbai, India</p>
         <a className="neo-about-social" href="https://www.instagram.com/aaryun_" target="_blank" rel="noreferrer noopener">Instagram ↗</a>
       </aside>
@@ -32,7 +30,7 @@ export default function AboutPage() {
         <section className="neo-about-opening">
           <span className="neo-index">01</span>
           <p className="neo-large-copy">Figuring out non-obvious solutions</p>
-          <p> Technological? Pataphysical? Artistic? I'm down for all challenges.</p>
+          <p>Technological? Pataphysical? Artistic? I&rsquo;m down for all challenges.</p>
         </section>
 
         <section>
@@ -60,7 +58,7 @@ export default function AboutPage() {
         </section>
 
         <section id="contact" className="neo-about-end">
-          <span className="neo-index">05</span>
+          <span className="neo-index">06</span>
           <h2 className="neo-heading">A good conversation can start small.</h2>
           <p>Send me a project, a difficult systems question, or something technically interesting that you think I should see.</p>
           <a className="neo-arrow-link" href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com ↗</a>

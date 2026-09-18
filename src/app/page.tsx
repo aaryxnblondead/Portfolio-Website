@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FilmStrip } from "@/components/FilmStrip";
 import { LastListened } from "@/components/LastListened";
+import { Still } from "@/components/Still";
 import { IconGithub, IconLinkedin } from "@/components/Icons";
 import { MetaTable, Metric } from "@/components/Grid";
 import { PROJECT_NUMBERS } from "@/lib/projects";
@@ -15,6 +16,18 @@ const projects = [
   { number: PROJECT_NUMBERS.anora, title: "Anora", slug: "anora", logLine: "Privacy-first wellness journaling with on-device ML inference that syncs across devices without a server in between.", runtime: "Oct 2025 - May 2026", format: "Flutter / FastAPI / PostgreSQL / TFLite", runOn: "AWS App Runner, on-device ARM", status: "Shipped", credit: "Solo", metric: ["180ms", "AVG ON-DEVICE INFERENCE"] },
   { number: PROJECT_NUMBERS.vidhaanai, title: "Vidhaan AI", slug: "vidhaanai", logLine: "A role-based bail application system for lawyers, judges, and viewers, with secure documents and case-number access.", runtime: "Jan 2025 - Apr 2025", format: "Django / Bootstrap / SQLite", runOn: "Python development server", status: "Shipped", credit: "Co-founder", metric: ["3", "USER ROLES"] },
   { number: PROJECT_NUMBERS["resume-analytics"], title: "QualifyAI", slug: "resume-analytics", logLine: "An NLP platform that parses resumes, enriches skills, and lets recruiters search candidates semantically.", runtime: "Sep 2024 - Dec 2024", format: "FastAPI / React / spaCy / ChromaDB", runOn: "AWS ECS / RDS / EFS", status: "Shipped", credit: "Solo", metric: ["1,243", "RESUMES PROCESSED"] },
+];
+
+const fieldNotes = [
+  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.20.31 PM.jpeg", alt: "Aaryan Singh wearing rings at a college event", caption: "Detail / event day", aspect: "4 / 5" },
+  { src: "/images/about/cinecrce-screen.jpg", alt: "CineCRCE short film festival title card projected at Samvad", caption: "CineCRCE / Samvad", aspect: "16 / 9" },
+  { src: "/images/about/cinecrce-crew.jpg", alt: "CineCRCE production crew together", caption: "Production crew", aspect: "4 / 3" },
+  { src: "/images/about/rotaract.jpg", alt: "Rotaract volunteers gathered for a service event", caption: "Rotaract / service", aspect: "4 / 3" },
+  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.21.12 PM.jpeg", alt: "Aaryan Singh speaking at a college podium", caption: "Student council / address", aspect: "4 / 5" },
+  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.21.32 PM.jpeg", alt: "Aaryan Singh seated with an audience at a college event", caption: "Student council / audience", aspect: "4 / 5" },
+  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.22.18 PM.jpeg", alt: "Aaryan Singh speaking at a college event", caption: "Student council / stage", aspect: "4 / 3" },
+  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.22.46 PM.jpeg", alt: "Student council group at an event", caption: "The people / together", aspect: "16 / 9" },
+  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.24.01 PM.jpeg", alt: "Two books held while travelling", caption: "Between systems / reading", aspect: "4 / 5" },
 ];
 
 export default function HomePage() {
@@ -41,13 +54,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="neo-gallery-section neo-photo-gallery" aria-labelledby="field-notes-title">
+        <div className="neo-section-heading"><span className="neo-index">02</span><h2 id="field-notes-title" className="neo-heading channel-split" data-text="Field notes">Field notes</h2><span className="neo-rule" /></div>
+        <p className="neo-gallery-intro">Frames from the spaces between systems: festival floors, student council rooms, service days, and the quiet evidence of a life in motion.</p>
+        <div className="neo-photo-grid">
+          {fieldNotes.map((photo) => <Still key={photo.src} {...photo} />)}
+        </div>
+      </section>
+
       <section className="neo-about-tease" aria-labelledby="about-title">
-        <div className="neo-section-heading"><span className="neo-index">02</span><h2 id="about-title" className="neo-heading channel-split" data-text="The person">The person</h2><span className="neo-rule" /></div>
+        <div className="neo-section-heading"><span className="neo-index">03</span><h2 id="about-title" className="neo-heading channel-split" data-text="The person">The person</h2><span className="neo-rule" /></div>
         <div className="neo-about-grid"><div><p className="neo-large-copy">Machine learning engineer. Film festival co-founder. Cataloguer of constraints.</p><p className="neo-muted">Currently working on a diffusion model for NIFTY-50 forecasting and learning causal inference with instrumental variables.</p></div><LastListened /></div>
         <Link href="/about" className="neo-arrow-link">Read the long version <span>↗</span></Link>
       </section>
 
-      <footer id="contact" className="neo-footer"><div><span className="neo-index">03</span><h2 className="neo-heading">Contact.</h2></div><div className="neo-contact-links"><a href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com</a><a href="https://github.com/aaryxnblondead/" target="_blank" rel="noreferrer noopener"><IconGithub size={15} /> github.com/aaryxnblondead</a><a href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" target="_blank" rel="noreferrer noopener"><IconLinkedin size={15} /> linkedin.com/in/aaryan-singh</a><a href="https://www.instagram.com/aaryun_/" target="_blank" rel="noreferrer noopener">◎ instagram.com/aaryun_</a></div><span className="neo-muted">Mumbai · India / 19°04′N 72°52′E</span></footer>
+      <footer id="contact" className="neo-footer"><div><span className="neo-index">04</span><h2 className="neo-heading">Contact.</h2></div><div className="neo-contact-links"><a href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com</a><a href="https://github.com/aaryxnblondead/" target="_blank" rel="noreferrer noopener"><IconGithub size={15} /> github.com/aaryxnblondead</a><a href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" target="_blank" rel="noreferrer noopener"><IconLinkedin size={15} /> linkedin.com/in/aaryan-singh</a><a href="https://www.instagram.com/aaryun_/" target="_blank" rel="noreferrer noopener">◎ instagram.com/aaryun_</a></div><span className="neo-muted">Mumbai · India / 19°04′N 72°52′E</span></footer>
     </main>
   );
 }

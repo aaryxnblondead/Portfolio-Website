@@ -1567,6 +1567,16 @@ nav a {
 .neo-inner { min-height: 100vh; padding-bottom: 10vw; }.neo-inner-header { padding: 10vw 12vw 8vw; border-bottom: 1px solid rgba(185,161,106,.4); }.neo-inner-header .neo-large-copy { margin-top: 40px; }.neo-lab-index { margin: 0 8vw 70px; }.neo-lab-row { display: grid; grid-template-columns: 70px 1fr 1fr 24px; gap: 20px; align-items: center; padding: 28px 0; border-bottom: 1px solid rgba(238,232,220,.22); }.neo-subheading { margin: 0 0 8px; font: 400 clamp(1.4rem, 3vw, 2.5rem) var(--font-fraunces); }.neo-lab-row p { margin: 0; color: var(--neo-muted); }.neo-arrow { color: var(--neo-flesh); text-align: right; }.neo-inner > .neo-arrow-link { display: block; margin: 0 8vw; }
 .neo-about-page { display: grid; grid-template-columns: minmax(280px, 1fr) 1.4fr; align-items: start; gap: 10vw; }.neo-about-page .neo-nav { grid-column: 1 / -1; width: 100%; }.neo-about-sticky { position: sticky; top: 90px; padding: 5vw 0 0 8vw; }.neo-about-sticky .neo-display { margin-top: 26px; }.neo-about-story { padding: 5vw 8vw 0 0; }.neo-about-story section { min-height: 60vh; padding: 10vh 0; border-bottom: 1px solid rgba(238,232,220,.22); }.neo-about-story section p { max-width: 34rem; font-size: 1.2rem; line-height: 1.55; }.neo-about-story .neo-large-copy { font-size: clamp(2rem, 4vw, 4.4rem); }.neo-about-end { min-height: 40vh !important; }.neo-about-end .neo-heading { max-width: 10ch; margin: 20px 0 45px; }
 .neo-about-social { display: inline-block; margin-top: 24px; color: var(--accent) !important; font: 11px var(--font-space-mono); letter-spacing: .1em; text-transform: uppercase; }
+.still { display: block; width: 100%; max-width: 220px; }
+.still-img { display: block; width: 100%; aspect-ratio: var(--still-aspect, 4 / 5); object-fit: cover; border: 1px solid var(--rule); background: var(--paper-sunk); filter: grayscale(.5) sepia(.14) saturate(.85) contrast(1.04) brightness(1.02); }
+.still-caption { display: block; margin-top: 8px; color: var(--ink-muted); font: 10px/1.4 var(--font-space-mono); letter-spacing: .1em; text-transform: uppercase; }
+.still-pair { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 28px; }
+.still-pair .still { max-width: 260px; flex: 1 1 200px; }
+.about-portrait { max-width: 180px; margin: 28px 0 0; }
+.neo-about-stills { min-height: auto !important; padding-top: 8vh !important; padding-bottom: 8vh !important; }
+.neo-about-stills > .neo-large-copy { margin-top: 24px; max-width: 15ch; }
+.neo-about-stills .still-pair { align-items: flex-start; }
+.neo-about-stills .still-pair .still { max-width: 220px; }
 .neo-about-opening > p:not(.neo-large-copy), .neo-about-story section > p { max-width: 38rem; }
 .neo-about-story section > .neo-heading { max-width: 12ch; margin: 24px 0 32px; }
 .neo-principles { min-height: auto !important; }
@@ -1583,6 +1593,7 @@ nav a {
 .neo-about-end p { max-width: 34rem; margin-bottom: 32px; }
 @media (max-width: 700px) { .neo-nav { padding: 22px 20px; }.neo-nav-links { gap: 14px; }.neo-threshold { min-height: 88svh; padding: 12vh 20px 30px; }.neo-threshold::after { right: 20px; bottom: 100px; width: 80px; height: 80px; }.neo-intro { margin-top: 34px; }.neo-threshold-footer { padding-top: 60px; font-size: 9px; }.neo-project-stage, .neo-about-tease { padding: 22vw 20px; }.neo-project-card-grid { grid-template-columns: 1fr; gap: 24px; }.neo-project-card { min-height: 510px; padding: 24px; }.neo-project-card:hover, .neo-project-card:focus-within { transform: translateZ(0); }.neo-project-card .meta-table { margin-top: 18px; }.neo-about-grid, .neo-footer { display: block; }.neo-about-grid .neo-large-copy { margin-bottom: 40px; }.last-listened { width: 100%; margin-top: 36px; }.last-listened-copy { flex: 1; }.neo-footer > * { display: block; margin-top: 24px; }.neo-inner-header { padding: 18vw 20px; }.neo-lab-index { margin: 0 20px 60px; }.neo-lab-row { grid-template-columns: 42px 1fr 20px; gap: 10px; }.neo-lab-row > .neo-muted { grid-column: 2; }.neo-about-page { display: block; }.neo-about-sticky { position: relative; top: auto; padding: 16vw 20px 8vw; }.neo-about-story { padding: 0 20px; }.neo-about-story section { min-height: 48vh; } }
 @media (max-width: 700px) { .neo-about-story section > .neo-heading { margin-top: 18px; font-size: 2.2rem; }.neo-principles article { grid-template-columns: 32px 1fr; gap: 10px; }.neo-principles article h3 { font-size: 1.25rem; }.neo-about-now dl > div { grid-template-columns: 92px 1fr; gap: 12px; }.neo-about-now dd { font-size: .95rem; }.neo-about-end { min-height: 34vh !important; } }
+@media (max-width: 700px) { .still-pair { gap: 12px; margin-top: 20px; }.about-portrait { max-width: 140px; margin-top: 20px; }.neo-about-stills > .neo-large-copy { font-size: 2rem; } }
 @media (max-width: 700px) {
   .project-page > .grid-12 > .rail,
   .project-page > .grid-12 > .content-col { grid-column: 1 / -1; }
