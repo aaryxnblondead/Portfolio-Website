@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug, markdownToHtml } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable } from "@/components/Grid";
 import { ProjectDiagram } from "@/components/ProjectDiagram";
+import { TopNav } from "@/components/TopNav";
 import { getProjectNumber } from "@/lib/projects";
 
 export async function generateStaticParams() {
@@ -38,6 +39,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <article id="main" className="project-page py-16">
+      <TopNav />
       <Grid>
         <Rail>
           <div className="section-number text-accent font-space-mono font-bold text-xs uppercase sticky top-32" aria-hidden="true">

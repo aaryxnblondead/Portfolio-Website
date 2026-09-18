@@ -1,0 +1,315 @@
+/* ==========================================================================
+   Plates — photographic furniture for the programme
+   Depends only on tokens already in globals.css; every var() has a fallback
+   so this file drops in without editing your token block.
+   ========================================================================== */
+
+:root {
+  /* The mat around a print. 24px at desktop, tightened on small screens. */
+  --plate-mat: 12px;
+  /* How far the plate number sits out into the left rail. */
+  --plate-rail: 88px;
+  --plate-rule: var(--rule, rgba(22, 19, 15, 0.22));
+  --plate-rule-strong: var(--ink, #16130f);
+}
+
+@media (min-width: 900px) {
+  :root {
+    --plate-mat: 20px;
+  }
+}
+
+/* --- figure --------------------------------------------------------------- */
+
+.plate {
+  position: relative;
+  margin: 48px 0;
+  max-width: 100%;
+}
+
+@media (min-width: 900px) {
+  .plate {
+    margin: 72px 0;
+  }
+}
+
+.plate--column {
+  max-width: 62ch;
+}
+
+.plate--wide {
+  max-width: none;
+}
+
+.plate--rail {
+  max-width: 220px;
+  margin: 0 0 32px;
+}
+
+/* Breaks the content column and runs the full width of the viewport. */
+.plate--bleed {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+/* --- the mount ------------------------------------------------------------ */
+
+.plate__mount {
+  position: relative;
+  padding: var(--plate-mat);
+  background-color: var(--paper-sunk, #e8e1d4);
+  border: 1px solid var(--plate-rule);
+  /* No radius, no shadow — the mat and the rule do the work. */
+}
+
+.plate--bleed .plate__mount {
+  border-left: 0;
+  border-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.plate__mount::before {
+  /* The graded dominant colour, so a slow connection shows a warm field
+     rather than a hole in the paper. The LQIP sits on top of it. */
+  content: '';
+  position: absolute;
+  inset: var(--plate-mat);
+  background-color: var(--plate-tone, #b9ac96);
+  background-image: var(--plate-lqip);
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.plate--bleed .plate__mount::before {
+  inset: var(--plate-mat) 0;
+}
+
+.plate__img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  /* Hairline between print and mat — a print has an edge. */
+  outline: 1px solid var(--plate-rule);
+  outline-offset: 0;
+}
+
+.plate__mount--cropped .plate__img {
+  aspect-ratio: var(--plate-ratio, 3 / 2);
+  height: 100%;
+}
+
+/* If you have not run `npm run photos` yet, add class="plate--raw" to get an
+   approximate grade in the browser. Remove it once the pipeline has run —
+   doubling the grade is what made the originals look muddy in the first place. */
+.plate--raw .plate__img {
+  filter: saturate(1.28) brightness(1.05) contrast(1.06);
+}
+
+/* --- plate number --------------------------------------------------------- */
+
+.plate__number {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted, rgba(22, 19, 15, 0.55));
+}
+
+@media (min-width: 1100px) {
+  .plate__number {
+    position: absolute;
+    top: 2px;
+    left: calc(-1 * var(--plate-rail));
+    width: calc(var(--plate-rail) - 16px);
+    margin: 0;
+    text-align: right;
+  }
+
+  .plate--bleed .plate__number {
+    position: static;
+    width: auto;
+    text-align: left;
+    margin: 0 0 8px;
+    padding-left: max(24px, calc(50vw - 480px));
+  }
+}
+
+/* --- caption -------------------------------------------------------------- */
+
+.plate__caption {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--plate-rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 32px;
+  align-items: baseline;
+}
+
+.plate--bleed .plate__caption {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+  padding-left: max(24px, calc(50vw - 600px));
+  padding-right: max(24px, calc(50vw - 600px));
+}
+
+.plate__text {
+  flex: 1 1 24ch;
+  margin: 0;
+  font-family: var(--font-body, 'Archivo', system-ui, sans-serif);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-muted, rgba(22, 19, 15, 0.7));
+  max-width: 58ch;
+}
+
+.plate__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 0;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--ink-muted, rgba(22, 19, 15, 0.55));
+}
+
+.plate__meta-row {
+  display: flex;
+  gap: 6px;
+}
+
+.plate__meta dt {
+  margin: 0;
+}
+
+.plate__meta dd {
+  margin: 0;
+  color: var(--ink, #16130f);
+}
+
+/* --- portrait in the rail -------------------------------------------------- */
+
+.plate--portrait .plate__caption {
+  gap: 2px;
+}
+
+.plate--portrait .plate__text {
+  font-size: 11px;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 899px) {
+  .plate--rail {
+    max-width: 180px;
+    float: right;
+    margin: 0 0 16px 20px;
+  }
+}
+
+/* --- diptych --------------------------------------------------------------- */
+
+.plate__pair-track {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) {
+  .plate__pair-track {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* --- contact sheet --------------------------------------------------------- */
+
+.sheet {
+  margin: 56px 0;
+}
+
+.sheet__label {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--plate-rule-strong);
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--ink, #16130f);
+}
+
+.sheet__frames {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(var(--sheet-columns, 4), minmax(0, 1fr));
+}
+
+@media (max-width: 899px) {
+  .sheet__frames {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 62vw;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Let the strip run to the screen edge like a length of film. */
+    margin-inline: calc(50% - 50vw);
+    padding-inline: max(24px, calc(50vw - 50%));
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+
+  .sheet__frame {
+    scroll-snap-align: start;
+  }
+}
+
+.sheet__frame .plate__mount {
+  padding: 6px;
+}
+
+.sheet__frame .plate__mount::before {
+  inset: 6px;
+}
+
+.sheet__frame-meta {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted, rgba(22, 19, 15, 0.55));
+  line-height: 1.4;
+}
+
+.sheet__frame-no {
+  flex: 0 0 auto;
+  color: var(--ink, #16130f);
+}
+
+/* --- print ---------------------------------------------------------------- */
+
+@media print {
+  .plate {
+    break-inside: avoid;
+  }
+
+  .sheet__frames {
+    grid-auto-flow: row;
+    overflow: visible;
+  }
+}

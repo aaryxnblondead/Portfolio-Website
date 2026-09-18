@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { tokens } from "@/lib/tokens";
 import { FilmStrip } from "@/components/FilmStrip";
+import { TopNav } from "@/components/TopNav";
 
 export const metadata = {
   title: "Specimen | Aaryan Singh",
@@ -13,6 +14,7 @@ export default function SpecimenPage() {
 
   return (
     <main id="main" className="py-16">
+      <TopNav />
       <div className="grid-12">
         <div className="content-col">
           <h1 className="text-h1-desktop mb-6">Design System Specimen</h1>
@@ -24,31 +26,31 @@ export default function SpecimenPage() {
               <div className="border-t border-rule pt-4">
                 <div className="label text-meta text-ink-muted">Masthead (Desktop)</div>
                 <div className="value text-masthead-desktop font-fraunces-light text-ink mt-2">Aaryan Singh</div>
-                <div className="value text-small text-ink-muted mt-1">6.5rem / 3rem, Fraunces 300 WONK 1, -0.03em tracking</div>
+                <div className="value text-small text-ink-muted mt-1">6.5rem / 3rem, Neue Machina 300, -0.035em tracking</div>
               </div>
 
               <div className="border-t border-rule pt-4">
                 <div className="label text-meta text-ink-muted">Masthead (Mobile)</div>
                 <div className="value text-masthead font-fraunces-light text-ink mt-2">Aaryan Singh</div>
-                <div className="value text-small text-ink-muted mt-1">3rem, Fraunces 300 WONK 1</div>
+                <div className="value text-small text-ink-muted mt-1">3rem, Neue Machina 300</div>
               </div>
 
               <div className="border-t border-rule pt-4">
                 <div className="label text-meta text-ink-muted">H1</div>
                 <div className="value text-h1-desktop text-ink mt-2">Selected Work</div>
-                <div className="value text-small text-ink-muted mt-1">3.25rem / 2.125rem, Fraunces 400</div>
+                <div className="value text-small text-ink-muted mt-1">3.25rem / 2.125rem, Neue Machina 400</div>
               </div>
 
               <div className="border-t border-rule pt-4">
                 <div className="label text-meta text-ink-muted">H2</div>
                 <div className="value text-h2-desktop text-ink mt-2">The Problem</div>
-                <div className="value text-small text-ink-muted mt-1">1.875rem / 1.5rem, Fraunces 400</div>
+                <div className="value text-small text-ink-muted mt-1">1.875rem / 1.5rem, Neue Machina 400</div>
               </div>
 
               <div className="border-t border-rule pt-4">
                 <div className="label text-meta text-ink-muted">Standfirst</div>
                 <div className="value text-standfirst-desktop text-ink mt-2">Built applications, shipped systems.</div>
-                <div className="value text-small text-ink-muted mt-1">1.5rem / 1.25rem, Fraunces 300</div>
+                <div className="value text-small text-ink-muted mt-1">1.5rem / 1.25rem, Neue Machina 300</div>
               </div>
 
               <div className="border-t border-rule pt-4">
@@ -126,7 +128,7 @@ export default function SpecimenPage() {
 
             <div className="space-y-4">
               <div className="text-meta">8px base unit multiples</div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {spacingSteps.map((n) => (
                   <div key={n} className="flex items-end gap-1">
                     <div className="text-center">
@@ -142,7 +144,7 @@ export default function SpecimenPage() {
           <section className="mb-16">
             <h2 className="text-h2-desktop mb-6">Grid Layout</h2>
 
-            <div className="relative mb-8">
+            <div className="relative mb-8 scroll-x">
               <div className="grid-12 gap-4">
                 {[...Array(12)].map((_, i) => (
                   <div key={i} className="bg-paper-sunk border border-rule h-8 flex items-center justify-center" style={{ gridColumn: `auto` }}>

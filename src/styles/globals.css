@@ -492,7 +492,7 @@ details .footnote-content {
 }
 
 .prose h2 {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-neue-machina);
   font-size: 1.5rem;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -502,7 +502,7 @@ details .footnote-content {
 }
 
 .prose h3 {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-neue-machina);
   font-size: 1.25rem;
   line-height: 1.15;
   margin: 1.5rem 0 0.5rem;
@@ -575,6 +575,9 @@ nav a {
 .relative { position: relative; }
 .min-h-screen { min-height: 100vh; }
 .flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.scroll-x { overflow-x: auto; }
+.scroll-x .grid-12 { min-width: 620px; }
 .flex-col { flex-direction: column; }
 .items-center { align-items: center; }
 .items-end { align-items: flex-end; }

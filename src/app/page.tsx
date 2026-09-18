@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { FilmStrip } from "@/components/FilmStrip";
+import { Plate, PlatePair } from "@/components/Plate";
+import { PhotoBelt } from "@/components/PhotoBelt";
 import { LastListened } from "@/components/LastListened";
-import { Still } from "@/components/Still";
 import { IconGithub, IconLinkedin } from "@/components/Icons";
 import { MetaTable, Metric } from "@/components/Grid";
 import { PROJECT_NUMBERS } from "@/lib/projects";
@@ -18,18 +18,6 @@ const projects = [
   { number: PROJECT_NUMBERS["resume-analytics"], title: "QualifyAI", slug: "resume-analytics", logLine: "An NLP platform that parses resumes, enriches skills, and lets recruiters search candidates semantically.", runtime: "Sep 2024 - Dec 2024", format: "FastAPI / React / spaCy / ChromaDB", runOn: "AWS ECS / RDS / EFS", status: "Shipped", credit: "Solo", metric: ["1,243", "RESUMES PROCESSED"] },
 ];
 
-const fieldNotes = [
-  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.20.31 PM.jpeg", alt: "Aaryan Singh wearing rings at a college event", caption: "Detail / event day", aspect: "4 / 5" },
-  { src: "/images/about/cinecrce-screen.jpg", alt: "CineCRCE short film festival title card projected at Samvad", caption: "CineCRCE / Samvad", aspect: "16 / 9" },
-  { src: "/images/about/cinecrce-crew.jpg", alt: "CineCRCE production crew together", caption: "Production crew", aspect: "4 / 3" },
-  { src: "/images/about/rotaract.jpg", alt: "Rotaract volunteers gathered for a service event", caption: "Rotaract / service", aspect: "4 / 3" },
-  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.21.12 PM.jpeg", alt: "Aaryan Singh speaking at a college podium", caption: "Student council / address", aspect: "4 / 5" },
-  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.21.32 PM.jpeg", alt: "Aaryan Singh seated with an audience at a college event", caption: "Student council / audience", aspect: "4 / 5" },
-  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.22.18 PM.jpeg", alt: "Aaryan Singh speaking at a college event", caption: "Student council / stage", aspect: "4 / 3" },
-  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.22.46 PM.jpeg", alt: "Student council group at an event", caption: "The people / together", aspect: "16 / 9" },
-  { src: "/images/about/WhatsApp Image 2026-09-18 at 4.24.01 PM.jpeg", alt: "Two books held while travelling", caption: "Between systems / reading", aspect: "4 / 5" },
-];
-
 export default function HomePage() {
   return (
     <main id="main" className="neo-site">
@@ -40,26 +28,59 @@ export default function HomePage() {
 
       <section className="neo-threshold" aria-labelledby="intro-title">
         <div className="neo-threshold-grid" aria-hidden="true"><span /><span /><span /><span /><span /></div>
-        <p className="neo-kicker neo-reveal neo-delay-1">Applied machine learning / Mumbai, India</p>
-        <h1 id="intro-title" className="neo-display neo-reveal neo-delay-2 channel-split" data-text="Aaryan Singh">Aaryan Singh</h1>
-        <p className="neo-intro neo-reveal neo-delay-3">I build systems that make intelligence useful where the data lives: on device, at the edge, and in the narrow gap between two cloud services.</p>
-        <div className="neo-threshold-footer neo-reveal neo-delay-4"><span>SCROLL TO ENTER</span><span className="neo-cross">＋</span><span>AVAILABLE / NOV 2026</span></div>
+        <div className="neo-threshold-row">
+          <div>
+            <p className="neo-kicker neo-reveal neo-delay-1">Applied machine learning / Mumbai, India</p>
+            <h1 id="intro-title" className="neo-display neo-reveal neo-delay-2 channel-split" data-text="Aaryan Singh">Aaryan Singh</h1>
+            <p className="neo-intro neo-reveal neo-delay-3">I build systems that make intelligence useful where the data lives: on device, at the edge, and in the narrow gap between two cloud services.</p>
+          </div>
+          <div className="neo-hero-plate neo-reveal neo-delay-3">
+            <Plate
+              photo="aaryan-suit"
+              alt="Aaryan standing outdoors in a grey suit and black shirt, smiling, iron fence and trees behind him"
+              size="column"
+              ratio="4:5"
+              focus="center 20%"
+              priority
+            />
+          </div>
+        </div>
+        <div className="neo-threshold-footer neo-reveal neo-delay-4"><span>SCROLL TO ENTER</span><span className="neo-cross">＋</span><span className="neo-avail">AVAILABLE / NOV 2026</span></div>
       </section>
 
-      <FilmStrip />
-
-      <section className="neo-project-stage" aria-label="Projects">
+      <section className="neo-project-stage" id="projects" aria-label="Projects">
         <div className="neo-project-card-grid">
           {projects.map((project) => <article className="neo-project-card" key={project.slug}><div className="neo-project-number">{project.number}</div><h2><Link href={`/work/${project.slug}`}>{project.title}</Link></h2><p>{project.logLine}</p><MetaTable rows={[{ label: "RUNTIME", value: project.runtime }, { label: "FORMAT", value: project.format }, { label: "RUN ON", value: project.runOn }, { label: "STATUS", value: project.status }]} /><Metric value={project.metric[0]} label={project.metric[1]} /><Link href={`/work/${project.slug}`} className="neo-card-arrow" aria-label={`Open ${project.title}`}>↗</Link></article>)}
         </div>
       </section>
 
-      <section className="neo-gallery-section neo-photo-gallery" aria-labelledby="field-notes-title">
-        <div className="neo-section-heading"><span className="neo-index">02</span><h2 id="field-notes-title" className="neo-heading channel-split" data-text="Field notes">Field notes</h2><span className="neo-rule" /></div>
-        <p className="neo-gallery-intro">Frames from the spaces between systems: festival floors, student council rooms, service days, and the quiet evidence of a life in motion.</p>
-        <div className="neo-photo-grid">
-          {fieldNotes.map((photo) => <Still key={photo.src} {...photo} />)}
-        </div>
+      <section className="neo-plates" id="offscreen" aria-labelledby="offscreen-title">
+        <div className="neo-section-heading"><span className="neo-index">02</span><h2 id="offscreen-title" className="neo-heading channel-split" data-text="Off-screen">Off-screen</h2><span className="neo-rule" /></div>
+        <p className="neo-plates-intro">The work happens on screens. The rest happens in auditoriums, corridors, and airport chairs. Individuals first, then everybody else on the belt.</p>
+
+        <PlatePair
+          plate={1}
+          ratio="3:2"
+          left={{ photo: "council-podium", alt: "Aaryan with eyes closed speaking into a gooseneck microphone at a wooden podium bearing the college crest, wearing a black hoodie" }}
+          right={{ photo: "singularity-podium", alt: "Aaryan in a navy blazer speaking at the same wooden podium beside a Crescendo Singularity banner" }}
+          caption="Same podium, different briefs. The hoodie talk ran long. The blazer one started on time."
+        />
+
+        <PhotoBelt
+          label="Reading + group frames + Samvad run"
+          start={2}
+          items={[
+            { photo: "airport-reading", alt: "Two paperbacks held up in an airport waiting area: The Great Indian Novel and Don't Believe Everything You Think" },
+            { photo: "council-group", alt: "Thirteen Students Council members posing together outdoors at dusk, most in black T-shirts with lanyards" },
+            { photo: "cinecrce-crew", alt: "The CineCRCE production crew in black T-shirts with lanyards posing together under a shelter at night" },
+            { photo: "cinecrce-screen", alt: "The CineCRCE Short Film Festival title card projected on the Samvad auditorium screen" },
+            { photo: "samvad-audience", alt: "A full Samvad auditorium of red chairs facing a stage with two speakers and an OnPoint banner on screen" },
+            { photo: "friends-garden", alt: "Six friends posing on a garden path outside a stone college building, one in a white turban" },
+            { photo: "street-play", alt: "Two performers in white kurtas and red scarves mid-scene before a watching crowd" },
+            { photo: "fest-group", alt: "Fest crew group selfie in front of an event banner at Fr. Conceicao Rodrigues College" },
+            { photo: "lights-pair", alt: "Two friends arm in arm under strings of lanterns on a court at night" },
+          ]}
+        />
       </section>
 
       <section className="neo-about-tease" aria-labelledby="about-title">
@@ -68,7 +89,7 @@ export default function HomePage() {
         <Link href="/about" className="neo-arrow-link">Read the long version <span>↗</span></Link>
       </section>
 
-      <footer id="contact" className="neo-footer"><div><span className="neo-index">04</span><h2 className="neo-heading">Contact.</h2></div><div className="neo-contact-links"><a href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com</a><a href="https://github.com/aaryxnblondead/" target="_blank" rel="noreferrer noopener"><IconGithub size={15} /> github.com/aaryxnblondead</a><a href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" target="_blank" rel="noreferrer noopener"><IconLinkedin size={15} /> linkedin.com/in/aaryan-singh</a><a href="https://www.instagram.com/aaryun_/" target="_blank" rel="noreferrer noopener">◎ instagram.com/aaryun_</a></div><span className="neo-muted">Mumbai · India / 19°04′N 72°52′E</span></footer>
+      <footer id="contact" className="neo-footer"><div><span className="neo-index">04</span><h2 className="neo-heading">Contact.</h2></div><div className="neo-contact-links"><a href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com</a><a href="https://github.com/aaryxnblondead/" target="_blank" rel="noreferrer noopener"><IconGithub size={15} /> github.com/aaryxnblondead</a><a href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" target="_blank" rel="noreferrer noopener"><IconLinkedin size={15} /> linkedin.com/in/aaryan-singh</a><a href="https://www.instagram.com/aaryun_/" target="_blank" rel="noreferrer noopener">◎ instagram.com/aaryun_</a><Link href="/about#contact">Contact form ↗</Link></div><span className="neo-muted">Mumbai · India / 19°04′N 72°52′E</span><p className="neo-advisory" aria-label="Field recording notice"><span>FIELD RECORDING</span><span>EST. MMXXVI</span><span>ALL SIGNAL PERSONAL</span></p></footer>
     </main>
   );
 }

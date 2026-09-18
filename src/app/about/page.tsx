@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Plate, Portrait } from "@/components/Plate";
+import { ScrollMarket } from "@/components/ScrollMarket";
+import { ContactForm } from "@/components/ContactForm";
 
 export const metadata = {
   title: "About Aaryan Singh",
@@ -24,6 +27,13 @@ export default function AboutPage() {
         <h1 className="neo-display">Aaryan</h1>
         <p className="neo-muted">Computer Engineer / Mumbai, India</p>
         <a className="neo-about-social" href="https://www.instagram.com/aaryun_" target="_blank" rel="noreferrer noopener">Instagram ↗</a>
+        <div className="neo-about-portrait">
+          <Portrait
+            photo="aaryan-portrait"
+            alt="Aaryan sitting on wide stone steps in the evening light, wearing a black T-shirt and grey trousers, smiling"
+            credit="Stone steps, evening light. Mumbai, 2025"
+          />
+        </div>
       </aside>
 
       <div className="neo-about-story">
@@ -38,6 +48,31 @@ export default function AboutPage() {
           <h2 className="neo-heading">A technical person with a catalogue instinct.</h2>
           <p>I co-founded a national short film festival in college and worked on production, sponsorship, and the unglamorous details that make a public experience hold together. It left me with a lasting affection for sequences, credits, archives, and the way a good edit creates meaning.</p>
           <p>That instinct follows me into engineering. I like naming the parts, writing down what broke, and making complicated work easier for the next person to enter.</p>
+          <p>
+            The group frames live elsewhere: title card, red chairs, and crew after strike run as a{" "}
+            <Link href="/#offscreen">film belt on the homepage</Link>.
+          </p>
+
+          <div className="neo-about-plates">
+            <Plate
+              photo="council-crowd"
+              alt="Aaryan smiling in a crowded room wearing a black Students Council hoodie and lanyard, people seated behind him"
+              size="column"
+              ratio="natural"
+              plate={1}
+              caption="In the crowd instead of on stage, which is where I prefer to sit. The lanyard says staff. The expression says interval."
+            />
+
+            <Plate
+              photo="portrait-rings"
+              alt="Close-up of Aaryan half covering his face with one hand showing several silver rings, metro lights behind"
+              size="column"
+              ratio="natural"
+              plate={2}
+              caption="Rings and metro light on the way home. Not a project photo. Kept anyway."
+              meta={{ PLACE: "In transit" }}
+            />
+          </div>
         </section>
 
         <section className="neo-principles">
@@ -62,8 +97,11 @@ export default function AboutPage() {
           <h2 className="neo-heading">A good conversation can start small.</h2>
           <p>Send me a project, a difficult systems question, or something technically interesting that you think I should see.</p>
           <a className="neo-arrow-link" href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com ↗</a>
+          <ContactForm />
         </section>
       </div>
+
+      <ScrollMarket />
     </main>
   );
 }

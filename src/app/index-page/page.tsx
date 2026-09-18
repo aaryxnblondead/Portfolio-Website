@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Grid, Rail, ContentColumn, SectionNumber } from "@/components/Grid";
+import { TopNav } from "@/components/TopNav";
 
 export const metadata = {
   title: "Index | Aaryan Singh",
@@ -8,24 +9,50 @@ export const metadata = {
 
 const indexEntries: { term: string; references: { url: string; label: string }[] }[] = [
   {
+    term: "AES-256",
+    references: [{ url: "/work/anora", label: "Anora" }],
+  },
+  {
     term: "Android",
     references: [{ url: "/work/anora", label: "Anora" }],
   },
   {
-    term: "Anora",
-    references: [{ url: "/work/anora", label: "Project: Anora" }],
+    term: "Archivo",
+    references: [{ url: "/colophon", label: "Colophon" }],
   },
   {
-    term: "ChromaDB",
+    term: "AWS",
+    references: [
+      { url: "/work/anora", label: "Anora" },
+      { url: "/work/resume-analytics", label: "QualifyAI" },
+    ],
+  },
+  {
+    term: "Bootstrap",
     references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
   },
   {
+    term: "Celery",
+    references: [{ url: "/work/resume-analytics", label: "QualifyAI" }],
+  },
+  {
+    term: "ChromaDB",
+    references: [{ url: "/work/resume-analytics", label: "QualifyAI" }],
+  },
+  {
     term: "CUDA",
-    references: [{ url: "/work/capstone", label: "Capstone" }],
+    references: [{ url: "/work/capstone", label: "Vortex-AI" }],
+  },
+  {
+    term: "Django",
+    references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
   },
   {
     term: "FastAPI",
-    references: [{ url: "/work/anora", label: "Anora" }],
+    references: [
+      { url: "/work/anora", label: "Anora" },
+      { url: "/work/resume-analytics", label: "QualifyAI" },
+    ],
   },
   {
     term: "Federated learning",
@@ -36,42 +63,114 @@ const indexEntries: { term: string; references: { url: string; label: string }[]
     references: [{ url: "/work/anora", label: "Anora" }],
   },
   {
+    term: "GAT",
+    references: [{ url: "/work/capstone", label: "Vortex-AI" }],
+  },
+  {
     term: "Gemini",
-    references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
+    references: [
+      { url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" },
+      { url: "/work/resume-analytics", label: "QualifyAI" },
+    ],
   },
   {
     term: "INT8 quantization",
     references: [{ url: "/work/anora", label: "Anora" }],
   },
   {
-    term: "LangChain",
-    references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
+    term: "LSTM",
+    references: [{ url: "/work/capstone", label: "Vortex-AI" }],
+  },
+  {
+    term: "MDX",
+    references: [{ url: "/colophon", label: "Colophon" }],
+  },
+  {
+    term: "MentalBERT",
+    references: [{ url: "/work/anora", label: "Anora" }],
   },
   {
     term: "NER",
-    references: [{ url: "/work/resume-analytics", label: "Resume Analytics Platform" }],
+    references: [{ url: "/work/resume-analytics", label: "QualifyAI" }],
+  },
+  {
+    term: "Neue Machina",
+    references: [{ url: "/colophon", label: "Colophon" }],
+  },
+  {
+    term: "Next.js",
+    references: [{ url: "/colophon", label: "Colophon" }],
+  },
+  {
+    term: "NIFTY-50",
+    references: [{ url: "/work/capstone", label: "Vortex-AI" }],
   },
   {
     term: "OCR",
     references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
   },
   {
-    term: "ONNX",
-    references: [{ url: "/work/capstone", label: "Capstone" }],
+    term: "Pearson correlation",
+    references: [{ url: "/work/capstone", label: "Vortex-AI" }],
+  },
+  {
+    term: "pdfplumber",
+    references: [
+      { url: "/work/resume-analytics", label: "QualifyAI" },
+      { url: "/colophon", label: "Colophon" },
+    ],
+  },
+  {
+    term: "PostgreSQL",
+    references: [
+      { url: "/work/anora", label: "Anora" },
+      { url: "/work/resume-analytics", label: "QualifyAI" },
+    ],
+  },
+  {
+    term: "PyMuPDF",
+    references: [
+      { url: "/work/resume-analytics", label: "QualifyAI" },
+      { url: "/colophon", label: "Colophon" },
+    ],
   },
   {
     term: "PyTorch",
-    references: [{ url: "/work/capstone", label: "Capstone" }],
+    references: [{ url: "/work/capstone", label: "Vortex-AI" }],
   },
   {
     term: "RAG",
     references: [
       { url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" },
-      { url: "/work/resume-analytics", label: "Resume Analytics Platform" },
+      { url: "/work/resume-analytics", label: "QualifyAI" },
     ],
   },
   {
+    term: "React",
+    references: [{ url: "/work/resume-analytics", label: "QualifyAI" }],
+  },
+  {
     term: "Secure aggregation",
+    references: [{ url: "/work/anora", label: "Anora" }],
+  },
+  {
+    term: "Space Mono",
+    references: [{ url: "/colophon", label: "Colophon" }],
+  },
+  {
+    term: "spaCy",
+    references: [{ url: "/work/resume-analytics", label: "QualifyAI" }],
+  },
+  {
+    term: "SQLite",
+    references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
+  },
+  {
+    term: "Tailwind CSS",
+    references: [{ url: "/colophon", label: "Colophon" }],
+  },
+  {
+    term: "TensorFlow Federated",
     references: [{ url: "/work/anora", label: "Anora" }],
   },
   {
@@ -79,30 +178,15 @@ const indexEntries: { term: string; references: { url: string; label: string }[]
     references: [{ url: "/work/anora", label: "Anora" }],
   },
   {
-    term: "tabular-nums",
+    term: "Vercel",
     references: [{ url: "/colophon", label: "Colophon" }],
-  },
-  {
-    term: "Tesseract OCR",
-    references: [{ url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
-  },
-  {
-    term: "Vision Transformer",
-    references: [{ url: "/work/anora", label: "Anora" }],
-  },
-  {
-    term: "font-feature-settings",
-    references: [{ url: "/colophon", label: "Colophon" }],
-  },
-  {
-    term: "tabular figures",
-    references: [{ url: "/work/anora", label: "Anora" }, { url: "/work/vidhaanai", label: "VidhaanAI / Bail Reckoner" }],
   },
 ];
 
 export default function IndexPage() {
   return (
     <main id="main" className="py-16">
+      <TopNav />
       <Grid>
         <Rail>
           <SectionNumber number="IN" />
