@@ -5,6 +5,7 @@ import { remark } from "remark";
 import html from "remark-html";
 import gfm from "remark-gfm";
 import footnotes from "remark-footnotes";
+import { PROJECT_ORDER } from "@/lib/projects";
 
 const contentDirectory = join(process.cwd(), "src/content/work");
 
@@ -61,7 +62,7 @@ export async function getAllProjects(): Promise<ProjectMetadata[]> {
 
   return projects
     .map((project) => project.metadata)
-    .sort((a, b) => (a.slug > b.slug ? 1 : -1));
+    .sort((a, b) => PROJECT_ORDER.indexOf(a.slug as (typeof PROJECT_ORDER)[number]) - PROJECT_ORDER.indexOf(b.slug as (typeof PROJECT_ORDER)[number]));
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {

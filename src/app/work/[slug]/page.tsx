@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug, markdownToHtml } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable } from "@/components/Grid";
 import { ProjectDiagram } from "@/components/ProjectDiagram";
+import { getProjectNumber } from "@/lib/projects";
 
 export async function generateStaticParams() {
   const projects = await getAllProjects();
@@ -40,35 +41,38 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <Grid>
         <Rail>
           <div className="section-number text-accent font-space-mono font-bold text-xs uppercase sticky top-32" aria-hidden="true">
-            {"0" + (getProjectNumber(metadata.slug) + 1)}
+            {getProjectNumber(metadata.slug)}
           </div>
         </Rail>
         <ContentColumn>
-          <header className="mb-12">
+          <div className="project-hero">
+          <header className="project-hero-header">
             <h1 className="text-h1-desktop text-ink mb-4">
               {metadata.title}
             </h1>
             <p className="text-body text-ink max-w-prose leading-tight">
               {metadata.logLine}
             </p>
-            <div className="mt-6">
-              <MetaTable
-                rows={[
-                  { label: "RUNTIME", value: metadata.runtime },
-                  { label: "FORMAT", value: metadata.format },
-                  { label: "RUN ON", value: metadata.runOn },
-                  { label: "STATUS", value: metadata.status },
-                ]}
-              />
-            </div>
           </header>
 
           <ProjectDiagram slug={metadata.slug} />
+          </div>
 
-          <div
-            className="prose text-ink max-w-prose"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-          />
+          <section className="project-details" aria-label="Project details">
+            <MetaTable
+              rows={[
+                { label: "RUNTIME", value: metadata.runtime },
+                { label: "FORMAT", value: metadata.format },
+                { label: "RUN ON", value: metadata.runOn },
+                { label: "STATUS", value: metadata.status },
+              ]}
+            />
+
+            <div
+              className="prose text-ink max-w-prose"
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
+          </section>
 
 
           <SectionRule className="my-12" />
@@ -85,9 +89,4 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       </Grid>
     </article>
   );
-}
-
-function getProjectNumber(slug: string): number {
-  const order = ["anora", "vidhaanai", "capstone", "resume-analytics"];
-  return order.indexOf(slug);
 }

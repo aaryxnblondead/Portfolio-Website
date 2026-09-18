@@ -11,9 +11,11 @@ type DiagramSpec = {
   nodes: DiagramNode[];
 };
 
+import { getProjectNumber } from "@/lib/projects";
+
 const diagrams: Record<string, DiagramSpec> = {
   anora: {
-    label: "01 / TRUST BOUNDARY",
+    label: `${getProjectNumber("anora")} / TRUST BOUNDARY`,
     title: "The journal never crosses the frame.",
     note: "local inference · encrypted reporting · masked learning",
     nodes: [
@@ -24,7 +26,7 @@ const diagrams: Record<string, DiagramSpec> = {
     ],
   },
   vidhaanai: {
-    label: "02 / PERMISSIONED WORKFLOW",
+    label: `${getProjectNumber("vidhaanai")} / PERMISSIONED WORKFLOW`,
     title: "One case, three roles, no open hallway.",
     note: "create · review · decide · track",
     nodes: [
@@ -35,7 +37,7 @@ const diagrams: Record<string, DiagramSpec> = {
     ],
   },
   capstone: {
-    label: "03 / MARKET GRAPH",
+    label: `${getProjectNumber("capstone")} / MARKET GRAPH`,
     title: "From price history to contagion map.",
     note: "returns · regimes · attention · evaluation",
     nodes: [
@@ -46,7 +48,7 @@ const diagrams: Record<string, DiagramSpec> = {
     ],
   },
   "resume-analytics": {
-    label: "04 / CANDIDATE SIGNAL",
+    label: `${getProjectNumber("resume-analytics")} / CANDIDATE SIGNAL`,
     title: "A resume becomes a searchable shape.",
     note: "ingest · extract · index · ask",
     nodes: [

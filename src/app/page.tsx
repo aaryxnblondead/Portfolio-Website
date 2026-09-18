@@ -3,6 +3,7 @@ import { FilmStrip } from "@/components/FilmStrip";
 import { LastListened } from "@/components/LastListened";
 import { IconGithub, IconLinkedin } from "@/components/Icons";
 import { MetaTable, Metric } from "@/components/Grid";
+import { PROJECT_NUMBERS } from "@/lib/projects";
 
 export const metadata = {
   title: "Aaryan Singh | Machine learning systems",
@@ -10,10 +11,10 @@ export const metadata = {
 };
 
 const projects = [
-  { number: "01", title: "Anora", slug: "anora", logLine: "Privacy-first wellness journaling with on-device ML inference that syncs across devices without a server in between.", runtime: "Oct 2025 - May 2026", format: "Flutter / FastAPI / PostgreSQL / TFLite", runOn: "AWS App Runner, on-device ARM", status: "Shipped", credit: "Solo", metric: ["180ms", "AVG ON-DEVICE INFERENCE"] },
-  { number: "02", title: "VidhaanAI / Bail Reckoner", slug: "vidhaanai", logLine: "A role-based bail application system for lawyers, judges, and viewers, with secure documents and case-number access.", runtime: "Jan 2025 - Apr 2025", format: "Django / Bootstrap / SQLite", runOn: "Python development server", status: "Shipped", credit: "Co-founder", metric: ["3", "USER ROLES"] },
-  { number: "03", title: "Vortex-AI", slug: "capstone", logLine: "A graph-based NIFTY-50 risk system that detects crisis regimes and maps how companies move together.", runtime: "Aug 2025 - Present", format: "PyTorch / GAT / LSTM / CUDA", runOn: "CUDA training, CPU evaluation", status: "In progress", credit: "Solo", metric: ["0.83", "GAT ROC-AUC"] },
-  { number: "04", title: "QualifyAI", slug: "resume-analytics", logLine: "An NLP platform that parses resumes, enriches skills, and lets recruiters search candidates semantically.", runtime: "Sep 2024 - Dec 2024", format: "FastAPI / React / spaCy / ChromaDB", runOn: "AWS ECS / RDS / EFS", status: "Shipped", credit: "Solo", metric: ["1,243", "RESUMES PROCESSED"] },
+  { number: PROJECT_NUMBERS.capstone, title: "Vortex-AI", slug: "capstone", logLine: "A graph-based NIFTY-50 risk system that detects crisis regimes and maps how companies move together.", runtime: "Aug 2025 - Present", format: "PyTorch / GAT / LSTM / CUDA", runOn: "CUDA training, CPU evaluation", status: "In progress", credit: "Solo", metric: ["0.83", "GAT ROC-AUC"] },
+  { number: PROJECT_NUMBERS.anora, title: "Anora", slug: "anora", logLine: "Privacy-first wellness journaling with on-device ML inference that syncs across devices without a server in between.", runtime: "Oct 2025 - May 2026", format: "Flutter / FastAPI / PostgreSQL / TFLite", runOn: "AWS App Runner, on-device ARM", status: "Shipped", credit: "Solo", metric: ["180ms", "AVG ON-DEVICE INFERENCE"] },
+  { number: PROJECT_NUMBERS.vidhaanai, title: "Vidhaan AI", slug: "vidhaanai", logLine: "A role-based bail application system for lawyers, judges, and viewers, with secure documents and case-number access.", runtime: "Jan 2025 - Apr 2025", format: "Django / Bootstrap / SQLite", runOn: "Python development server", status: "Shipped", credit: "Co-founder", metric: ["3", "USER ROLES"] },
+  { number: PROJECT_NUMBERS["resume-analytics"], title: "QualifyAI", slug: "resume-analytics", logLine: "An NLP platform that parses resumes, enriches skills, and lets recruiters search candidates semantically.", runtime: "Sep 2024 - Dec 2024", format: "FastAPI / React / spaCy / ChromaDB", runOn: "AWS ECS / RDS / EFS", status: "Shipped", credit: "Solo", metric: ["1,243", "RESUMES PROCESSED"] },
 ];
 
 export default function HomePage() {

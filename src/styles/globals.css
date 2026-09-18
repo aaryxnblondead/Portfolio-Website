@@ -456,6 +456,37 @@ details .footnote-content {
   color: var(--ink);
 }
 
+@media (max-width: 700px) {
+  .prose table {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    margin: 1.25rem 0;
+  }
+
+  .prose th,
+  .prose td {
+    width: auto;
+    padding: 0.65rem 0.35rem;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-height: 1.35;
+  }
+
+  .prose th:first-child,
+  .prose td:first-child {
+    width: 42%;
+  }
+
+  .prose th:nth-child(2),
+  .prose td:nth-child(2),
+  .prose th:nth-child(3),
+  .prose td:nth-child(3) {
+    width: 29%;
+  }
+}
+
 .prose p {
   margin-bottom: 1.25em;
 }

@@ -869,6 +869,20 @@
 .neo-footer { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 28px; align-items: end; padding: 10vw 8vw 48px; border-top: 1px solid rgba(185,161,106,.4); }.neo-footer h2 { margin-top: 14px; }.neo-footer > a { color: var(--neo-flesh); font: 12px var(--font-space-mono); overflow-wrap: anywhere; }
 .neo-contact-links { display: grid; gap: 12px; }.neo-contact-links a { display: flex; align-items: center; gap: 8px; color: var(--accent); font: 12px var(--font-space-mono); overflow-wrap: anywhere; }.neo-contact-links a:first-child { font-weight: 700; }
 .last-listened { display: flex; align-items: center; gap: 28px; align-self: start; width: min(100%, 440px); min-height: 128px; padding: 16px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.project-hero { min-height: calc(100svh - 48px); display: flex; flex-direction: column; justify-content: center; }
+.project-page > .grid-12 { max-width: 1440px; }
+.project-page > .grid-12 > .rail { grid-column: 1 / span 1; }
+.project-page > .grid-12 > .content-col { grid-column: 2 / span 10; }
+.project-hero { position: relative; padding: 4vh 4vw; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--paper-sunk); }
+.project-hero::before { position: absolute; right: 4vw; top: 2vh; color: rgba(168, 58, 22, .13); content: "PROJECT / FIELD NOTES"; font: 10px var(--font-space-mono); letter-spacing: .18em; }
+.project-hero-header { position: relative; margin-bottom: 18px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
+.project-hero-header h1 { max-width: 15ch; }
+.project-hero-header h1 { font-size: clamp(3rem, 6vw, 6.5rem); line-height: .9; }
+.project-hero-header p { max-width: 48rem; font-size: 1.15rem; }
+.project-hero .project-diagram { width: 100%; margin: 18px 0 0; }
+.project-details { padding-top: 72px; border-top: 1px solid var(--rule); }
+.project-details .meta-table { max-width: 640px; margin-bottom: 48px; }
+.project-details .prose { max-width: 760px; }
 .project-diagram { position: relative; margin: 56px 0; padding: 18px 20px 14px; overflow: hidden; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--paper-sunk); }
 .project-diagram::before { position: absolute; inset: 8px; border: 1px solid rgba(168, 58, 22, .2); pointer-events: none; content: ""; }
 .project-diagram-topline { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: 18px; color: var(--accent); font: 9px/1.4 var(--font-space-mono); letter-spacing: .14em; text-transform: uppercase; }
@@ -902,8 +916,36 @@
 @keyframes last-listened-shimmer { to { background-position: -140% 0; } }
 .neo-inner { min-height: 100vh; padding-bottom: 10vw; }.neo-inner-header { padding: 10vw 12vw 8vw; border-bottom: 1px solid rgba(185,161,106,.4); }.neo-inner-header .neo-large-copy { margin-top: 40px; }.neo-lab-index { margin: 0 8vw 70px; }.neo-lab-row { display: grid; grid-template-columns: 70px 1fr 1fr 24px; gap: 20px; align-items: center; padding: 28px 0; border-bottom: 1px solid rgba(238,232,220,.22); }.neo-subheading { margin: 0 0 8px; font: 400 clamp(1.4rem, 3vw, 2.5rem) var(--font-fraunces); }.neo-lab-row p { margin: 0; color: var(--neo-muted); }.neo-arrow { color: var(--neo-flesh); text-align: right; }.neo-inner > .neo-arrow-link { display: block; margin: 0 8vw; }
 .neo-about-page { display: grid; grid-template-columns: minmax(280px, 1fr) 1.4fr; align-items: start; gap: 10vw; }.neo-about-page .neo-nav { grid-column: 1 / -1; width: 100%; }.neo-about-sticky { position: sticky; top: 90px; padding: 5vw 0 0 8vw; }.neo-about-sticky .neo-display { margin-top: 26px; }.neo-about-story { padding: 5vw 8vw 0 0; }.neo-about-story section { min-height: 60vh; padding: 10vh 0; border-bottom: 1px solid rgba(238,232,220,.22); }.neo-about-story section p { max-width: 34rem; font-size: 1.2rem; line-height: 1.55; }.neo-about-story .neo-large-copy { font-size: clamp(2rem, 4vw, 4.4rem); }.neo-about-end { min-height: 40vh !important; }.neo-about-end .neo-heading { max-width: 10ch; margin: 20px 0 45px; }
+.neo-about-social { display: inline-block; margin-top: 24px; color: var(--accent) !important; font: 11px var(--font-space-mono); letter-spacing: .1em; text-transform: uppercase; }
+.neo-about-opening > p:not(.neo-large-copy), .neo-about-story section > p { max-width: 38rem; }
+.neo-about-story section > .neo-heading { max-width: 12ch; margin: 24px 0 32px; }
+.neo-principles { min-height: auto !important; }
+.neo-principles > .neo-heading { margin-bottom: 44px; }
+.neo-principles article { display: grid; grid-template-columns: 48px 1fr; gap: 18px; padding: 22px 0; border-top: 1px solid var(--rule); }
+.neo-principles article h3 { margin: 0 0 8px; color: var(--ink); font: 400 1.5rem/1.1 var(--font-fraunces); }
+.neo-principles article p { margin: 0; color: var(--ink-muted); font-size: 1rem !important; }
+.neo-about-now { min-height: auto !important; }
+.neo-about-now > .neo-heading { margin: 24px 0 36px; }
+.neo-about-now dl { margin: 0; border-top: 1px solid var(--rule); }
+.neo-about-now dl > div { display: grid; grid-template-columns: 140px 1fr; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.neo-about-now dt { color: var(--ink-muted); font: 10px var(--font-space-mono); letter-spacing: .12em; }
+.neo-about-now dd { margin: 0; color: var(--ink); font-size: 1rem; line-height: 1.45; }
+.neo-about-end p { max-width: 34rem; margin-bottom: 32px; }
 @media (max-width: 700px) { .neo-nav { padding: 22px 20px; }.neo-nav-links { gap: 14px; }.neo-threshold { min-height: 88svh; padding: 12vh 20px 30px; }.neo-threshold::after { right: 20px; bottom: 100px; width: 80px; height: 80px; }.neo-intro { margin-top: 34px; }.neo-threshold-footer { padding-top: 60px; font-size: 9px; }.neo-project-stage, .neo-about-tease { padding: 22vw 20px; }.neo-project-card-grid { grid-template-columns: 1fr; gap: 24px; }.neo-project-card { min-height: 510px; padding: 24px; }.neo-project-card:hover, .neo-project-card:focus-within { transform: translateZ(0); }.neo-project-card .meta-table { margin-top: 18px; }.neo-about-grid, .neo-footer { display: block; }.neo-about-grid .neo-large-copy { margin-bottom: 40px; }.last-listened { width: 100%; margin-top: 36px; }.last-listened-copy { flex: 1; }.neo-footer > * { display: block; margin-top: 24px; }.neo-inner-header { padding: 18vw 20px; }.neo-lab-index { margin: 0 20px 60px; }.neo-lab-row { grid-template-columns: 42px 1fr 20px; gap: 10px; }.neo-lab-row > .neo-muted { grid-column: 2; }.neo-about-page { display: block; }.neo-about-sticky { position: relative; top: auto; padding: 16vw 20px 8vw; }.neo-about-story { padding: 0 20px; }.neo-about-story section { min-height: 48vh; } }
+@media (max-width: 700px) { .neo-about-story section > .neo-heading { margin-top: 18px; font-size: 2.2rem; }.neo-principles article { grid-template-columns: 32px 1fr; gap: 10px; }.neo-principles article h3 { font-size: 1.25rem; }.neo-about-now dl > div { grid-template-columns: 92px 1fr; gap: 12px; }.neo-about-now dd { font-size: .95rem; }.neo-about-end { min-height: 34vh !important; } }
 @media (max-width: 700px) {
+  .project-page > .grid-12 > .rail,
+  .project-page > .grid-12 > .content-col { grid-column: 1 / -1; }
+  .project-hero { padding: 22px 0 12px; background: transparent; }
+  .project-hero::before { right: 0; top: 4px; font-size: 8px; }
+  .project-page { padding-top: 24px !important; padding-bottom: 40px !important; }
+  .project-hero { min-height: calc(100svh - 24px); justify-content: flex-start; }
+  .project-hero-header { margin-bottom: 6px; }
+  .project-hero-header h1 { font-size: 2.5rem; line-height: 1; margin-bottom: 12px; }
+  .project-hero-header p { font-size: 1rem; line-height: 1.45; margin-bottom: 0; }
+  .project-hero .project-diagram { margin: 20px 0 0; }
+  .project-details { padding-top: 36px; }
+  .project-details .meta-table { margin-bottom: 36px; }
   .project-diagram { margin: 32px 0 40px; padding: 16px 14px 12px; }
   .project-diagram-topline { align-items: flex-start; flex-direction: column; gap: 4px; font-size: 8px; }
   .project-diagram-topline span:last-child { text-align: left; }
