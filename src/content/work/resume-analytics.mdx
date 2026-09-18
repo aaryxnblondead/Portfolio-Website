@@ -11,11 +11,11 @@ metric:
   label: "Resumes parsed"
 ---
 
-The problem: Campus recruiters at a tier-2 engineering college in Mumbai receive 1,000+ resumes in a single placement cycle, all in PDF format with inconsistent templates. Hiring teams spend hours extracting skills, experience, and contact details manually.
+**The problem:** Campus recruiters at a tier-2 engineering college in Mumbai receive 1,000+ resumes in a single placement cycle, all in PDF format with inconsistent templates. Hiring teams spend hours extracting skills, experience, and contact details manually.
 
-The constraint: The NER model had to handle Indian naming conventions, universities with varied spellings, and non-standard date formats, all without a GPU.
+**The constraint:** The NER model had to handle Indian naming conventions, universities with varied spellings, and non-standard date formats, all without a GPU.
 
-What I built: QualifyAI separates batch resume ingestion from real-time candidate search. A FastAPI backend parses PDF and DOCX files, applies NER and semantic embeddings, enriches skills with Gemini when configured, and stores structured records in PostgreSQL. ChromaDB powers similarity search while a React frontend exposes candidate data and visual analytics.
+**What I built:** QualifyAI separates batch resume ingestion from real-time candidate search. A FastAPI backend parses PDF and DOCX files, applies NER and semantic embeddings, enriches skills with Gemini when configured, and stores structured records in PostgreSQL. ChromaDB powers similarity search while a React frontend exposes candidate data and visual analytics.
 
 The design decision was to keep expensive work asynchronous: Celery handles ingestion, the query layer stays responsive, and Redis is optional infrastructure rather than a hard dependency for basic use. Production runs on AWS with ECS Fargate containers behind an Application Load Balancer, RDS PostgreSQL for relational data, and Elastic File System (EFS) for uploaded resumes and vector storage.
 

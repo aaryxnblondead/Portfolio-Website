@@ -11,11 +11,11 @@ metric:
   label: "GAT ROC-AUC"
 ---
 
-The problem: Financial risk teams need to detect when the NIFTY-50 shifts from a calm regime into a crisis regime, while also seeing which companies move together during the transition.
+**The problem:** Financial risk teams need to detect when the NIFTY-50 shifts from a calm regime into a crisis regime, while also seeing which companies move together during the transition.
 
-The constraint: The model has to run on a 16GB GPU during backtesting windows of under two seconds per step, while still capturing cross-sectional dependencies across all fifty stocks.
+**The constraint:** The model has to run on a 16GB GPU during backtesting windows of under two seconds per step, while still capturing cross-sectional dependencies across all fifty stocks.
 
-What I built: Vortex-AI turns NIFTY-50 price history into log-return windows, crisis labels, and empirical adjacency matrices. A spatio-temporal baseline and a Graph Attention Network treat each company as a node, then predict both the market regime and the changing relationship map.
+**What I built:** Vortex-AI turns NIFTY-50 price history into log-return windows, crisis labels, and empirical adjacency matrices. A spatio-temporal baseline and a Graph Attention Network treat each company as a node, then predict both the market regime and the changing relationship map.
 
 The design decision is to make the relationship graph a first-class output instead of using it only as an internal feature. That makes the model useful for analysis: the regime score says whether the market is stressed, while the adjacency prediction shows the contagion structure behind the score. The pipeline keeps preprocessing, graph construction, training, and held-out evaluation separate so each artifact can be inspected independently.
 

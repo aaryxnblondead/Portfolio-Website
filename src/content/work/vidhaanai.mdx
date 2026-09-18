@@ -11,11 +11,11 @@ metric:
   label: "User roles"
 ---
 
-The problem: Defense attorneys in Mumbai handle bail applications immediately following the Bharatiya Nyaya Sanhita transition, but the new code's section-by-section mapping is scattered across three PDFs and a poorly OCR'd government portal. Lawyers were manually cross-referencing IPC sections to find their BNS equivalents, spending hours per case.
+**The problem:** Defense attorneys in Mumbai handle bail applications immediately following the Bharatiya Nyaya Sanhita transition, but the new code's section-by-section mapping is scattered across three PDFs and a poorly OCR'd government portal. Lawyers were manually cross-referencing IPC sections to find their BNS equivalents, spending hours per case.
 
-The constraint: The model had to work in Hindi, English, and regional languages like Marathi and Gujarati, all from a single corpus. Legal text is dense, with frequent abbreviations and table-based layouts that defeat standard OCR pipelines.
+**The constraint:** The model had to work in Hindi, English, and regional languages like Marathi and Gujarati, all from a single corpus. Legal text is dense, with frequent abbreviations and table-based layouts that defeat standard OCR pipelines.
 
-What I built: BailReckoner is a Django 5 application for lawyers, judges, and viewers. Lawyers create and submit applications with FIR and supporting documents, judges review and decide with bail amounts, and viewers search by case number to track status. The system uses role-based access control and requires a case number before exposing application information.
+**What I built:** BailReckoner is a Django 5 application for lawyers, judges, and viewers. Lawyers create and submit applications with FIR and supporting documents, judges review and decide with bail amounts, and viewers search by case number to track status. The system uses role-based access control and requires a case number before exposing application information.
 
 The design decision was to model the bail process as a permissioned workflow rather than a public search surface: document handling, review, decisions, and history remain separate capabilities. Django's admin and PostgreSQL-ready data model support the operational side, while Bootstrap keeps the interface legible for a mixed audience of lawyers, judges, and public viewers.
 
