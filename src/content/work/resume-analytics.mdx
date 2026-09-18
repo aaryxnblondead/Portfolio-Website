@@ -1,12 +1,11 @@
 ---
-title: AI-Powered Resume Analytics Platform
+title: QualifyAI
 slug: resume-analytics
-logLine: "Parses 1,000+ unstructured resumes into structured data with NER and serves a RAG chatbot for hiring team queries."
+logLine: "NLP platform for resume parsing, candidate matching, skill enrichment, and recruiter search."
 runtime: "Sep 2024 - Dec 2024"
-format: "Python / FastAPI / LLM REST / PostgreSQL"
-runOn: "AWS EC2"
+format: "FastAPI / React / spaCy / ChromaDB"
+runOn: "AWS ECS / RDS / EFS"
 status: "Shipped"
-credit: "Solo"
 metric:
   value: "1,000+"
   label: "Resumes parsed"
@@ -16,11 +15,34 @@ The problem: Campus recruiters at a tier-2 engineering college in Mumbai receive
 
 The constraint: The NER model had to handle Indian naming conventions, universities with varied spellings, and non-standard date formats, all without a GPU.
 
-What I built: The platform ingests PDFs through PyMuPDF, sends them to an LLM REST endpoint configured for structured extraction, and writes the results into a PostgreSQL database with JSONB columns for skills and experience. A LangChain-powered RAG chatbot lets recruiters ask natural-language questions like "Show me candidates who know Python and React and graduated after 2022."
+What I built: QualifyAI separates batch resume ingestion from real-time candidate search. A FastAPI backend parses PDF and DOCX files, applies NER and semantic embeddings, enriches skills with Gemini when configured, and stores structured records in PostgreSQL. ChromaDB powers similarity search while a React frontend exposes candidate data and visual analytics.
+
+The design decision was to keep expensive work asynchronous: Celery handles ingestion, the query layer stays responsive, and Redis is optional infrastructure rather than a hard dependency for basic use. Production runs on AWS with ECS Fargate containers behind an Application Load Balancer, RDS PostgreSQL for relational data, and Elastic File System (EFS) for uploaded resumes and vector storage.
+
+<div class="diagram">
+  <svg viewBox="0 0 720 180" role="img" aria-label="QualifyAI pipeline from uploaded resumes through extraction and vector search to recruiter queries">
+    <path d="M145 90h100M365 90h100M585 90h100" stroke="#A83A16" fill="none"/>
+    <rect x="20" y="45" width="125" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="82" y="82" textAnchor="middle" fontSize="12" fill="#171412">RESUMES</text><text x="82" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">PDF / DOCX</text>
+    <rect x="245" y="45" width="120" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="305" y="82" textAnchor="middle" fontSize="12" fill="#171412">EXTRACT</text><text x="305" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">NER + Gemini</text>
+    <rect x="465" y="45" width="120" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="525" y="82" textAnchor="middle" fontSize="12" fill="#171412">INDEX</text><text x="525" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">Postgres + Chroma</text>
+    <text x="680" y="95" textAnchor="middle" fontSize="11" fill="#171412">QUERY</text>
+  </svg>
+</div>
 
 The architecture separates the ingestion pipeline (batch processing) from the query layer (real-time), and I implemented a caching layer for repeated entity extractions to keep the OpenAI cost under $15 per 100 resumes.
 
-Numbers:
+The architecture separates the ingestion pipeline (batch processing) from the query layer (real-time), and I implemented a caching layer for repeated entity extractions to keep the OpenAI cost under $15 per 100 resumes. Production secrets are injected via AWS Systems Manager Parameter Store — no secrets are hardcoded in container images.
+
+**Key technologies:** FastAPI (backend), React + Chart.js (frontend), spaCy for NER, Sentence Transformers for embeddings, ChromaDB for vector search, Celery for async ingestion, Alembic for migrations.
+
+**Production engineering challenges:**
+
+- **IAM AccessDenied** on ECS task startup — fixed by adding CloudWatch Logs write and SSM `GetParameter` permissions to the task execution role, plus ECR image pull actions.
+- **Host-not-found** between frontend and backend containers — resolved with AWS Service Connect for stable internal DNS.
+- **EFS mount `ResourceInitializationError`** — corrected by enabling VPC DNS hostnames and creating EFS mount targets in every subnet used by Fargate tasks.
+- **504 Gateway Timeout** from ALB — traced to security group gaps blocking the ALB-to-task network path; fixed with least-privilege ingress rules.
+
+**Numbers:**
 
 | Metric | Value | Baseline |
 | --- | --- | --- |

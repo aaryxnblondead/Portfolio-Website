@@ -1,24 +1,63 @@
 ---
-title: '[CAPSTONE: NIFTY-50 Generative Model]'
+title: Vortex-AI
 slug: capstone
-logLine: "Conditional diffusion model for NIFTY-50 financial time series, targeting sub-1.2s forecasting latency on edge GPUs."
+logLine: "Graph-based NIFTY-50 risk modelling for crisis-regime detection and dynamic relationship maps."
 runtime: "Aug 2025 - Present"
-format: "PyTorch / ONNX / CUDA / QuantConnect"
-runOn: "On-device RTX 4090, cloud training"
+format: "PyTorch / GAT / LSTM / CUDA"
+runOn: "CUDA training, CPU evaluation"
 status: "In progress"
-credit: "Solo"
 metric:
   value: "0.83"
-  label: "ROC-AUC (crisis regime detection)"
+  label: "GAT ROC-AUC"
 ---
 
-The problem: Quantitative trading teams need scenario-based forecasts of NIFTY-50 constituents under specific macroeconomic conditions, not point predictions, but conditional distributions that capture tail risk.
+The problem: Financial risk teams need to detect when the NIFTY-50 shifts from a calm regime into a crisis regime, while also seeing which companies move together during the transition.
 
 The constraint: The model has to run on a 16GB GPU during backtesting windows of under two seconds per step, while still capturing cross-sectional dependencies across all fifty stocks.
 
-What I built: A conditional diffusion model that takes macro features (inflation, PMI, crude prices) as the conditioning signal and generates plausible NIFTY-50 paths using a structured attention mechanism over cross-sectional correlations.
+What I built: Vortex-AI turns NIFTY-50 price history into log-return windows, crisis labels, and empirical adjacency matrices. A spatio-temporal baseline and a Graph Attention Network treat each company as a node, then predict both the market regime and the changing relationship map.
 
-The architecture uses a U-Net backbone with cross-attention on the macro conditioning vector, trained on five years of daily NIFTY-50 data augmented with synthetic volatility surfaces to handle tail-event coverage.
+The design decision is to make the relationship graph a first-class output instead of using it only as an internal feature. That makes the model useful for analysis: the regime score says whether the market is stressed, while the adjacency prediction shows the contagion structure behind the score. The pipeline keeps preprocessing, graph construction, training, and held-out evaluation separate so each artifact can be inspected independently.
+
+The pipeline preprocesses NIFTY-50 prices into log-return windows, labels each trading day as calm or crisis, and for every 60-day chunk constructs an empirical adjacency matrix — a "who-moves-with-whom" map written as a table of Pearson correlations. Those matrices and regime labels are what the models learn from.
+
+<div class="diagram">
+  <svg viewBox="0 0 720 140" role="img" aria-label="Vortex-AI data pipeline from raw prices through preprocessing, windowing, graph construction, and evaluation">
+    <path d="M55 70h40M95 70h40M135 70h40M175 70h40M215 70h40M255 70h40M295 70h40M335 70h40M375 70h40M415 70h40" stroke="#A83A16" fill="none"/>
+    <rect x="25" y="45" width="50" height="50" fill="#E9E4D9" stroke="#D4CCBD"/><text x="50" y="72" textAnchor="middle" fontSize="10" fill="#171412">RAW</text><text x="50" y="84" fontSize="8" textAnchor="middle" fill="#5A534B">NIFTY-50</text><text x="50" y="96" fontSize="8" textAnchor="middle" fill="#5A534B">prices</text>
+    <rect x="95" y="45" width="50" height="50" fill="#E9E4D9" stroke="#D4CCBD"/><text x="120" y="72" textAnchor="middle" fontSize="10" fill="#171412">PREPROCESS</text><text x="120" y="84" fontSize="8" textAnchor="middle" fill="#5A534B">returns</text><text x="120" y="96" fontSize="8" textAnchor="middle" fill="#5A534B">labels</text>
+    <rect x="165" y="45" width="50" height="50" fill="#E9E4D9" stroke="#D4CCBD"/><text x="190" y="72" textAnchor="middle" fontSize="10" fill="#171412">WINDOWS</text><text x="190" y="84" fontSize="8" textAnchor="middle" fill="#5A534B">60-day</text><text x="190" y="96" fontSize="8" textAnchor="middle" fill="#5A534B">chunks</text>
+    <rect x="235" y="45" width="50" height="50" fill="#E9E4D9" stroke="#D4CCBD"/><text x="260" y="72" textAnchor="middle" fontSize="10" fill="#171412">GRAPHS</text><text x="260" y="84" fontSize="8" textAnchor="middle" fill="#5A534B">adjacency</text><text x="260" y="96" fontSize="8" textAnchor="middle" fill="#5A534B">matrices</text>
+    <rect x="305" y="45" width="50" height="50" fill="#E9E4D9" stroke="#D4CCBD"/><text x="330" y="72" textAnchor="middle" fontSize="10" fill="#171412">TRAIN</text><text x="330" y="84" fontSize="8" textAnchor="middle" fill="#5A534B">GAT / LSTM</text><text x="330" y="96" fontSize="8" textAnchor="middle" fill="#5A534B">CUDA</text>
+    <rect x="375" y="45" width="50" height="50" fill="#E9E4D9" stroke="#D4CCBD"/><text x="400" y="72" textAnchor="middle" fontSize="10" fill="#171412">EVALUATE</text><text x="400" y="84" fontSize="8" textAnchor="middle" fill="#5A534B">held-out</text><text x="400" y="96" fontSize="8" textAnchor="middle" fill="#5A534B">test split</text>
+  </svg>
+</div>
+
+The baseline encodes each asset's return history with an LSTM, reading one day at a time. The GAT instead puts all 50 companies on a network: each node's features feed through two attention layers, then a bilinear decoder scores every pair-wise edge while global mean pooling produces the regime logit.
+
+<div class="diagram">
+  <svg viewBox="0 0 720 160" role="img" aria-label="GAT model architecture: windowed returns through multi-head attention, ReLU dropout, single attention layer, bilinear decoder, and global pooling">
+    <path d="M60 80h60M120 80h60M180 80h60M240 80h60M300 80h60M360 80h60M420 80h60M480 80h50M530 80h30" stroke="#A83A16" fill="none"/>
+    <rect x="30" y="45" width="50" height="70" fill="#F2EEE6" stroke="#D4CCBD"/><text x="55" y="72" textAnchor="middle" fontSize="10" fill="#171412">Returns</text><text x="55" y="86" fontSize="8" textAnchor="middle" fill="#5A534B">60 x 50</text>
+    <rect x="100" y="45" width="50" height="70" fill="#E9E4D9" stroke="#D4CCBD"/><text x="125" y="72" textAnchor="middle" fontSize="10" fill="#171412">Nodes</text><text x="125" y="86" fontSize="8" textAnchor="middle" fill="#5A534B">asset</text><text x="125" y="100" fontSize="8" textAnchor="middle" fill="#5A534B">features</text>
+    <rect x="170" y="45" width="50" height="70" fill="#E9E4D9" stroke="#D4CCBD"/><text x="195" y="72" textAnchor="middle" fontSize="10" fill="#171412">GATConv</text><text x="195" y="86" fontSize="8" textAnchor="middle" fill="#5A534B">multi-head</text><text x="195" y="100" fontSize="8" textAnchor="middle" fill="#5A534B">attention</text>
+    <rect x="240" y="45" width="50" height="70" fill="#E9E4D9" stroke="#D4CCBD"/><text x="265" y="72" textAnchor="middle" fontSize="10" fill="#171412">ReLU</text><text x="265" y="86" fontSize="8" textAnchor="middle" fill="#5A534B">+ dropout</text>
+    <rect x="310" y="45" width="50" height="70" fill="#E9E4D9" stroke="#D4CCBD"/><text x="335" y="72" textAnchor="middle" fontSize="10" fill="#171412">GATConv</text><text x="335" y="86" fontSize="8" textAnchor="middle" fill="#5A534B">output</text><text x="335" y="100" fontSize="8" textAnchor="middle" fill="#5A534B">attention</text>
+    <rect x="380" y="25" width="50" height="50" fill="#F2EEE6" stroke="#D4CCBD"/><text x="405" y="50" textAnchor="middle" fontSize="10" fill="#171412">Bilinear</text><text x="405" y="64" fontSize="8" textAnchor="middle" fill="#5A534B">decoder</text><text x="405" y="78" fontSize="8" textAnchor="middle" fill="#5A534B">adjacency</text>
+    <rect x="380" y="95" width="50" height="50" fill="#F2EEE6" stroke="#D4CCBD"/><text x="405" y="120" textAnchor="middle" fontSize="10" fill="#171412">Global</text><text x="405" y="134" fontSize="8" textAnchor="middle" fill="#5A534B">mean pool</text><text x="405" y="148" fontSize="8" textAnchor="middle" fill="#5A534B">regime</text>
+  </svg>
+</div>
+
+Numbers:
+
+| Metric | Value | Baseline |
+| --- | --- | --- |
+| Best validation loss | 0.6121 | 0.8463 (baseline) |
+| Adjacency MSE | 0.0829 | 0.0694 (baseline) |
+| Regime ROC-AUC | 0.8326 | 0.5621 (baseline) |
+| Regime F1 | 0.8465 | 0.8465 (baseline) |
+
+In plain terms: the graph-attention model was much better at spotting crises (ROC-AUC up from barely above a coin flip to 0.83) while still drawing a relationship map almost as accurately as the baseline.
 
 Still working on gettin' it done!
 

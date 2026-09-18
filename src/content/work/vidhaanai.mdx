@@ -3,26 +3,47 @@ title: VidhaanAI / Bail Reckoner
 slug: vidhaanai
 logLine: "Multilingual RAG legal assistant that maps the IPC-to-BNS transition for bail applications, cutting cross-reference time from hours to minutes."
 runtime: "Jan 2025 - Apr 2025"
-format: "LangChain / ChromaDB / Gemini / OCR"
-runOn: "Google Cloud Run"
+format: "Django / Bootstrap / SQLite"
+runOn: "Python development server"
 status: "Shipped"
-credit: "Co-founders: 2"
 metric:
-  value: "63.1pp"
-  label: "Cross-reference accuracy gain"
+  value: "3"
+  label: "User roles"
 ---
 
 The problem: Defense attorneys in Mumbai handle bail applications immediately following the Bharatiya Nyaya Sanhita transition, but the new code's section-by-section mapping is scattered across three PDFs and a poorly OCR'd government portal. Lawyers were manually cross-referencing IPC sections to find their BNS equivalents, spending hours per case.
 
 The constraint: The model had to work in Hindi, English, and regional languages like Marathi and Gujarati, all from a single corpus. Legal text is dense, with frequent abbreviations and table-based layouts that defeat standard OCR pipelines.
 
-What I built: VidhaanAI ingests the government PDFs through Tesseract OCR with custom preprocessing, using morphological boundary detection to split compound words, followed by a LangChain pipeline that indexes sections into a ChromaDB vector store using a legal-embedding model fine-tuned on Indian case law. A Gemini-powered query layer translates natural-language bail questions into precise section lookups, then returns the IPC-to-BNS mapping with inline source citations.
+What I built: BailReckoner is a Django 5 application for lawyers, judges, and viewers. Lawyers create and submit applications with FIR and supporting documents, judges review and decide with bail amounts, and viewers search by case number to track status. The system uses role-based access control and requires a case number before exposing application information.
+
+The design decision was to model the bail process as a permissioned workflow rather than a public search surface: document handling, review, decisions, and history remain separate capabilities. Django's admin and PostgreSQL-ready data model support the operational side, while Bootstrap keeps the interface legible for a mixed audience of lawyers, judges, and public viewers.
+
+<div class="diagram">
+  <svg viewBox="0 0 720 180" role="img" aria-label="BailReckoner workflow from application submission through judge review to viewer status tracking">
+    <path d="M145 90h100M365 90h100M585 90h80" stroke="#A83A16" fill="none"/>
+    <rect x="20" y="45" width="125" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="82" y="82" textAnchor="middle" fontSize="12" fill="#171412">LAWYER</text><text x="82" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">create + submit</text>
+    <rect x="245" y="45" width="120" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="305" y="82" textAnchor="middle" fontSize="12" fill="#171412">APPLICATION</text><text x="305" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">documents + status</text>
+    <rect x="465" y="45" width="120" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="525" y="82" textAnchor="middle" fontSize="12" fill="#171412">JUDGE</text><text x="525" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">review + decide</text>
+    <rect x="665" y="45" width="45" height="90" fill="#E9E4D9" stroke="#D4CCBD"/><text x="687" y="82" textAnchor="middle" fontSize="12" fill="#171412">VIEW</text><text x="687" y="104" textAnchor="middle" fontSize="10" fill="#5A534B">case no.</text>
+  </svg>
+</div>
 
 The architecture uses a hybrid retrieval pattern: dense vector search for semantic similarity on clause text, combined with keyword filtering on section numbers and a re-ranking step that prioritizes the most recently published state amendments.
 
 One tradeoff worth noting: I chose Gemini's flash model over the pro variant to keep latency under two seconds per query, which slightly increased false positives in edge cases involving overlapping jurisdiction clauses.
 
-Numbers:
+The system enforces role-based access control across three user types — lawyers create and submit applications with FIR and supporting documents, judges review and decide with bail amounts, and viewers search by case number to track status. A case number is required before any application information is exposed to viewers, and document handling remains a permissioned workflow rather than a public search surface.
+
+**Security model:**
+- Role-based access control (lawyer, judge, viewer)
+- Case number required for viewer access
+- Secure document handling with Django's file storage
+- PostgreSQL-ready data model for production deployment
+
+**Tech stack:** Django 5.0.4, Bootstrap 4, SQLite (development) / PostgreSQL (production-ready), HTML/CSS/JavaScript.
+
+**Numbers:**
 
 | Metric | Value | Baseline |
 | --- | --- | --- |

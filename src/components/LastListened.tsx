@@ -5,23 +5,30 @@ import { fetchSpotifyFeed, joinArtists, type SpotifyFeed, type SpotifyTrack } fr
 
 export function LastListened() {
   const [track, setTrack] = useState<SpotifyTrack | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     fetchSpotifyFeed(controller.signal)
       .then((feed: SpotifyFeed) => setTrack(feed.nowPlaying ?? feed.recent[0] ?? null))
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => setLoaded(true));
     return () => controller.abort();
   }, []);
 
+  if (!loaded) return <div className="last-listened last-listened-loading" aria-hidden="true" />;
   if (!track) return null;
 
+  const artwork = track.art ?? track.artSmall;
+
   return (
-    <div className="last-listened">
+    <div className="last-listened" aria-label={`Last listened to ${track.name} by ${joinArtists(track.artists)}`}>
       <div className="last-listened-art-wrap">
-        {track.art && (
+        {artwork ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="last-listened-art" src={track.art} alt={`${track.name} cover art`} width={112} height={112} loading="lazy" decoding="async" />
+          <img className="last-listened-art" src={artwork} alt={`${track.name} cover art`} width={96} height={96} loading="lazy" decoding="async" />
+        ) : (
+          <span className="last-listened-art last-listened-art-empty" aria-hidden="true" />
         )}
         <span className="last-listened-vinyl" aria-hidden="true" />
       </div>

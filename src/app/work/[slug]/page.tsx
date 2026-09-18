@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug, markdownToHtml } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable } from "@/components/Grid";
+import { ProjectDiagram } from "@/components/ProjectDiagram";
 
 export async function generateStaticParams() {
   const projects = await getAllProjects();
@@ -57,16 +58,18 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   { label: "FORMAT", value: metadata.format },
                   { label: "RUN ON", value: metadata.runOn },
                   { label: "STATUS", value: metadata.status },
-                  { label: "CREDIT", value: metadata.credit },
                 ]}
               />
             </div>
           </header>
 
+          <ProjectDiagram slug={metadata.slug} />
+
           <div
             className="prose text-ink max-w-prose"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
+
 
           <SectionRule className="my-12" />
 
