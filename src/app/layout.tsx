@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@/styles/components.css";
 import { fraunces, archivo, spaceMono } from "@/lib/fonts";
 
 export const metadata = {

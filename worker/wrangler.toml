@@ -1,0 +1,19 @@
+name = "spotify-feed"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+[vars]
+SPOTIFY_CLIENT_ID = "cbeb6400a6d04536aca5f8708efa1bbe"
+ALLOWED_ORIGINS = "https://aaryansingh.com,https://aaryxnblondead.github.io,http://127.0.0.1:3000, http://localhost:3000, localhost:3000/"
+
+# Secrets — set these with wrangler, never in this file:
+#   npx wrangler secret put SPOTIFY_CLIENT_SECRET
+#   npx wrangler secret put SPOTIFY_REFRESH_TOKEN
+
+# Optional. Bind a KV namespace if you want rotated refresh tokens persisted
+# (required if you ever switch this worker to PKCE, where they rotate on
+# every refresh). Create it with:
+#   npx wrangler kv namespace create TOKENS
+# [[kv_namespaces]]
+# binding = "TOKENS"
+# id = "paste-the-id-wrangler-prints"

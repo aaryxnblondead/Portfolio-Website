@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAllProjects } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable, SectionNumber, Metric } from "@/components/Grid";
 import { WipeIn } from "@/components/Motion";
+import { Soundtrack } from "@/components/Soundtrack";
 
 export const metadata = {
   title: "Aaryan Singh | Portfolio",
@@ -224,8 +225,9 @@ export default async function HomePage() {
         </section>
 
       {/* ===== Colophon Strip ===== */}
+      <SectionRule className="mt-12" />
       <footer>
-        <section className="mt-12 border-t border-rule pt-8">
+        <section className="mt-16 border-t border-rule pt-8">
           <Grid>
             <Rail>
               <SectionNumber number="06" />
@@ -236,6 +238,8 @@ export default async function HomePage() {
                 <span className="text-ink-muted md-ml-2">·</span>
                 <Link href="/index-page" className="text-accent no-underline">Index</Link>
               </div>
+
+              <Soundtrack />
             </ContentColumn>
             {/* Deliberate grid break: running time extends into column 11 */}
             <div className="hidden md-block" style={{ gridColumn: "11" }}>

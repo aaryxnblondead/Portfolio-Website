@@ -562,6 +562,604 @@ nav a {
 .transition-colors { transition: color 150ms ease-in-out; }
 .transition-opacity { transition: opacity 200ms ease-out; }
 
+/*!***********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/styles/components.css ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************/
+/* =========================================================================
+   components.css — right rail, Soundtrack panel, editorial furniture.
+   Import AFTER globals.css so these rules win where they overlap.
+   Tokens (--paper, --ink, --rule, --accent …) come from globals.css.
+   ========================================================================= */
+
+/* ---------------------------------------------------------- 3-column grid */
+/* Content narrows from 8 to 7 columns; the Soundtrack takes 10–12.
+   Higher specificity than the base .content-col rule, so order is not relied on. */
+
+.layout-3col .content-col {
+  grid-column: 3 / span 7;
+}
+
+.rail-right {
+  grid-column: 10 / span 3;
+}
+
+.rail-right-inner {
+  position: sticky;
+  top: 32px;
+}
+
+@media (max-width: 1023px) {
+  .layout-3col .content-col,
+  .rail-right {
+    grid-column: 1 / -1;
+  }
+  .rail-right {
+    margin-top: 48px;
+  }
+  .rail-right-inner {
+    position: static;
+  }
+}
+
+/* --------------------------------------------------------------- utility */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===================================================== SOUNDTRACK PANEL === */
+
+.sdtk {
+  border-top: 2px solid var(--ink);
+  padding-top: 8px;
+}
+
+.sdtk p {
+  max-width: none;
+  margin: 0;
+}
+
+.sdtk-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 12px;
+}
+
+.sdtk-head h2 {
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0;
+  font-variation-settings: normal;
+}
+
+.sdtk-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 150ms ease-in-out;
+}
+
+.sdtk-mark:hover,
+.sdtk-mark:focus-visible {
+  color: #1db954; /* Spotify green, reserved strictly for the attribution mark */
+}
+
+/* ----- now playing ----- */
+
+.sdtk-now {
+  padding-bottom: 16px;
+}
+
+.sdtk-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  margin-bottom: 12px;
+  background-color: var(--paper-sunk);
+}
+
+.sdtk-state {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px !important;
+}
+
+.sdtk-title {
+  font-family: var(--font-fraunces);
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-variation-settings: "WONK" 1, "opsz" 24, "SOFT" 0;
+  margin: 0 0 2px;
+}
+
+.sdtk-artist {
+  margin-bottom: 2px !important;
+}
+
+.sdtk-album {
+  margin-bottom: 12px !important;
+}
+
+.sdtk-progress {
+  position: relative;
+  height: 2px;
+  background-color: var(--rule);
+  margin-bottom: 6px;
+}
+
+.sdtk-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background-color: var(--accent);
+  transition: width 1s linear;
+}
+
+.sdtk-times {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ----- equalizer ----- */
+
+.sdtk-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 9px;
+}
+
+.sdtk-eq span {
+  display: block;
+  width: 2px;
+  height: 100%;
+  background-color: var(--accent);
+  transform-origin: bottom;
+  animation: eq 900ms ease-in-out infinite alternate;
+}
+
+.sdtk-eq span:nth-child(2) {
+  animation-duration: 640ms;
+}
+
+.sdtk-eq span:nth-child(3) {
+  animation-duration: 1100ms;
+}
+
+@keyframes eq {
+  from {
+    transform: scaleY(0.25);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ----- earlier list ----- */
+
+.sdtk-divider {
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+  margin-bottom: 8px !important;
+}
+
+.sdtk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sdtk-row {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sdtk-row:last-child {
+  border-bottom: 0;
+}
+
+.sdtk-index {
+  padding-top: 2px;
+}
+
+.sdtk-row-body {
+  display: block;
+  min-width: 0;
+}
+
+.sdtk-row-title {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.sdtk-row-meta {
+  display: block;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+
+.sdtk-note {
+  padding: 8px 0 16px;
+}
+
+/* ----- skeleton ----- */
+
+.sdtk-skeleton-art {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: var(--paper-sunk);
+  border: 1px solid var(--rule);
+  margin-bottom: 12px;
+}
+
+.sdtk-skeleton-line {
+  height: 9px;
+  background-color: var(--paper-sunk);
+  margin-bottom: 8px;
+}
+
+/* ================================================== EDITORIAL FURNITURE === */
+
+/* ----- section head ----- */
+
+.sec-head {
+  margin-bottom: 24px;
+}
+
+.sec-head-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.sec-head-number {
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  font-weight: 700;
+  font-variation-settings: normal;
+}
+
+.sec-head-kicker {
+  margin-bottom: 8px;
+  max-width: 55ch;
+}
+
+/* ----- drop cap ----- */
+
+.dropcap-p {
+  margin-bottom: 1.65em;
+}
+
+.dropcap {
+  float: left;
+  font-family: var(--font-fraunces);
+  font-weight: 300;
+  font-variation-settings: "WONK" 1, "opsz" 144, "SOFT" 0;
+  font-size: 3.6em;
+  line-height: 0.82;
+  padding: 0.06em 0.1em 0 0;
+  color: var(--accent);
+}
+
+/* ----- pull quote ----- */
+
+.pullquote {
+  margin: 32px 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--accent);
+}
+
+.pullquote blockquote {
+  font-family: var(--font-fraunces);
+  font-weight: 300;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-variation-settings: "WONK" 1, "opsz" 72, "SOFT" 0;
+  color: var(--ink);
+  max-width: 24ch;
+}
+
+.pullquote figcaption {
+  margin-top: 8px;
+}
+
+@media (min-width: 1024px) {
+  .pullquote-right {
+    float: right;
+    width: 40%;
+    margin: 8px 0 24px 32px;
+  }
+}
+
+/* ----- marginalia ----- */
+
+.marginalia {
+  font-size: 13px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--ink-muted);
+  padding-left: 10px;
+  border-left: 1px solid var(--rule);
+  margin-bottom: 16px;
+  max-width: 28ch;
+}
+
+.marginalia::first-line {
+  font-style: normal;
+}
+
+/* ----- sprocket rule ----- */
+
+.sprocket {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  height: 14px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 3px 0;
+  margin: 48px 0;
+  overflow: hidden;
+}
+
+.sprocket span {
+  flex: 1 1 auto;
+  height: 6px;
+  min-width: 6px;
+  max-width: 14px;
+  background-color: var(--rule);
+}
+
+/* ----- ticker ----- */
+
+.ticker {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+  padding: 8px 0;
+  background-color: var(--paper-sunk);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 48s linear infinite;
+}
+
+.ticker-run {
+  padding-right: 48px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ----- plate ----- */
+
+.plate {
+  margin: 32px 0;
+}
+
+.plate-frame {
+  border: 1px solid var(--rule);
+  background-color: var(--paper-sunk);
+  padding: 16px;
+}
+
+.plate-frame img,
+.plate-frame svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.plate-caption {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding-top: 8px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+}
+
+/* ----- tags ----- */
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.tag {
+  color: var(--accent-cold);
+  border: 1px solid var(--rule);
+  padding: 3px 7px;
+}
+
+.tag::before {
+  content: "[";
+  margin-right: 3px;
+  color: var(--ink-muted);
+}
+
+.tag::after {
+  content: "]";
+  margin-left: 3px;
+  color: var(--ink-muted);
+}
+
+/* ----- callout ----- */
+
+.callout {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-left-width: 2px;
+  padding: 16px;
+  margin: 24px 0;
+  background-color: var(--paper-sunk);
+}
+
+.callout-cold {
+  border-left-color: var(--accent-cold);
+}
+
+.callout-accent {
+  border-left-color: var(--accent);
+}
+
+.callout-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-muted);
+}
+
+.callout-cold .callout-label {
+  color: var(--accent-cold);
+}
+
+.callout-accent .callout-label {
+  color: var(--accent);
+}
+
+.callout-body p {
+  margin-bottom: 0.75em;
+}
+
+.callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ----- key / value ----- */
+
+.kv {
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.kv-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 1fr) 2fr;
+  gap: 16px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.kv-row dd {
+  margin: 0;
+}
+
+/* ----- stat grid ----- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1px;
+  background-color: var(--rule);
+  border: 1px solid var(--rule);
+  margin: 24px 0;
+}
+
+.stat {
+  background-color: var(--paper);
+  padding: 16px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.stat-note {
+  margin-top: 6px;
+}
+
+/* ----- timeline ----- */
+
+.timeline {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0 0 0 20px;
+  border-left: 1px solid var(--rule);
+}
+
+.timeline-entry {
+  position: relative;
+  padding: 0 0 24px;
+}
+
+.timeline-entry::before {
+  content: "";
+  position: absolute;
+  left: -24px;
+  top: 6px;
+  width: 8px;
+  height: 1px;
+  background-color: var(--accent);
+}
+
+.timeline-period {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.timeline-title,
+.timeline-detail {
+  display: block;
+}
+
+/* --------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .sdtk-eq span,
+  .ticker-track {
+    animation: none;
+  }
+  .sdtk-eq span {
+    transform: scaleY(0.6);
+  }
+  .sdtk-progress-fill {
+    transition: none;
+  }
+}
+
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[2].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[13].oneOf[2].use[2]!./node_modules/next/font/google/target.css?{"path":"src\\lib\\fonts.ts","import":"Fraunces","arguments":[{"subsets":["latin"],"axes":["opsz","SOFT","WONK"],"variable":"--font-fraunces","display":"optional","fallback":["Georgia","serif"]}],"variableName":"fraunces"} ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
