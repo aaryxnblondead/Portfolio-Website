@@ -30,6 +30,11 @@ export function ContactForm() {
       return;
     }
     setStatus("sending");
+    // Mobile networks hang and mobile blockers kill the AJAX endpoint, so
+    // the fetch gets a timeout — and any AJAX failure falls back to a
+    // native POST, which always delivers instead of stranding the button.
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 15000);
     try {
       const res = await fetch(AJAX_ENDPOINT, {
         method: "POST",
@@ -42,12 +47,19 @@ export function ContactForm() {
           _template: "table",
           _honey: "",
         }),
+        signal: controller.signal,
       });
+      window.clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setStatus("sent");
       form.reset();
     } catch {
-      setStatus("error");
+      window.clearTimeout(timer);
+      try {
+        form.submit();
+      } catch {
+        setStatus("error");
+      }
     }
   }
 
@@ -71,16 +83,28 @@ export function ContactForm() {
       <div className="contact-row">
         <div className="contact-field">
           <label htmlFor="cf-name">NAME</label>
-          <input id="cf-name" name="name" type="text" autoComplete="name" required maxLength={80} />
+          <input id="cf-name" name="name" type="text" autoComplete="name" enterKeyHint="next" required maxLength={80} />
         </div>
         <div className="contact-field">
           <label htmlFor="cf-email">EMAIL</label>
-          <input id="cf-email" name="email" type="email" autoComplete="email" required maxLength={120} />
+          <input
+            id="cf-email"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="next"
+            required
+            maxLength={120}
+          />
         </div>
       </div>
       <div className="contact-field">
         <label htmlFor="cf-message">MESSAGE</label>
-        <textarea id="cf-message" name="message" required minLength={10} maxLength={4000} rows={6} />
+        <textarea id="cf-message" name="message" required minLength={10} maxLength={4000} rows={6} enterKeyHint="send" />
       </div>
       <input type="hidden" name="_subject" value="Portfolio contact" />
       <input type="hidden" name="_template" value="table" />
