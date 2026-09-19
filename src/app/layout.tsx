@@ -5,6 +5,7 @@ import "@/styles/programme.css";
 import { archivo, archivoWdth, spaceMono } from "@/lib/fonts";
 import { Soundtrack } from "@/components/Soundtrack";
 import { Analytics } from "@vercel/analytics/next";
+import { FilmGrain } from "@/components/programme/Analogue";
 
 export const metadata = {
   title: {
@@ -47,6 +48,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://aaryansingh.com/" />
       </head>
       <body className="bg-paper text-ink font-archivo" lang="en-IN">
+        <FilmGrain />
         <a
           href="#main"
           className="skip-link"

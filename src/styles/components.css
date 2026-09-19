@@ -1063,6 +1063,23 @@ body:has(.neo-site) .sdtk-progress { background-color: #d4ccbd; }
   margin-top: 32px;
 }
 
+.neo-about-perfs {
+  height: 120px;
+  margin-top: 24px;
+}
+
+@media (max-width: 700px) {
+  .neo-about-perfs {
+    display: none;
+  }
+}
+
+/* The belt breaks the column edge to edge on full-width sections. Inside
+   the narrow story column it stays put and shows fewer frames instead. */
+.neo-about-story .belt-tape {
+  margin: 0;
+}
+
 .neo-about-portrait .plate {
   margin: 0;
 }

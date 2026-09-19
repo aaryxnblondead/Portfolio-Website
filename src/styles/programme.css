@@ -353,7 +353,7 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 150ms ease 90ms;
-  color: var(--ink);
+  color: var(--pink);
 }
 
 .pLink:hover .pGhost,
@@ -807,4 +807,372 @@
   .pCutImg {
     transition: none !important;
   }
+}
+
+/* --- SLATE GRID + CLAPBOARD CARDS --------------------------------------------
+   Four project records in one 2×2 frame. Each card is a light-brown film
+   slate: chevron clapper stick above, production fields below. The board
+   is paper-sunk; ink, muted and accent all clear AA on it. */
+
+.slate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+@media (max-width: 899px) {
+  .slate-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.slate {
+  background-color: var(--paper-sunk);
+  border: 1px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.slate-stick {
+  display: flex;
+  align-items: stretch;
+  height: 30px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.slate-hinge {
+  flex: none;
+  width: 30px;
+  background-color: var(--ink);
+}
+
+.slate-chevrons {
+  flex: 1;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--ink) 0 12px,
+    var(--paper-sunk) 12px 24px
+  );
+}
+
+.slate-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.slate-body > * {
+  margin: 0;
+}
+
+.slate-rail {
+  display: flex;
+  gap: 16px;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+}
+
+.slate-rail span + span {
+  color: var(--ink-muted);
+}
+
+.slate-title {
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-size: clamp(24px, 2.8vw, 36px);
+  color: var(--ink);
+}
+
+.slate-meta {
+  margin: 0;
+}
+
+.slate-broke {
+  margin: 0;
+}
+
+.slate-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--ink);
+}
+
+.slate-metric {
+  font-family: var(--font-space-mono);
+  line-height: 1.2;
+}
+
+.slate-metric strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.slate-metric span {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.slate-link {
+  flex: none;
+  font-family: var(--font-space-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.slate-link:hover {
+  text-decoration: underline;
+}
+
+/* --- SOLO HOMEPAGE — one viewport, no scroll --------------------------------------
+   Compact hero, compact slates, slim footer. Everything shares one measure
+   (8vw sides, 20–32px vertical rhythm) so the frame aligns top to bottom. */
+
+.neo-threshold-solo {
+  min-height: auto;
+  padding: 28px 8vw;
+}
+
+.neo-display-solo {
+  font-size: clamp(2.6rem, 7vw, 5.25rem);
+}
+
+.neo-hero-plate-solo {
+  max-width: 200px;
+}
+
+.neo-meta-line {
+  margin: 16px 0 0;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+}
+
+.neo-stage-solo {
+  padding: 28px 8vw;
+}
+
+.slate-grid-solo {
+  gap: 24px;
+}
+
+.slate-grid-solo .slate-body {
+  padding: 16px;
+  gap: 12px;
+}
+
+.slate-grid-solo .slate-title {
+  font-size: clamp(20px, 2.2vw, 28px);
+}
+
+.slate-grid-solo .pBroke p {
+  font-size: 13px;
+}
+
+.neo-footer-slim {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  align-items: baseline;
+  padding: 20px 8vw;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.neo-footer-slim a {
+  color: var(--ink);
+}
+
+.neo-footer-slim .neo-footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+/* --- REVISION B TOKENS ---------------------------------------------------------
+   Pink is the misregistered plate (behind cut-outs, hover ghosts, one 2px
+   band). Brass frames the /about portrait and appears nowhere else. Neither
+   is ever body copy. */
+
+:root {
+  --pink: #f3a8be;
+  --brass: #a4813f;
+}
+
+/* --- ANALOGUE — material, not elements ------------------------------------------
+   Grain is fixed to the viewport (in the lens, not on the page) and resampled
+   on a 0.7s step; static noise reads instantly as a PNG overlay. Perforations
+   are marginalia: squared perfs, the no-radius rule outranks realism. The
+   vignette and warm transfer are lens artefacts for photographs only. */
+
+.grainLayer {
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  will-change: transform;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -2%); }
+  80% { transform: translate(3%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+
+.grainRun {
+  animation: grain-shift 0.7s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grainRun {
+    animation: none !important;
+  }
+}
+
+.perfX {
+  height: 9px;
+  width: 100%;
+  background-image: repeating-linear-gradient(to right, var(--ink) 0 9px, transparent 9px 26px);
+  background-position: 6px 0;
+}
+
+.perfY {
+  width: 9px;
+  height: 100%;
+  background-image: repeating-linear-gradient(to bottom, var(--ink) 0 9px, transparent 9px 26px);
+  background-position: 0 6px;
+}
+
+.vignette {
+  position: relative;
+}
+
+.vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 48% 44%,
+    transparent 38%,
+    color-mix(in srgb, var(--ink) 42%, transparent) 100%
+  );
+}
+
+.transferWarm {
+  filter: grayscale(1) sepia(0.38) contrast(1.18) brightness(0.94) saturate(1.5);
+}
+
+/* --- GATE WEAVE — one element per page -------------------------------------------- */
+
+@keyframes gate-weave {
+  0%, 100% { transform: translateX(0); }
+  33% { transform: translateX(0.6px); }
+  66% { transform: translateX(-0.5px); }
+}
+
+.gateWeave {
+  animation: gate-weave 3.4s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gateWeave {
+    animation: none !important;
+  }
+}
+
+/* --- ORNATE FRAME — dead straight frame, disobedient photograph -------------------- */
+
+.pOrnateOuter {
+  position: relative;
+  border: 2px solid var(--brass);
+  padding: 7px;
+}
+
+.pOrnateInner {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--brass);
+}
+
+.pOrnateImgWrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.pOrnateImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.12) rotate(-1.6deg);
+  transition: filter 700ms ease, transform 700ms ease;
+}
+
+.pOrnate:hover .pOrnateImg {
+  transform: scale(1.06) rotate(0deg);
+  filter: grayscale(0.4) sepia(0.2) contrast(1.1) saturate(1.9);
+}
+
+.pOrnateEdge {
+  position: absolute;
+  right: 6px;
+  top: 8px;
+  z-index: 1;
+  font-family: var(--font-space-mono);
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  color: var(--paper);
+  opacity: 0.7;
+}
+
+.pCorner {
+  position: absolute;
+  height: 34px;
+  width: 34px;
+  color: var(--brass);
+}
+
+.pCornerTL { left: -3px; top: -3px; }
+.pCornerTR { right: -3px; top: -3px; transform: rotate(90deg); }
+.pCornerBR { right: -3px; bottom: -3px; transform: rotate(180deg); }
+.pCornerBL { left: -3px; bottom: -3px; transform: rotate(-90deg); }
+
+.pOrnateCaption {
+  margin: 12px 0 0;
+  font-family: var(--font-space-mono);
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
 }
