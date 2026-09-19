@@ -34,7 +34,13 @@ export type FeedState =
   | { status: 'error'; message: string }
   | { status: 'ready'; feed: Feed };
 
-export function useSpotifyFeed(pollMs = 45_000): FeedState {
+/**
+ * Poll interval in ms. Pass 0 for a single fetch with no polling and no
+ * visibility refresh — for widgets like LastListened that show a moment,
+ * not a live state. Every poller is Spotify quota spent, so only the
+ * now-playing dock should poll.
+ */
+export function useSpotifyFeed(pollMs = 60_000): FeedState {
   const [state, setState] = useState<FeedState>(
     FEED_URL ? { status: 'loading' } : { status: 'unconfigured' },
   );
@@ -106,6 +112,15 @@ export function useSpotifyFeed(pollMs = 45_000): FeedState {
     }
 
     load();
+
+    // One-shot mode: fetch once, no interval, no visibility listener.
+    if (pollMs <= 0) {
+      return () => {
+        cancelled = true;
+        abort.current?.abort();
+      };
+    }
+
     const id = window.setInterval(load, pollMs);
 
     // Refresh when the tab comes back rather than polling a hidden tab.

@@ -1,7 +1,8 @@
 import "@/styles/globals.css";
 import "@/styles/components.css";
 import "@/styles/photos.css";
-import { archivo, spaceMono } from "@/lib/fonts";
+import "@/styles/programme.css";
+import { archivo, archivoWdth, spaceMono } from "@/lib/fonts";
 import { Soundtrack } from "@/components/Soundtrack";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -39,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-IN"
-      className={`${archivo.variable} ${spaceMono.variable}`}
+      className={`${archivo.variable} ${archivoWdth.variable} ${spaceMono.variable}`}
     >
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

@@ -1,0 +1,810 @@
+/* ==========================================================================
+   programme.css — plain-CSS translation of the repertory-programme system.
+   Tailwind is inert in this project (corePlugins: [] and no directives),
+   so every utility the reference components assume is written out here
+   against the site's own tokens. Colour discipline holds: paper, ink and
+   the single accent only. The misregistered plate is struck in solid ink,
+   the late ghost is set in ink on paper, and the knockout bar is the one
+   element allowed past the right margin.
+   ========================================================================== */
+
+/* --- 1. THE SHEET ----------------------------------------------------------
+   rail    = columns 1-2   (section numbers, never prose)
+   content = columns 3-10  (everything the reader reads)
+   bleed   = column 11     (empty except deliberate breaks)
+   column 12 is void. overflow-x: clip (never hidden — hidden would kill
+   the sticky lane by turning the sheet into a scroll container). */
+
+.pSheet {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  padding-inline: 24px;
+  max-width: 1200px;
+  margin-inline: auto;
+  overflow-x: clip;
+}
+
+@media (max-width: 899px) {
+  .pSheet {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: 10px;
+  }
+}
+
+.pRail {
+  grid-column: 1 / 3;
+}
+
+.pContent {
+  grid-column: 3 / 11;
+}
+
+.pBleed {
+  grid-column: 11 / 12;
+}
+
+@media (max-width: 899px) {
+  .pRail {
+    grid-column: 1 / 7;
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+  }
+
+  .pContent {
+    grid-column: 1 / 7;
+  }
+
+  .pBleed {
+    display: none;
+  }
+}
+
+/* Full viewport width, ignoring page margins. Once per page. */
+.pFull {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+/* Overlay sheet that lets the lane ride a tall run without squeezing it. */
+.pRun {
+  position: relative;
+}
+.pOverlay {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
+.pBleedFull {
+  height: 100%;
+}
+
+/* --- 2. RULES — print weights, never borders-as-UI ------------------------ */
+
+.pRuleHeavy { border-top: 2px solid var(--ink); }
+.pRuleHair { border-top: 1px solid var(--ink); }
+.pRuleLeft { border-left: 1px solid var(--ink); }
+
+/* --- 3. CUT-OUTS — images never sit in a rectangle ------------------------ */
+
+.pCutoutA { clip-path: polygon(0% 3%, 97% 0%, 100% 93%, 4% 100%, 1% 52%); }
+.pCutoutB { clip-path: polygon(2% 0%, 100% 4%, 96% 100%, 0% 95%, 3% 41%); }
+.pCutoutC { clip-path: polygon(0% 0%, 94% 2%, 100% 88%, 6% 100%); }
+
+/* The misregistered plate under a cut-out: solid ink, offset, clipped to
+   a different polygon than the image. Offset litho, one pass out. */
+.pPlate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: translate(10px, 12px);
+  background-color: var(--ink);
+}
+
+/* --- 4. TYPE TREATMENTS ---------------------------------------------------- */
+
+.pMono {
+  font-family: var(--font-space-mono);
+  font-feature-settings: "tnum" 1;
+}
+
+/* Width axis for the wall. Only the wdth-carrying Archivo instance has
+   these cuts; body text is untouched. */
+.pWdth62 { font-variation-settings: "wdth" 62; }
+.pWdth88 { font-variation-settings: "wdth" 88; }
+.pWdth100 { font-variation-settings: "wdth" 100; }
+.pWdth125 { font-variation-settings: "wdth" 125; }
+
+.pStrokeInk {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ink);
+}
+
+.pStrokePaper {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--paper);
+}
+
+.pVertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* --- MASTHEAD WALL --------------------------------------------------------- */
+
+.pWallPass {
+  display: block;
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-family: var(--font-archivo-wdth);
+  font-weight: 800;
+  line-height: 0.76;
+  letter-spacing: -0.05em;
+  font-size: clamp(52px, 12.5vw, 190px);
+}
+
+.pWallPass + .pWallPass {
+  margin-top: -0.055em;
+}
+
+.pWallSolid { color: var(--ink); }
+.pWallOrange { color: var(--accent); }
+.pWallGhost {
+  color: color-mix(in srgb, var(--ink) 8%, transparent);
+  mix-blend-mode: multiply;
+}
+.pWallKnockout {
+  color: var(--paper);
+  background-color: var(--ink);
+  width: 122%;
+  padding-left: 0.02em;
+}
+
+/* --- CATALOGUE ENTRY ------------------------------------------------------- */
+
+.pEntry {
+  position: relative;
+  border-top: 2px solid var(--ink);
+  padding-top: 20px;
+  padding-bottom: clamp(56px, 9vh, 132px);
+}
+
+.pRecord {
+  width: 68%;
+}
+
+/* Inside the About story column there is no wide sheet, so the 68% rule's
+   protection is meaningless — the record takes the full column instead. */
+.neo-about-story .pRecord {
+  width: 100%;
+}
+
+@media (max-width: 1099px) {
+  .pRecord {
+    width: 76%;
+  }
+}
+
+@media (max-width: 899px) {
+  .pRecord {
+    width: 100%;
+  }
+}
+
+.pTitle {
+  margin: 0;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  font-size: clamp(30px, 4.6vw, 66px);
+}
+
+.pMeta {
+  margin: 28px 0 0;
+  padding: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.pMetaRow {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 7px 0;
+}
+
+.pMetaRow + .pMetaRow {
+  border-top: 1px solid var(--ink);
+}
+
+.pMetaDt {
+  flex: none;
+  width: 92px;
+  font-family: var(--font-space-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pMetaDd {
+  margin: 0;
+  font-family: var(--font-space-mono);
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.pBroke {
+  margin-top: 24px;
+  max-width: 62ch;
+  border-top: 1px solid var(--ink);
+  padding-top: 12px;
+}
+
+.pBrokeLabel {
+  font-family: var(--font-space-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pBroke p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* Cut-out assembly for entries that carry a photograph. */
+.pCutWrap {
+  grid-column: 9 / 13;
+  grid-row-start: 1;
+  position: relative;
+  height: fit-content;
+  margin-top: calc(clamp(28px, 5vh, 74px) * -1);
+}
+
+@media (max-width: 899px) {
+  .pCutWrap {
+    grid-column: 1 / 7;
+    grid-row-start: auto;
+    margin-top: 32px;
+  }
+}
+
+.pCutTilt {
+  position: relative;
+  transition: transform 500ms ease;
+}
+
+.pEntry:hover .pCutTilt,
+.pEntry:focus-within .pCutTilt {
+  transform: rotate(0deg);
+}
+
+.pCutImg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  filter: grayscale(1) contrast(1.35) brightness(1.02);
+  transition: filter 500ms ease;
+}
+
+.pEntry:hover .pCutImg,
+.pEntry:focus-within .pCutImg {
+  filter: grayscale(0) contrast(1);
+}
+
+.pCutCaption {
+  margin: 12px 0 0;
+  transform: translateX(14%);
+  font-family: var(--font-space-mono);
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+/* --- PATAPHYSICAL LINK — the page briefly becomes a projection ----------- */
+
+.pLink {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  isolation: isolate;
+}
+
+.pFlood {
+  position: absolute;
+  top: -0.04em;
+  bottom: -0.04em;
+  left: -0.12em;
+  right: -0.12em;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms cubic-bezier(0.16, 0.84, 0.28, 1);
+  background-color: var(--accent);
+}
+
+.pLink:hover .pFlood,
+.pLink:focus-visible .pFlood {
+  transform: scaleX(1);
+}
+
+.pGhost {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease 90ms;
+  color: var(--ink);
+}
+
+.pLink:hover .pGhost,
+.pLink:focus-visible .pGhost {
+  opacity: 1;
+}
+
+.pCue {
+  position: absolute;
+  right: -38px;
+  top: -10px;
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 75ms ease;
+}
+
+.pLink:hover .pCue,
+.pLink:focus-visible .pCue {
+  opacity: 1;
+  animation: cue-flicker 1.9s steps(1, end) infinite;
+}
+
+.pText {
+  position: relative;
+  z-index: 1;
+  transition: color 220ms ease;
+}
+
+.pLink:hover .pText,
+.pLink:focus-visible .pText {
+  color: var(--paper);
+}
+
+/* Ink variant: for the index, which reads in a drier register. Floods
+   solid ink, ghosts in accent, type stays knocked out to paper. */
+.pLinkInk .pFlood {
+  background-color: var(--ink);
+}
+
+.pLinkInk .pGhost {
+  color: var(--accent);
+}
+
+/* --- RUNNING-TIME LANE ----------------------------------------------------- */
+
+.pLane {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  border-left: 1px solid var(--ink);
+  padding-left: 8px;
+}
+
+.pLaneMask {
+  height: 100%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+}
+
+.pLaneScroll {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: lane-scroll 42s linear infinite;
+}
+
+.pLaneItem {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  white-space: nowrap;
+  padding: 0.9em 0;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pLaneItem.is-hot {
+  color: var(--accent);
+  transform: translateX(-14px);
+}
+
+.pLaneItem.is-flip {
+  transform: rotate(180deg);
+}
+
+.pLaneTotal {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translateX(30%);
+  white-space: nowrap;
+  background-color: var(--paper);
+  padding-top: 16px;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+}
+
+/* --- MARQUEE RULE — horizontal section break ------------------------------- */
+
+.pMarquee {
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  overflow: hidden;
+  padding: 6px 0;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+.pMarqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: rule-scroll 28s linear infinite;
+}
+
+.pMarqueeHalf {
+  display: flex;
+  flex: none;
+}
+
+.pMarqueeItem {
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.pMarqueeItem.is-hot {
+  color: var(--accent);
+}
+
+.pMarqueeSep {
+  padding-left: 16px;
+  opacity: 0.4;
+}
+
+/* --- INTERMISSION SLATE — the one flat field -------------------------------- */
+
+.pSlate {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  background-color: var(--accent);
+  color: var(--paper);
+  overflow: hidden;
+}
+
+.pSlatePad {
+  padding-top: clamp(40px, 8vh, 96px);
+  padding-bottom: clamp(40px, 8vh, 96px);
+}
+
+.pSlateRail {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  color: var(--paper);
+}
+
+@media (max-width: 899px) {
+  .pSlateRail {
+    margin-bottom: 24px;
+  }
+}
+
+.pSlateRailRule {
+  border-top: 2px solid var(--paper);
+  padding-top: 8px;
+}
+
+.pLeader {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(6px, 1.4vw, 26px);
+  user-select: none;
+}
+
+.pLeaderNum {
+  display: block;
+  font-family: var(--font-archivo-wdth);
+  font-weight: 900;
+  line-height: 0.72;
+  letter-spacing: -0.06em;
+  font-size: clamp(64px, 13vw, 210px);
+}
+
+.pSlateLine {
+  margin: clamp(24px, 4vh, 56px) 0 0;
+  max-width: 18ch;
+  font-family: var(--font-archivo-wdth);
+  font-weight: 800;
+  font-variation-settings: "wdth" 88;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  font-size: clamp(26px, 4vw, 58px);
+  color: var(--paper);
+}
+
+.pSlateFoot {
+  margin: 24px 0 0;
+  max-width: 46ch;
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+}
+
+.pSlateCue {
+  aspect-ratio: 1;
+  width: 62%;
+  background-color: var(--ink);
+}
+
+.pSlateCueLabel {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--font-space-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--paper);
+}
+
+/* The only place the accent field touches a second weight: ink. */
+.pSlateBand {
+  height: 2px;
+  width: 100%;
+  background-color: var(--ink);
+}
+
+/* --- MASTHEAD LAYOUT --------------------------------------------------------- */
+
+.pMasthead {
+  padding-top: clamp(20px, 6vh, 72px);
+  padding-bottom: 0;
+}
+
+.pMastRail {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  padding-top: 0.55em;
+  color: var(--ink);
+}
+
+@media (max-width: 899px) {
+  .pMastRail {
+    margin-bottom: 16px;
+  }
+}
+
+.pMastRailRule {
+  border-top: 2px solid var(--ink);
+  padding-top: 8px;
+}
+
+.pMastRailSub {
+  margin-top: 4px;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pMastContent {
+  position: relative;
+}
+
+.pWall {
+  user-select: none;
+}
+
+.pMastByline {
+  border-top: 2px solid var(--ink);
+  margin-top: clamp(18px, 3vh, 40px);
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 24px;
+  row-gap: 8px;
+}
+
+.pMastName {
+  font-family: var(--font-space-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.pMastRole {
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pMastMeta {
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 28px;
+  row-gap: 4px;
+}
+
+.pMastMetaRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pMastMetaK {
+  font-family: var(--font-space-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pMastMetaV {
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  color: var(--ink);
+}
+
+/* --- ENTRY RAIL ------------------------------------------------------------ */
+
+.pEntryRail {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+@media (max-width: 899px) {
+  .pEntryRail {
+    margin-bottom: 12px;
+  }
+}
+
+.pEntryRailSub {
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+.pEntryRailYear {
+  margin-top: 0.4em;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+
+@media (max-width: 899px) {
+  .pEntryRailYear {
+    margin-top: 0;
+  }
+}
+
+.pEntryContent {
+  position: relative;
+}
+
+/* --- FILIGREE POSITIONS + TILTS -------------------------------------------- */
+
+.pFiligreeWrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease 140ms;
+  color: var(--ink);
+}
+
+.pLink:hover .pFiligreeWrap,
+.pLink:focus-visible .pFiligreeWrap {
+  opacity: 1;
+}
+
+.pFiligree {
+  position: absolute;
+  height: 34px;
+  width: 34px;
+}
+
+.pFiligreeTL {
+  left: -26px;
+  top: -18px;
+}
+
+.pFiligreeBR {
+  right: -26px;
+  bottom: -18px;
+  transform: rotate(180deg);
+}
+
+.pTiltA { transform: rotate(-1.2deg); }
+.pTiltB { transform: rotate(0.8deg); }
+.pTiltC { transform: rotate(-0.5deg); }
+
+/* --- SLATE CUE COLUMN -------------------------------------------------------- */
+
+.pSlateCueWrap {
+  margin-top: clamp(40px, 8vh, 120px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pFiligreeWrap,
+  .pGhost {
+    transition: none !important;
+  }
+}
+
+@keyframes lane-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@keyframes rule-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes cue-flicker {
+  0%, 100% { opacity: 1; }
+  42% { opacity: 0.35; }
+  46% { opacity: 1; }
+  71% { opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pLaneScroll,
+  .pMarqueeTrack,
+  .pLink:hover .pCue,
+  .pLink:focus-visible .pCue {
+    animation: none !important;
+  }
+
+  .pFlood,
+  .pGhost,
+  .pFiligree,
+  .pText,
+  .pCutTilt,
+  .pCutImg {
+    transition: none !important;
+  }
+}

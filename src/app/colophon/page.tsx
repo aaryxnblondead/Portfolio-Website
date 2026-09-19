@@ -98,7 +98,7 @@ export default function ColophonPage() {
               <p className="text-body text-ink">Border radius is 0 everywhere, except a single 4px radius on interactive nav links. The softness distinguishes clickable state from the hard, rule-based grid.</p>
               <p className="text-body text-ink">No box shadows. Depth comes from hairline rules and the paper/paper-sunk colour pair only.</p>
               <p className="text-body text-ink">One element per page is allowed to break the grid. On the homepage it is the film belt, which runs edge to edge so the frames stay legible at glide speed.</p>
-              <p className="text-body text-ink">Three devices are borrowed from record sleeves: the 404 repeats its title until the words turn to texture, availability sits on a flat accent field, and the footer carries a boxed regulatory label.</p>
+              <p className="text-body text-ink">Three devices are borrowed from record sleeves: the 404 repeats its title until the words turn to texture, availability sits on a flat accent field, and the footer carries a boxed regulatory label. Catalogue plates are struck in solid ink rather than pink.</p>
             </div>
           </section>
 

@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Plate, Portrait } from "@/components/Plate";
 import { ScrollMarket } from "@/components/ScrollMarket";
 import { ContactForm } from "@/components/ContactForm";
+import { CatalogueEntry } from "@/components/programme/CatalogueEntry";
+import { MarqueeRule } from "@/components/programme/ColumnEleven";
+import { PataphysicalLink } from "@/components/programme/PataphysicalLink";
 
 export const metadata = {
   title: "About Aaryan Singh",
@@ -26,7 +29,7 @@ export default function AboutPage() {
         <span className="neo-index">ABOUT / 00</span>
         <h1 className="neo-display">Aaryan</h1>
         <p className="neo-muted">Computer Engineer / Mumbai, India</p>
-        <a className="neo-about-social" href="https://www.instagram.com/aaryun_" target="_blank" rel="noreferrer noopener">Instagram ↗</a>
+        <PataphysicalLink href="https://www.instagram.com/aaryun_" target="_blank" rel="noreferrer noopener" className="neo-about-social">Instagram ↗</PataphysicalLink>
         <div className="neo-about-portrait">
           <Portrait
             photo="aaryan-portrait"
@@ -50,7 +53,7 @@ export default function AboutPage() {
           <p>That instinct follows me into engineering. I like naming the parts, writing down what broke, and making complicated work easier for the next person to enter.</p>
           <p>
             The group frames live elsewhere: title card, red chairs, and crew after strike run as a{" "}
-            <Link href="/#offscreen">film belt on the homepage</Link>.
+            <PataphysicalLink href="/#offscreen">film belt on the homepage</PataphysicalLink>.
           </p>
 
           <div className="neo-about-plates">
@@ -82,15 +85,21 @@ export default function AboutPage() {
         </section>
 
         <section className="neo-about-now">
-          <span className="neo-index">04</span>
-          <h2 className="neo-heading">Currently.</h2>
-          <dl>
-            <div><dt>BUILDING</dt><dd>Vortex-AI, a graph-based NIFTY-50 risk and regime system.</dd></div>
-            <div><dt>LEARNING</dt><dd>Causal inference with instrumental variables.</dd></div>
-            <div><dt>LISTENING</dt><dd>Whatever is on the Spotify panel, usually with a notebook open somewhere nearby.</dd></div>
-            <div><dt>AVAILABLE</dt><dd>From November 2026 for data analytics and applied machine learning roles.</dd></div>
-          </dl>
+          <CatalogueEntry
+            number="№ 04"
+            title="Currently."
+            year="2026"
+            section="NOW"
+            metadata={[
+              ["BUILDING", "Vortex-AI, a graph-based NIFTY-50 risk and regime system."],
+              ["LEARNING", "Causal inference with instrumental variables."],
+              ["LISTENING", "Whatever is on the Spotify panel, usually with a notebook open somewhere nearby."],
+              ["AVAILABLE", "From November 2026 for data analytics and applied machine learning roles."],
+            ]}
+          />
         </section>
+
+        <MarqueeRule text="AVAILABLE · NOV 2026" repeat={14} />
 
         <section id="contact" className="neo-about-end">
           <span className="neo-index">06</span>

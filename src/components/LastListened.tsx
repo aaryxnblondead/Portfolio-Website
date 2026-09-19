@@ -3,7 +3,8 @@
 import { useSpotifyFeed, type Track } from "@/lib/spotify";
 
 export function LastListened() {
-  const state = useSpotifyFeed();
+  // One fetch, no poll: this widget shows a moment, not a live state.
+  const state = useSpotifyFeed(0);
 
   if (state.status === "loading") {
     return <div className="last-listened last-listened-loading" aria-hidden="true" />;

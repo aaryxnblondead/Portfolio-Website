@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Grid, Rail, ContentColumn, SectionNumber } from "@/components/Grid";
 import { TopNav } from "@/components/TopNav";
+import { PataphysicalLink } from "@/components/programme/PataphysicalLink";
 
 export const metadata = {
   title: "Index | Aaryan Singh",
@@ -204,9 +205,9 @@ export default function IndexPage() {
                 <div className="value mt-1">
                   {entry.references.map((ref, i) => (
                     <span key={i} className="text-small">
-                      <Link href={ref.url} className="text-accent no-underline">
+                      <PataphysicalLink href={ref.url} variant="ink">
                         {ref.label}
-                      </Link>
+                      </PataphysicalLink>
                       {i < entry.references.length - 1 && ", "}
                     </span>
                   ))}

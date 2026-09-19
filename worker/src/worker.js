@@ -275,8 +275,10 @@ export default {
         };
       }
 
-      // 30s of edge cache keeps you well inside Spotify's rate limit.
-      return json(data, { origin, cache: 30 });
+      // 60s of edge cache keeps you well inside Spotify's rate limit.
+      // Recently-played barely moves minute to minute, and the client's
+      // progress line is extrapolated locally, so nothing visible goes stale.
+      return json(data, { origin, cache: 60 });
     } catch (err) {
       const res = json(
         { error: err.code || 'unknown', message: err.message },

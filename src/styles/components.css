@@ -811,7 +811,9 @@
   --neo-gilt: var(--rule);
   --neo-aegean: var(--accent-cold);
   min-height: 100vh;
-  overflow: hidden;
+  /* clip, never hidden: hidden would turn this into a scroll container and
+     silently break every position: sticky inside it (the timecode lane). */
+  overflow: clip;
   background: var(--neo-ground);
   color: var(--neo-alabaster);
   font-family: var(--font-archivo);
@@ -934,7 +936,7 @@
 .neo-lab-status { display: block; margin-top: 6px; font-family: var(--font-space-mono); font-size: 10px; letter-spacing: .12em; color: var(--accent-cold); }
 .neo-lab-status.is-live { color: var(--accent); }
 .neo-lab-outro { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 0 8vw 70px; }
-.neo-about-page { display: grid; grid-template-columns: minmax(280px, 1fr) 1.4fr; align-items: start; gap: 10vw; }.neo-about-page .neo-nav { grid-column: 1 / -1; width: 100%; }.neo-about-sticky { position: sticky; top: 90px; padding: 5vw 0 0 8vw; }.neo-about-sticky .neo-display { margin-top: 26px; }.neo-about-story { padding: 5vw 8vw 0 0; }.neo-about-story section { min-height: 48vh; padding: 8vh 0; border-bottom: 1px solid rgba(238,232,220,.22); }.neo-about-story section p { max-width: 34rem; font-size: 1.2rem; line-height: 1.55; }.neo-about-story .neo-large-copy { font-size: clamp(2rem, 4vw, 4.4rem); }.neo-about-end { min-height: 40vh !important; }.neo-about-end .neo-heading { max-width: 10ch; margin: 20px 0 45px; }
+.neo-about-page { display: grid; grid-template-columns: minmax(280px, 1fr) 1.4fr; align-items: start; gap: 10vw; }.neo-about-page .neo-nav { grid-column: 1 / -1; width: 100%; }.neo-about-sticky { position: sticky; top: 90px; padding: 5vw 0 0 8vw; min-width: 0; overflow: clip; }.neo-about-sticky .neo-display { margin-top: 26px; font-size: clamp(2.6rem, 4.5vw, 4.25rem); max-width: 100%; }.neo-about-story { padding: 5vw 8vw 0 0; }.neo-about-story section { min-height: 48vh; padding: 8vh 0; border-bottom: 1px solid rgba(238,232,220,.22); }.neo-about-story section p { max-width: 34rem; font-size: 1.2rem; line-height: 1.55; }.neo-about-story .neo-large-copy { font-size: clamp(2rem, 4vw, 4.4rem); }.neo-about-end { min-height: 40vh !important; }.neo-about-end .neo-heading { max-width: 10ch; margin: 20px 0 45px; }
 .neo-about-social { display: inline-block; margin-top: 24px; color: var(--accent) !important; font: 11px var(--font-space-mono); letter-spacing: .1em; text-transform: uppercase; }
 .still { display: block; width: 100%; max-width: 220px; }
 .still-img { display: block; width: 100%; aspect-ratio: var(--still-aspect, 4 / 5); object-fit: cover; border: 1px solid var(--rule); background: var(--paper-sunk); filter: grayscale(.5) sepia(.14) saturate(.85) contrast(1.04) brightness(1.02); }

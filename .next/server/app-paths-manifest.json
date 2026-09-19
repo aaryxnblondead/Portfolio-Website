@@ -1,10 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/lab/page": "app/lab/page.js",
-  "/about/page": "app/about/page.js",
-  "/index-page/page": "app/index-page/page.js",
-  "/colophon/page": "app/colophon/page.js",
-  "/specimen/page": "app/specimen/page.js",
   "/page": "app/page.js",
-  "/work/[slug]/page": "app/work/[slug]/page.js"
+  "/work/[slug]/page": "app/work/[slug]/page.js",
+  "/about/page": "app/about/page.js"
 }
