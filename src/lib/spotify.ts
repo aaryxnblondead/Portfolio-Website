@@ -39,6 +39,9 @@ export function useSpotifyFeed(pollMs = 45_000): FeedState {
     FEED_URL ? { status: 'loading' } : { status: 'unconfigured' },
   );
   const abort = useRef<AbortController | null>(null);
+  // Set from the worker's Retry-After header. While it holds, polls are
+  // skipped entirely so a throttle is waited out, not extended.
+  const coolUntil = useRef(0);
 
   useEffect(() => {
     if (!FEED_URL) {
@@ -57,6 +60,7 @@ export function useSpotifyFeed(pollMs = 45_000): FeedState {
     let cancelled = false;
 
     async function load() {
+      if (Date.now() < coolUntil.current) return;
       abort.current?.abort();
       const controller = new AbortController();
       abort.current = controller;
@@ -71,6 +75,12 @@ export function useSpotifyFeed(pollMs = 45_000): FeedState {
         const body = await res.json().catch(() => null);
 
         if (!res.ok) {
+          if (res.status === 429) {
+            const header = parseInt(res.headers.get('retry-after') || '', 10);
+            const wait =
+              Number.isFinite(header) && header > 0 ? Math.min(header, 300) : 60;
+            coolUntil.current = Date.now() + wait * 1000;
+          }
           const message =
             body?.message ||
             `Feed returned ${res.status}. ${

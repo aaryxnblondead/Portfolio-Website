@@ -26,6 +26,19 @@ const TOKEN_URL = 'https://accounts.spotify.com/api/token';
 const NOW_URL = 'https://api.spotify.com/v1/me/player/currently-playing';
 const RECENT_URL = 'https://api.spotify.com/v1/me/player/recently-played?limit=6';
 
+/** In-isolate access token cache. Tokens live ~1h; without this every feed
+    request pays a refresh round-trip and Spotify throttles the app (429). */
+let tokenCache = null; // { value: string, expiresAt: number }
+/** Set while Spotify answers 429, so requests fail fast instead of piling on
+    and extending the throttle. Per-isolate, like the token cache. */
+let rateLimitedUntil = 0;
+
+function retryAfterSeconds(res, fallback = 30, cap = 300) {
+  const parsed = parseInt(res.headers.get('Retry-After') || '', 10);
+  if (Number.isFinite(parsed) && parsed > 0) return Math.min(parsed, cap);
+  return fallback;
+}
+
 function allowedOrigin(request, env) {
   const origin = request.headers.get('Origin');
   if (!origin) return null;
@@ -75,6 +88,8 @@ function json(body, { status = 200, origin, cache = 0 } = {}) {
 }
 
 async function accessToken(env) {
+  if (tokenCache && tokenCache.expiresAt > Date.now()) return tokenCache.value;
+
   const id = env.SPOTIFY_CLIENT_ID;
   const secret = env.SPOTIFY_CLIENT_SECRET;
   const refresh = env.SPOTIFY_REFRESH_TOKEN;
@@ -104,6 +119,16 @@ async function accessToken(env) {
     }),
   });
 
+  if (res.status === 429) {
+    const retryAfter = retryAfterSeconds(res);
+    rateLimitedUntil = Date.now() + retryAfter * 1000;
+    throw Object.assign(new Error('Spotify is rate limiting token requests.'), {
+      status: 429,
+      code: 'spotify_rate_limited',
+      retryAfter,
+    });
+  }
+
   if (!res.ok) {
     const detail = await res.text();
     throw Object.assign(
@@ -113,7 +138,11 @@ async function accessToken(env) {
   }
 
   const data = await res.json();
-  return data.access_token;
+  tokenCache = {
+    value: data.access_token,
+    expiresAt: Date.now() + (data.expires_in || 3600) * 1000 - 60_000,
+  };
+  return tokenCache.value;
 }
 
 function trimTrack(t) {
@@ -130,13 +159,42 @@ function trimTrack(t) {
 }
 
 async function feed(env) {
-  const token = await accessToken(env);
-  const auth = { Authorization: `Bearer ${token}` };
+  if (Date.now() < rateLimitedUntil) {
+    const retryAfter = Math.ceil((rateLimitedUntil - Date.now()) / 1000);
+    throw Object.assign(new Error('Spotify is rate limiting feed requests.'), {
+      status: 429,
+      code: 'spotify_rate_limited',
+      retryAfter,
+    });
+  }
 
-  const [nowRes, recentRes] = await Promise.all([
-    fetch(NOW_URL, { headers: auth }),
-    fetch(RECENT_URL, { headers: auth }),
-  ]);
+  const callAll = (token) => {
+    const auth = { Authorization: `Bearer ${token}` };
+    return Promise.all([
+      fetch(NOW_URL, { headers: auth }),
+      fetch(RECENT_URL, { headers: auth }),
+    ]);
+  };
+
+  let [nowRes, recentRes] = await callAll(await accessToken(env));
+
+  if (nowRes.status === 401 || recentRes.status === 401) {
+    // Token died early (password or scope change). One clean retry, then the
+    // failure below surfaces instead of looping.
+    tokenCache = null;
+    [nowRes, recentRes] = await callAll(await accessToken(env));
+  }
+
+  const limited = [nowRes, recentRes].find((r) => r.status === 429);
+  if (limited) {
+    const retryAfter = retryAfterSeconds(limited);
+    rateLimitedUntil = Date.now() + retryAfter * 1000;
+    throw Object.assign(new Error('Spotify is rate limiting feed requests.'), {
+      status: 429,
+      code: 'spotify_rate_limited',
+      retryAfter,
+    });
+  }
 
   let nowPlaying = null;
   // 204 means nothing is playing. That is a normal state, not an error.
@@ -220,10 +278,12 @@ export default {
       // 30s of edge cache keeps you well inside Spotify's rate limit.
       return json(data, { origin, cache: 30 });
     } catch (err) {
-      return json(
+      const res = json(
         { error: err.code || 'unknown', message: err.message },
         { status: err.status || 500, origin },
       );
+      if (err.retryAfter) res.headers.set('Retry-After', String(err.retryAfter));
+      return res;
     }
   },
 };
