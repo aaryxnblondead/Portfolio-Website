@@ -6,6 +6,7 @@ import { archivo, archivoWdth, spaceMono } from "@/lib/fonts";
 import { Soundtrack } from "@/components/Soundtrack";
 import { Analytics } from "@vercel/analytics/next";
 import { FilmGrain } from "@/components/programme/Analogue";
+import { Backdrop } from "@/components/programme/Backdrop";
 
 export const metadata = {
   title: {
@@ -49,6 +50,7 @@ export default function RootLayout({
       </head>
       <body className="bg-paper text-ink font-archivo" lang="en-IN">
         <FilmGrain />
+        <Backdrop />
         <a
           href="#main"
           className="skip-link"

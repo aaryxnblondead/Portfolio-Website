@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Grid, Rail, ContentColumn, SectionNumber } from "@/components/Grid";
 import { TopNav } from "@/components/TopNav";
 import { PataphysicalLink } from "@/components/programme/PataphysicalLink";
+import { SiteFooter } from "@/components/programme/SiteFooter";
 
 export const metadata = {
   title: "Index | Aaryan Singh",
@@ -186,6 +187,7 @@ const indexEntries: { term: string; references: { url: string; label: string }[]
 
 export default function IndexPage() {
   return (
+    <>
     <main id="main" className="py-16">
       <TopNav />
       <Grid>
@@ -224,5 +226,7 @@ export default function IndexPage() {
         </ContentColumn>
       </Grid>
     </main>
+    <SiteFooter />
+    </>
   );
 }

@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug, markdownToHtml } from "@/lib/content";
 import { Grid, Rail, ContentColumn, SectionRule, MetaTable } from "@/components/Grid";
 import { ProjectDiagram } from "@/components/ProjectDiagram";
-import { TopNav } from "@/components/TopNav";
+import { ProgrammeNav } from "@/components/programme/ProgrammeNav";
+import { SiteFooter } from "@/components/programme/SiteFooter";
 import { getProjectNumber } from "@/lib/projects";
 
 export async function generateStaticParams() {
@@ -38,8 +39,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const htmlContent = await markdownToHtml(content);
 
   return (
-    <article id="main" className="project-page py-16">
-      <TopNav />
+    <>
+    <article id="main" className="project-page">
+      <ProgrammeNav
+        mark="AS / 26"
+        markHref="/"
+        links={[
+          { label: "About", href: "/about" },
+          { label: "Index", href: "/index-page" },
+          { label: "Email", href: "mailto:aaryansingh2810@gmail.com" },
+        ]}
+      />
       <Grid>
         <Rail>
           <div className="section-number text-accent font-space-mono font-bold text-xs uppercase sticky top-32" aria-hidden="true">
@@ -48,19 +58,29 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </Rail>
         <ContentColumn>
           <div className="project-hero">
+          <span aria-hidden="true" className="project-ghost-num">
+            {getProjectNumber(metadata.slug)}
+          </span>
           <header className="project-hero-header">
-            <h1 className="text-h1-desktop text-ink mb-4">
+            <h1 className="text-h1-desktop text-ink mb-4 pRise gateWeave">
               {metadata.title}
             </h1>
-            <p className="text-body text-ink max-w-prose leading-tight">
+            <p className="text-body text-ink max-w-prose leading-tight pRise pD2">
               {metadata.logLine}
             </p>
           </header>
 
-          <ProjectDiagram slug={metadata.slug} />
+          <div className="pRise pD3">
+            <ProjectDiagram slug={metadata.slug} />
           </div>
 
-          <section className="project-details" aria-label="Project details">
+          <a href="#details" className="project-scroll-cue" aria-label="Scroll to field notes">
+            <span>FIELD NOTES CONTINUE</span>
+            <span className="project-scroll-tick" aria-hidden="true" />
+          </a>
+          </div>
+
+          <section id="details" className="project-details" aria-label="Project details">
             <MetaTable
               rows={[
                 { label: "RUNTIME", value: metadata.runtime },
@@ -74,21 +94,30 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               className="prose text-ink max-w-prose"
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
+
+            <p className="pMono" style={{ marginTop: 32, fontSize: 11, letterSpacing: "0.1em" }}>
+              <a
+                href={`https://github.com/aaryxnblondead/${metadata.slug}`}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Repository ↗
+              </a>
+            </p>
           </section>
 
 
           <SectionRule className="my-12" />
 
           <footer className="mt-8 text-meta">
-            <Link href="/" className="text-accent font-space-mono">
+            <Link href="/work" className="text-accent font-space-mono">
               &larr; Back to index
-            </Link>
-            <Link href={`https://github.com/aaryxnblondead/${metadata.slug}`} className="ml-4 text-accent font-space-mono">
-              Repository
             </Link>
           </footer>
         </ContentColumn>
       </Grid>
     </article>
+    <SiteFooter />
+    </>
   );
 }

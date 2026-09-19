@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 type DiagramNode = {
   title: string;
   detail: string;
@@ -90,7 +92,11 @@ export function ProjectDiagram({ slug }: { slug: string }) {
           const x = left + index * (nodeWidth + gap);
           const centerY = 190;
           return (
-            <g key={node.title} className={`project-diagram-node is-${node.tone}`}>
+            <g
+              key={node.title}
+              className={`project-diagram-node is-${node.tone}`}
+              style={{ "--ndx": index } as CSSProperties}
+            >
               {index < diagram.nodes.length - 1 && (
                 <path className="project-diagram-connector" d={`M${x + nodeWidth} ${centerY}H${x + nodeWidth + gap - 14}`} markerEnd={`url(#${markerId})`} />
               )}
@@ -106,7 +112,7 @@ export function ProjectDiagram({ slug }: { slug: string }) {
       </svg>
       <div className="project-diagram-mobile-flow" aria-label={`${diagram.title} mobile workflow`}>
         {diagram.nodes.map((node, index) => (
-          <div key={node.title}>
+          <div key={node.title} style={{ "--ndx": index } as CSSProperties} className="project-diagram-mobile-step">
             <div className={`project-diagram-mobile-node is-${node.tone}`}>
               <span className="project-diagram-mobile-index">{String(index + 1).padStart(2, "0")}</span>
               <strong>{node.title}</strong>

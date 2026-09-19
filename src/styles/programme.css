@@ -96,14 +96,15 @@
 .pCutoutB { clip-path: polygon(2% 0%, 100% 4%, 96% 100%, 0% 95%, 3% 41%); }
 .pCutoutC { clip-path: polygon(0% 0%, 94% 2%, 100% 88%, 6% 100%); }
 
-/* The misregistered plate under a cut-out: solid ink, offset, clipped to
-   a different polygon than the image. Offset litho, one pass out. */
+/* The misregistered plate under a cut-out: solid accent (rust), offset,
+   clipped to a different polygon than the image. Offset litho, one pass
+   out. 10px / 12px sits inside the 8–12px brief. Depth without shadow. */
 .pPlate {
   position: absolute;
   inset: 0;
   z-index: 0;
   transform: translate(10px, 12px);
-  background-color: var(--ink);
+  background-color: var(--accent);
 }
 
 /* --- 4. TYPE TREATMENTS ---------------------------------------------------- */
@@ -353,7 +354,7 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 150ms ease 90ms;
-  color: var(--pink);
+  color: var(--accent);
 }
 
 .pLink:hover .pGhost,
@@ -368,7 +369,7 @@
   display: block;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: 0;
   border: 2px solid var(--ink);
   pointer-events: none;
   opacity: 0;
@@ -400,6 +401,14 @@
 
 .pLinkInk .pGhost {
   color: var(--accent);
+}
+
+/* Bare variant: flood wipe only. For tight quarters (the nav) where the
+   ghost, filigrees and cue would overlap neighbouring links. */
+.pLink--bare .pGhost,
+.pLink--bare .pFiligreeWrap,
+.pLink--bare .pCue {
+  display: none;
 }
 
 /* --- RUNNING-TIME LANE ----------------------------------------------------- */
@@ -506,7 +515,7 @@
   max-width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  background-color: var(--accent);
+  background-color: var(--accent-cold);
   color: var(--paper);
   overflow: hidden;
 }
@@ -1013,13 +1022,13 @@
 }
 
 /* --- REVISION B TOKENS ---------------------------------------------------------
-   Pink is the misregistered plate (behind cut-outs, hover ghosts, one 2px
-   band). Brass frames the /about portrait and appears nowhere else. Neither
-   is ever body copy. */
+   Pink / brass retired into the locked set: the misregistered plate and
+   hover ghosts strike in accent (rust), the /about portrait frame in ink.
+   Neither is ever body copy. Aliases kept so older plates still resolve. */
 
 :root {
-  --pink: #f3a8be;
-  --brass: #a4813f;
+  --pink: #A83A16;
+  --brass: #171412;
 }
 
 /* --- ANALOGUE — material, not elements ------------------------------------------
@@ -1091,16 +1100,26 @@
   filter: grayscale(1) sepia(0.38) contrast(1.18) brightness(0.94) saturate(1.5);
 }
 
-/* --- GATE WEAVE — one element per page -------------------------------------------- */
+/* --- GATE WEAVE — one element per page --------------------------------------------
+   Uses the independent `translate` property (not `transform`) so it composes
+   with the pRise entrance (which owns `transform`). 1px jitter, stepped. */
 
 @keyframes gate-weave {
-  0%, 100% { transform: translateX(0); }
-  33% { transform: translateX(0.6px); }
-  66% { transform: translateX(-0.5px); }
+  0%, 100% { translate: 0 0; }
+  33% { translate: 0.6px 0; }
+  66% { translate: -0.5px 0; }
 }
 
 .gateWeave {
+  display: inline-block;
   animation: gate-weave 3.4s steps(1, end) infinite;
+}
+
+/* Entrance + weave on the same pass: outer owns the rise, inner the weave. */
+.pRise.gateWeave {
+  animation: p-rise 640ms cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    gate-weave 3.4s steps(1, end) infinite;
+  animation-delay: var(--p-delay, 0ms), 900ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1113,14 +1132,14 @@
 
 .pOrnateOuter {
   position: relative;
-  border: 2px solid var(--brass);
+  border: 2px solid var(--ink);
   padding: 7px;
 }
 
 .pOrnateInner {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--brass);
+  border: 1px solid var(--ink);
 }
 
 .pOrnateImgWrap {
@@ -1160,7 +1179,7 @@
   position: absolute;
   height: 34px;
   width: 34px;
-  color: var(--brass);
+  color: var(--ink);
 }
 
 .pCornerTL { left: -3px; top: -3px; }
@@ -1175,4 +1194,1500 @@
   line-height: 1.5;
   letter-spacing: 0.12em;
   color: var(--ink-muted);
+}
+
+/* --- COMPACT MASTHEAD — homepage, 4 passes, one viewport -------------------
+   Same wall logic as the 7-pass booklet head, but four plates only:
+   solid / outline / knockout / ghost. Smaller measure so the frame,
+   the slates and the slim footer read as one sheet, not a scroll. */
+
+.pMasthead--compact {
+  padding-top: clamp(12px, 3vh, 32px);
+}
+
+.pWall--compact .pWallPass {
+  font-size: clamp(30px, 5.2vw, 72px);
+  line-height: 0.78;
+}
+
+.pWall--compact .pWallPass + .pWallPass {
+  margin-top: -0.06em;
+}
+
+/* Colliding passes, after the TLOP sleeve: repetitions crash into each
+   other instead of stacking plainly. Later passes paint over earlier
+   ones; each keeps its own registration drift. */
+.pWall--collide .pWallPass + .pWallPass {
+  margin-top: -0.24em;
+}
+
+/* --- STAGGERED ENTRANCE — hero text only -----------------------------------
+   Fade + rise, 400–900ms, cubic-bezier ease-out. Delays stagger the wall,
+   byline and meta so the page arrives in passes, like the press itself.
+   One shared exit: reduced-motion kills it outright. */
+
+@keyframes p-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pRise {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: p-rise 640ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--p-delay, 0ms);
+}
+
+.pD1 { --p-delay: 90ms; }
+.pD2 { --p-delay: 210ms; }
+.pD3 { --p-delay: 340ms; }
+.pD4 { --p-delay: 480ms; }
+.pD5 { --p-delay: 620ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pRise {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* --- TACTILE HOVER — translate + border-color, never shadow or bounce ------
+   Every card / entry shifts 2px up-left and trades its rule for accent.
+   Flat, print-like, reversible on one shared 220ms clock. */
+
+.slate,
+.pEntry,
+.plate__mount,
+.belt-frame {
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.slate:hover,
+.slate:focus-within {
+  transform: translate(-2px, -2px);
+  border-color: var(--accent);
+  background-color: var(--paper);
+}
+
+.pEntry:hover,
+.pEntry:focus-within {
+  border-top-color: var(--accent);
+}
+
+.pEntry:hover .pMeta,
+.pEntry:focus-within .pMeta {
+  border-top-color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.plate__mount:hover,
+.plate__mount:focus-within {
+  border-color: var(--accent);
+  transform: translate(-2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slate,
+  .pEntry,
+  .plate__mount,
+  .belt-frame {
+    transition: none !important;
+  }
+  .slate:hover,
+  .slate:focus-within,
+  .plate__mount:hover {
+    transform: none !important;
+  }
+}
+
+/* --- FILM-STRIP NAV — perforations, hairlines, mono -------------------------
+   One squared perf row on top, 2px rule below. Mark left (Neue Machina
+   800), links centre-right (Space Mono), meta far right. Links keep the
+   pataphysical wipe; the 4px radius exception lives on `nav a` globally. */
+
+.pNav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--paper);
+  border-bottom: 2px solid var(--ink);
+}
+
+.pNavPerfs {
+  height: 9px;
+  width: 100%;
+  background-image: repeating-linear-gradient(to right, var(--ink) 0 9px, transparent 9px 26px);
+  background-position: 6px 0;
+}
+
+.pNavBar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 12px 24px;
+}
+
+.pNavMark {
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pNavLinks {
+  display: flex;
+  gap: 24px;
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pNavMeta {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 899px) {
+  .pNavBar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  .pNavMeta {
+    display: none;
+  }
+  .pNavLinks {
+    gap: 16px;
+  }
+}
+
+/* --- HOMEPAGE FRAME — compact single-viewport sheet --------------------------
+   One measure (24px sides, 20–28px rhythm), hero + 2×2 slates + belt +
+   slim footer. No centered stack, no soft card, no pill. */
+
+.pHome {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+.pHomeHero {
+  padding-top: 8px;
+  padding-bottom: 20px;
+}
+
+.pHomeHeroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(200px, 0.85fr);
+  gap: 5vw;
+  align-items: center;
+}
+
+.pHomeHeroPlate {
+  max-width: min(260px, 100%);
+  justify-self: end;
+  width: 100%;
+}
+
+@media (max-width: 899px) {
+  .pHomeHeroGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .pHomeHeroPlate {
+    max-width: 240px;
+    justify-self: start;
+  }
+}
+
+/* First viewport: masthead + intro + photo share one screen. The frame
+   centres them when shorter than the viewport and grows when taller. */
+.pHomeFirst {
+  position: relative;
+  min-height: calc(100svh - 53px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: clip;
+}
+
+/* --- HERO LOCKUP — rail, wall, intro and photo in one grid --------------------
+   One composition instead of two stacked sheets, so no dead band opens
+   between the byline and the intro. The knockout bar is held to 100% here
+   so it never strikes through the neighbouring photograph. */
+
+.pHero12 {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  max-width: none;
+  padding-inline: 5vw;
+  padding-top: clamp(12px, 3vh, 32px);
+  padding-bottom: 20px;
+  overflow: clip;
+}
+
+/* --- HERO BACKDROP — low-opacity print furniture --------------------------------
+   Ghost numeral, column rules, registration crosses, one crop square. Flat
+   ink/accent/rule on paper, multiply where it overlaps; never gradients,
+   never shadows. Content always paints above it. */
+
+.pHeroBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pHomeFirst > :not(.pHeroBackdrop) {
+  position: relative;
+  z-index: 1;
+}
+
+.pHeroGhost {
+  position: absolute;
+  left: 1vw;
+  bottom: 2vh;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  font-size: clamp(8rem, 26vw, 24rem);
+  color: var(--ink);
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  user-select: none;
+}
+
+.pHeroRules {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 108px);
+  opacity: 0.55;
+}
+
+.pHeroCross {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  opacity: 0.4;
+  color: var(--accent);
+}
+
+.pHeroCross::before,
+.pHeroCross::after {
+  content: "";
+  position: absolute;
+  background-color: currentColor;
+}
+
+.pHeroCross::before {
+  left: 0;
+  right: 0;
+  top: 10px;
+  height: 2px;
+}
+
+.pHeroCross::after {
+  top: 0;
+  bottom: 0;
+  left: 10px;
+  width: 2px;
+}
+
+.pHeroCross--tl {
+  left: 3vw;
+  top: 20%;
+}
+
+.pHeroCross--br {
+  right: 3vw;
+  bottom: 14%;
+}
+
+.pHeroSquare {
+  position: absolute;
+  right: -80px;
+  top: -80px;
+  width: 230px;
+  height: 230px;
+  border: 1px solid var(--rule);
+  opacity: 0.7;
+}
+
+/* --- GLOBAL BACKDROP — the same furniture, fixed behind every page ------------
+   Negative z-index parks it above the paper ground but below all content.
+   Ghost numerals are deliberately excluded; pages opt into their own. */
+
+.pBackdropGlobal {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pHeroRail {
+  grid-column: 1 / 3;
+  grid-row: 1 / span 2;
+}
+
+.pHeroMain {
+  grid-column: 3 / 10;
+  min-width: 0;
+}
+
+.pHeroMain .pWallKnockout {
+  width: 100%;
+}
+
+.pHeroMain .pMastByline {
+  margin-top: 12px;
+}
+
+/* Hero name: written once, solid, in Neue Machina. Regular cut at full
+   measure — impact from size and tracking, not weight. */
+.pHeroName {
+  margin: 0;
+  font-family: var(--font-neue-machina);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-size: clamp(38px, 6.5vw, 104px);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.pHeroPhoto {
+  grid-column: 10 / 13;
+  grid-row: 1 / span 2;
+  min-width: 0;
+}
+
+.pHeroPhoto .plate {
+  margin: 0;
+}
+
+.pHeroIntro {
+  grid-column: 3 / 10;
+  min-width: 0;
+  margin-top: 20px;
+  max-width: 52ch;
+}
+
+@media (max-width: 899px) {
+  .pHero12 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: 10px;
+  }
+  .pHeroRail {
+    grid-column: 1 / 7;
+    grid-row: auto;
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+  }
+  .pHeroMain {
+    grid-column: 1 / 7;
+  }
+  .pHeroPhoto {
+    grid-column: 1 / 7;
+    grid-row: auto;
+    max-width: 240px;
+    margin-top: 24px;
+  }
+  .pHeroIntro {
+    grid-column: 1 / 7;
+  }
+}
+
+.pHomeIntro {
+  margin: 16px 0 0;
+  max-width: 52ch;
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.pHomeMetaLine {
+  margin: 14px 0 0;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+}
+
+.pHomeHeroPlate {
+  position: relative;
+}
+
+.pHomeStage {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.pHomeStageHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  border-top: 2px solid var(--ink);
+  padding-top: 8px;
+}
+
+.pHomeStageHead h2 {
+  margin: 0;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(20px, 2.4vw, 30px);
+  line-height: 1;
+}
+
+/* --- HOME CONTENTS INDEX — a slim table of work, not a scroll -----------------
+   Replaces the heavy slate grid: four ruled rows pointing at /work. */
+
+.pHomeIndexList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.pHomeIndexRow {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 12px 0;
+}
+
+.pHomeIndexRow + .pHomeIndexRow {
+  border-top: 1px solid var(--ink);
+}
+
+.pHomeIndexNo {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+.pHomeIndexTitle {
+  margin: 0;
+  font-family: var(--font-neue-machina);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.2rem, 2.4vw, 1.9rem);
+  line-height: 1;
+}
+
+.pHomeIndexMeta {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .pHomeIndexRow {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .pHomeIndexMeta {
+    grid-column: 2;
+  }
+}
+
+.pHomeFooter {
+  margin-top: auto;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  align-items: baseline;
+  padding: 14px 24px;
+  max-width: 1200px;
+  margin-inline: auto;
+  width: 100%;
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+/* --- HOMEPAGE FULL FRAME — occupy the viewport, no centred island ------------
+   Sheets, nav and footer run edge to edge at 5vw so a wide monitor reads
+   as one press sheet. The belt rides full-bleed as a direct child of main. */
+
+.pHome .pSheet {
+  max-width: none;
+  padding-inline: 5vw;
+}
+
+.pHome .pNavBar {
+  max-width: none;
+  padding-inline: 5vw;
+}
+
+.pHomeFooter {
+  max-width: none;
+  padding-inline: 5vw;
+}
+
+.pHome > main > .belt {
+  padding-inline: 5vw;
+}
+
+.pHome > main > .belt .belt-tape {
+  margin-inline: -5vw;
+}
+
+.pHomeFooter a {
+  color: var(--ink);
+}
+
+.pHomeFooterLinks {
+  display: flex;
+  gap: 20px;
+}
+
+/* --- SITE FOOTER — one footer for every page ------------------------------------
+   Coordinates and channels left, contact form right. The form's own top
+   margin is zeroed so both columns start on the same rule. */
+
+.site-footer {
+  border-top: 2px solid var(--ink);
+  padding: 40px 5vw 56px;
+  background-color: var(--paper);
+}
+
+.site-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 560px);
+  gap: 5vw;
+  max-width: 1200px;
+  margin-inline: auto;
+  align-items: start;
+}
+
+.site-footer-grid p {
+  margin-bottom: 12px;
+}
+
+.site-footer-links {
+  display: flex;
+  gap: 20px;
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.site-footer-links a {
+  color: var(--ink);
+}
+
+.site-footer-meta {
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+.site-footer .contact-form {
+  margin-top: 0;
+}
+
+@media (max-width: 899px) {
+  .site-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- MISREGISTERED PHOTO PLATE — retired wrapper ---------------------------------
+   The rust pass now renders inside Plate / PlatePair (misreg prop) behind
+   the mount only; the caption sits outside with 20px clearance. See
+   photos.css (.plate__miswrap). No wrapper class needed in pages. */
+
+/* --- WORK INDEX — filter toggles + expandable catalogue rows --------------------
+   Square bracket toggles (never pills); rows open on one shared clock with
+   a grid-rows wipe. Tactile hover: title trades to accent, arrow slides. */
+
+.work-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 20px;
+  border-top: 2px solid var(--ink);
+  padding-top: 12px;
+  margin-bottom: 4px;
+}
+
+.work-filter-label {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+}
+
+.work-toggle {
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--ink-muted);
+}
+
+.work-toggle::before {
+  content: "[";
+  margin-right: 4px;
+}
+
+.work-toggle::after {
+  content: "]";
+  margin-left: 4px;
+}
+
+.work-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.work-toggle[aria-pressed="true"] {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.work-toggle[aria-pressed="true"]:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+.work-count {
+  margin-left: auto;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+}
+
+.work-list {
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 32px;
+}
+
+.work-entry {
+  border-top: 1px solid var(--ink);
+}
+
+.work-entry:first-child {
+  border-top-width: 2px;
+}
+
+.work-rowbtn {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto auto 20px;
+  gap: 16px;
+  align-items: baseline;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 18px 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  font: inherit;
+}
+
+.work-rowbtn:hover .work-rowtitle {
+  color: var(--accent);
+}
+
+.work-rowbtn:hover .work-arrow {
+  transform: translate(3px, -3px);
+  color: var(--accent);
+}
+
+.work-rowno {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+.work-rowtitle {
+  margin: 0;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(24px, 3.4vw, 44px);
+  line-height: 0.95;
+  transition: color 180ms ease;
+}
+
+.work-rowmeta {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.work-arrow {
+  color: var(--ink-muted);
+  font-family: var(--font-space-mono);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), color 180ms ease;
+}
+
+.work-entry.is-open .work-arrow {
+  transform: rotate(45deg);
+}
+
+.work-entry.is-open .work-rowtitle {
+  color: var(--accent);
+}
+
+.work-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-entry.is-open .work-panel {
+  grid-template-rows: 1fr;
+}
+
+.work-panel-inner {
+  overflow: hidden;
+}
+
+.work-panel-body {
+  padding: 4px 0 24px 72px;
+  max-width: 720px;
+}
+
+/* Expanded sections stay compact inside the column: smaller record
+   titles and restrained plates, so biography and plates never run long. */
+.work-panel-body .pTitle {
+  font-size: clamp(22px, 2.8vw, 36px);
+}
+
+.work-panel-body .plate {
+  max-width: 320px;
+}
+
+.work-panel-body .plate--pair {
+  max-width: 480px;
+}
+
+.work-panel-body .pMethod {
+  margin-top: 0;
+}
+
+.work-panel-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ink);
+}
+
+.work-metric {
+  font-family: var(--font-space-mono);
+  line-height: 1.2;
+}
+
+.work-metric strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.work-metric span {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 700px) {
+  .work-rowbtn {
+    grid-template-columns: 44px minmax(0, 1fr) 20px;
+  }
+  .work-rowmeta {
+    grid-column: 2;
+  }
+  .work-panel-body {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-panel {
+    transition: none;
+  }
+  .work-rowtitle,
+  .work-arrow {
+    transition: none;
+  }
+}
+
+/* --- ALBUMS SHELF — one grid of sleeves ------------------------------------------
+   Covers on paper-sunk mounts with hairlines; hover is the house tactile
+   shift. Titles in Archivo, credits in mono. */
+
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 24px;
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+
+@media (max-width: 1100px) {
+  .album-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .album-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 12px;
+  }
+}
+
+.album-link {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.album-no {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+.album-mount {
+  display: block;
+  border: 1px solid var(--rule);
+  background-color: var(--paper-sunk);
+  padding: 8px;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), border-color 220ms ease;
+}
+
+.album-link:hover .album-mount,
+.album-link:focus-visible .album-mount {
+  transform: translate(-2px, -2px);
+  border-color: var(--accent);
+}
+
+.album-mount img,
+.album-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: var(--paper-sunk);
+}
+
+/* Square-forcing frame: padding-hack square that no attribute, ratio or
+   override can collapse. The image absolute-fills and crops to the cell. */
+.album-frame {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+  outline: 1px solid var(--rule);
+  outline-offset: 0;
+}
+
+.album-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.album-title {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.album-link:hover .album-title {
+  color: var(--accent);
+}
+
+.album-meta {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+/* --- HORIZONTAL RUN — the About page as a sideways programme -------------------
+   A tall section drives a sticky viewport: vertical scroll becomes
+   horizontal travel. Progress hairline on top; panels divided by 2px
+   rules. Without motion (or JS) the track stacks vertically instead. */
+
+.hRun {
+  position: relative;
+}
+
+.hSticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  max-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+}
+
+.hProgressBar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 2px solid var(--ink);
+  padding: 10px 5vw;
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+  background-color: var(--paper);
+}
+
+.hProgressTrack {
+  flex: 1;
+  height: 2px;
+  background-color: var(--rule);
+}
+
+.hProgressFill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background-color: var(--accent);
+}
+
+.hProgressPct {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.hViewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hTrack {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  width: max-content;
+  will-change: transform;
+}
+
+.hPanel {
+  flex: none;
+  align-self: stretch;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4vh 4vw;
+  border-left: 2px solid var(--ink);
+  background-color: var(--paper);
+}
+
+.hPanel:first-child {
+  border-left: none;
+}
+
+.hPanel .pRecord {
+  width: 100%;
+}
+
+.hPanelNarrow {
+  width: 88vw;
+  max-width: 980px;
+}
+
+.hPanelWide {
+  width: max-content;
+  max-width: none;
+  min-width: 100vw;
+}
+
+.hPanelTitle {
+  margin: 0 0 8px;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(22px, 2.6vw, 34px);
+  line-height: 0.95;
+}
+
+/* The intermission field becomes a full-height panel inside the track. */
+.hTrack .pSlate {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  flex: none;
+  align-self: stretch;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Vertical fallback: no motion, no JS, or narrow screen choice. */
+.hRun:not(.is-on) .hSticky {
+  position: static;
+  height: auto;
+  max-height: none;
+}
+
+.hRun:not(.is-on) .hProgressBar {
+  display: none;
+}
+
+.hRun:not(.is-on) .hTrack {
+  flex-direction: column;
+  width: auto;
+}
+
+.hRun:not(.is-on) .hPanel,
+.hRun:not(.is-on) .hTrack .pSlate {
+  width: auto;
+  max-width: none;
+  height: auto;
+  border-left: none;
+  border-top: 2px solid var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hRun .hSticky {
+    position: static;
+    height: auto;
+    max-height: none;
+  }
+  .hRun .hProgressBar {
+    display: none;
+  }
+  .hRun .hTrack {
+    flex-direction: column;
+    width: auto;
+    transform: none !important;
+  }
+  .hRun .hPanel,
+  .hRun .hTrack .pSlate {
+    width: auto;
+    max-width: none;
+    height: auto;
+    border-left: none;
+    border-top: 2px solid var(--ink);
+  }
+}
+
+/* --- HORIZONTAL PANEL GRIDS -------------------------------------------------------
+   Inner layouts for the sideways panels; collapse to one column under 900px
+   (the panel itself scrolls internally if the content runs tall). */
+
+.hBioGrid {
+  display: grid;
+  grid-template-columns: minmax(300px, 480px) minmax(320px, 620px);
+  gap: 4vw;
+  align-items: start;
+}
+
+.hContactGrid {
+  display: grid;
+  grid-template-columns: minmax(300px, 440px) minmax(320px, 600px);
+  gap: 5vw;
+  align-items: start;
+}
+
+.hPlatesRow {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+}
+
+.hPlatesRow > * {
+  flex: none;
+}
+
+@media (max-width: 899px) {
+  .hBioGrid,
+  .hContactGrid {
+    grid-template-columns: 1fr;
+  }
+  .hPlatesRow {
+    gap: 32px;
+  }
+}
+
+/* --- FADE-LEFT RUN — the wall exits left -------------------------------------------
+   A tall section pins the masthead briefly; scroll progress fades the
+   wrapper out while sliding it left. Static wall with no spacer when
+   motion is off or JS is absent. */
+
+.fRun {
+  position: relative;
+  height: 175svh;
+}
+
+.fSticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.fFade {
+  width: 100%;
+  will-change: transform, opacity;
+}
+
+.fRun:not(.is-on) {
+  height: auto;
+}
+
+.fRun:not(.is-on) .fSticky {
+  position: static;
+  height: auto;
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fRun {
+    height: auto;
+  }
+  .fRun .fSticky {
+    position: static;
+    height: auto;
+    display: block;
+  }
+}
+
+/* --- SPLIT INDEX — masthead sits left, sections slide in right --------------------
+   Two-column programme spread: the side column pins the masthead (static,
+   never fading) while the index rows arrive from the right on scroll. */
+
+.split-index {
+  display: grid;
+  grid-template-columns: minmax(300px, 430px) minmax(0, 1fr);
+  gap: 4vw;
+  max-width: 1560px;
+  margin-inline: auto;
+  padding-inline: 5vw;
+  padding-top: clamp(12px, 3vh, 32px);
+  padding-bottom: 48px;
+  align-items: start;
+}
+
+.split-sticky {
+  position: sticky;
+  top: 88px;
+}
+
+.split-side-portrait {
+  max-width: 170px;
+  margin-top: 20px;
+}
+
+.split-side-line {
+  margin-top: 16px;
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .split-side .pSheet {
+    padding-inline: 0;
+    max-width: none;
+  }
+  .split-side .pWallPass {
+    font-size: clamp(36px, 4.4vw, 64px);
+  }
+  .split-side .pWallKnockout {
+    width: 100%;
+  }
+}
+
+@media (max-width: 899px) {
+  .split-index {
+    grid-template-columns: 1fr;
+  }
+  .split-sticky {
+    position: static;
+  }
+}
+
+/* --- MARKET BACKDROP — the tape as ambient background --------------------------------
+   Fixed behind the About page: three misregistered passes on a tilted
+   plane, one accent pulse travelling the line on its own clock. Flat
+   strokes with non-scaling hairlines; never gradients, never shadows. */
+
+.market-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.market-bg svg {
+  position: absolute;
+  right: -12vw;
+  bottom: -8vh;
+  width: 135vw;
+  height: auto;
+  transform: perspective(1400px) rotateX(26deg);
+  transform-origin: bottom right;
+}
+
+.market-grid {
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.08;
+  vector-effect: non-scaling-stroke;
+}
+
+.market-pass {
+  fill: none;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.market-pass-rule {
+  stroke: var(--ink);
+  opacity: 0.1;
+}
+
+.market-pass-ink {
+  stroke: var(--ink);
+  opacity: 0.12;
+}
+
+.market-pass-accent {
+  stroke: var(--accent);
+  opacity: 0.14;
+}
+
+.market-pass-pulse {
+  stroke: var(--accent);
+  opacity: 0.3;
+  stroke-dasharray: 320 1700;
+  animation: tape-pulse 14s linear infinite;
+}
+
+@keyframes tape-pulse {
+  from {
+    stroke-dashoffset: 2020;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .market-pass-pulse {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* --- ABOUT BOOKLET — scrolling programme --------------------------------------
+   Story column (3–10) + sticky lane (11) via the pRun overlay so the lane
+   never squeezes the measure. Biography renders as catalogue records;
+   intermission appears exactly once; errata closes the booklet. */
+
+.pAbout {
+  background-color: var(--paper);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+.pAboutRun {
+  position: relative;
+}
+
+.pAboutStory p {
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.pAboutStory .pRecord {
+  width: 100%;
+}
+
+.pErrata {
+  border-top: 2px solid var(--ink);
+  margin-top: 48px;
+  padding-top: 12px;
+}
+
+.pErrataTitle {
+  margin: 0 0 12px;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(22px, 2.6vw, 34px);
+  line-height: 0.95;
+}
+
+.pErrataList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.pErrataList li {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
+  padding: 8px 0;
+  font-family: var(--font-space-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.pErrataList li + li {
+  border-top: 1px solid var(--ink);
+}
+
+.pErrataList strong {
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.pColophonMeta {
+  margin: 20px 0 0;
+}
+
+/* --- METHOD — principles as ruled rows, no negative margins ------------------
+   Number in mono accent, title in Neue Machina, detail in Archivo body.
+   Hairlines only, paper ground. */
+
+.pMethod {
+  margin: 40px 0;
+  border-top: 2px solid var(--ink);
+  padding-top: 12px;
+}
+
+.pMethodTitle {
+  margin: 0 0 8px;
+  font-family: var(--font-neue-machina);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(22px, 2.6vw, 34px);
+  line-height: 0.95;
+}
+
+.pMethodRow {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--ink);
+}
+
+.pMethodRow:first-of-type {
+  margin-top: 16px;
+}
+
+.pMethodNum {
+  font-family: var(--font-space-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+.pMethodRow h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-neue-machina);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.pMethodRow p {
+  margin: 0;
+  color: var(--ink);
+}
+
+@media (max-width: 899px) {
+  .pMethodRow {
+    grid-template-columns: 32px 1fr;
+    gap: 10px;
+  }
+  .pMethodRow h3 {
+    font-size: 1.25rem;
+  }
 }

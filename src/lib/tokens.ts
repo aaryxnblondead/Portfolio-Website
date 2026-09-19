@@ -7,9 +7,9 @@ export const tokens = {
     paper: "#F2EEE6",
     paperSunk: "#E9E4D9",
     ink: "#171412",
-    inkMuted: "#6B635A",
+    inkMuted: "#5A534B",
     rule: "#D4CCBD",
-    accent: "#C3431B",
+    accent: "#A83A16",
     accentCold: "#2C4A3E",
   },
   typography: {

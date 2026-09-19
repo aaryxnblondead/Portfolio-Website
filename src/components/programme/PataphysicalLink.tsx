@@ -31,6 +31,7 @@ export function PataphysicalLink({
   href = "#",
   children,
   variant = "accent",
+  bare = false,
   className = "",
   ...rest
 }: {
@@ -38,10 +39,16 @@ export function PataphysicalLink({
   children: ReactNode;
   /** accent floods accent; ink floods solid ink for drier registers. */
   variant?: "accent" | "ink";
+  /**
+   * Bare keeps only the scaleX flood wipe. Use in tight quarters like the
+   * nav, where the ghost copy, filigrees and cue would collide with
+   * neighbouring links.
+   */
+  bare?: boolean;
   className?: string;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">) {
   const external = /^(https?:|mailto:|#)/.test(href);
-  const classes = `pLink${variant === "ink" ? " pLinkInk" : ""}${className ? ` ${className}` : ""}`;
+  const classes = `pLink${variant === "ink" ? " pLinkInk" : ""}${bare ? " pLink--bare" : ""}${className ? ` ${className}` : ""}`;
 
   const inner = (
     <>

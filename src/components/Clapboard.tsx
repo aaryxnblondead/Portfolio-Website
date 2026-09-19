@@ -44,7 +44,7 @@ export function Clapboard({
         </p>
 
         <h3 className="slate-title">
-          <PataphysicalLink href={href}>{title}</PataphysicalLink>
+          <PataphysicalLink href={href} bare>{title}</PataphysicalLink>
         </h3>
 
         {metadata.length > 0 && (

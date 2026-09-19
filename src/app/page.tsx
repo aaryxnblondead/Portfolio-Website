@@ -1,129 +1,136 @@
-import Link from "next/link";
-import { Clapboard } from "@/components/Clapboard";
 import { Plate } from "@/components/Plate";
 import { PhotoBelt } from "@/components/PhotoBelt";
-import { WipeIn } from "@/components/Motion";
+import { Clapboard } from "@/components/Clapboard";
+import { SlideIn } from "@/components/Motion";
+import { ProgrammeNav } from "@/components/programme/ProgrammeNav";
+import { Sheet, Rail, Content, Bleed } from "@/components/programme/Sheet";
+import { PataphysicalLink } from "@/components/programme/PataphysicalLink";
+import { PROJECTS } from "@/lib/projects";
+import { SiteFooter } from "@/components/programme/SiteFooter";
 
 export const metadata = {
   title: "Aaryan Singh | Machine learning systems",
   description: "Aaryan Singh builds applied machine learning systems for the edge, the cloud, and the space between.",
 };
 
-const projects = [
-  {
-    number: "№ 01",
-    title: "Vortex-AI",
-    slug: "capstone",
-    year: "2026",
-    runtime: "Aug 2026 - Present",
-    format: "PyTorch / GAT / LSTM / CUDA",
-    runOn: "CUDA training, CPU evaluation",
-    status: "In progress",
-    credit: "Solo",
-    metric: { value: "0.83", label: "GAT ROC-AUC" },
-    broke:
-      "The relationship map still trails the baseline: adjacency MSE 0.0829 against 0.0694. Crisis detection leads at 0.83 ROC-AUC; the map is catching up.",
-  },
-  {
-    number: "№ 02",
-    title: "Anora",
-    slug: "anora",
-    year: "2026",
-    runtime: "Oct 2025 - May 2026",
-    format: "Flutter / FastAPI / PostgreSQL / TFLite",
-    runOn: "AWS App Runner, on-device ARM",
-    status: "Shipped",
-    credit: "Solo",
-    metric: { value: "180ms", label: "Avg on-device inference" },
-    broke:
-      "The first federated round used a fixed learning rate of 0.01, so the model overfit to a handful of enthusiastic testers and mistagged infrequent writers. Per-client adaptive rates cost two weeks of training.",
-  },
-  {
-    number: "№ 03",
-    title: "Vidhaan AI",
-    slug: "vidhaanai",
-    year: "2025",
-    runtime: "Jan 2025 - Apr 2025",
-    format: "Django / Bootstrap / SQLite",
-    runOn: "Python development server",
-    status: "Shipped",
-    credit: "Co-founder",
-    metric: { value: "3", label: "User roles" },
-    broke:
-      "The heading detector read bold-italic headers as body text and misclassified 12% of section boundaries. Fixed by retraining on 400 hand-labeled sections from three states.",
-  },
-  {
-    number: "№ 04",
-    title: "QualifyAI",
-    slug: "resume-analytics",
-    year: "2024",
-    runtime: "Sep 2024 - Dec 2024",
-    format: "FastAPI / React / spaCy / ChromaDB",
-    runOn: "AWS ECS / RDS / EFS",
-    status: "Shipped",
-    credit: "Solo",
-    metric: { value: "1,000+", label: "Resumes parsed" },
-    broke:
-      "Two-column resumes came out as one text stream and broke entity boundaries. Switched to a layout-aware parser with column-gutter detection.",
-  },
-];
-
 export default function HomePage() {
   return (
-    <main id="main" className="neo-site">
-      <nav className="neo-nav" aria-label="Site navigation">
-        <Link href="/" className="neo-mark">AS / 26</Link>
-        <div className="neo-nav-links"><Link href="#work">Work</Link><Link href="/about">About</Link><Link href="#contact">Contact</Link></div>
-      </nav>
+    <div className="pHome">
+      <ProgrammeNav
+        mark="AS / 26"
+        links={[
+          { label: "Work", href: "/work" },
+          { label: "About", href: "/about" },
+          { label: "Contact", href: "#contact" },
+        ]}
+      />
 
-      <section className="neo-threshold neo-threshold-solo" aria-labelledby="intro-title">
-        <div className="neo-threshold-grid" aria-hidden="true"><span /><span /><span /><span /><span /></div>
-        <div className="neo-threshold-row">
-          <div>
-            <p className="neo-kicker">Applied machine learning / Mumbai, India</p>
-            <h1 id="intro-title" className="neo-display neo-display-solo gateWeave">Aaryan Singh</h1>
-            <p className="neo-intro">I build systems that make intelligence useful where the data lives: on device, at the edge, and in the narrow gap between two cloud services.</p>
-            <p className="neo-meta-line">MUMBAI · 19°04′N 72°52′E · AVAILABLE / NOV 2026</p>
+      <main id="main">
+        <div className="pHomeFirst">
+          <div className="pHeroBackdrop" aria-hidden="true">
+            <span className="pHeroGhost">26</span>
           </div>
-          <div className="neo-hero-plate neo-hero-plate-solo">
-            <Plate
-              photo="aaryan-suit"
-              alt="Aaryan standing outdoors in a grey suit and black shirt, smiling, iron fence and trees behind him"
-              size="column"
-              ratio="4:5"
-              focus="center 20%"
-              priority
-            />
-          </div>
-        </div>
-      </section>
+          <section className="pHero12" aria-label="Introduction">
+            <div className="pHeroRail pMono pEntryRail">
+              <div className="pRuleHeavy pMastRailRule">
+                <div>№ 00</div>
+                <div className="pMastRailSub">MASTHEAD</div>
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <div>№ 01</div>
+                <div className="pEntryRailSub">THRESHOLD</div>
+                <div className="pEntryRailYear">MUMBAI</div>
+              </div>
+            </div>
 
-      <section className="neo-project-stage neo-stage-solo" id="work" aria-labelledby="projects-title">
-        <WipeIn delay>
-          <div className="neo-section-heading"><span className="neo-index">01</span><h2 id="projects-title" className="neo-heading">Selected work</h2><span className="neo-rule" /></div>
-        </WipeIn>
+            <div className="pHeroMain">
+              <h1 className="pHeroName pRise gateWeave">Aaryan Singh</h1>
+              <div className="pRuleHeavy pMastByline pRise pD3">
+                <span className="pMono pMastRole">Applied machine learning</span>
+              </div>
+              <dl className="pMastMeta pRise pD4">
+                <div className="pMastMetaRow">
+                  <dt className="pMono pMastMetaK">EDITION</dt>
+                  <dd className="pMono pMastMetaV">No. 04</dd>
+                </div>
+                <div className="pMastMetaRow">
+                  <dt className="pMono pMastMetaK">PLACE</dt>
+                  <dd className="pMono pMastMetaV">Mumbai</dd>
+                </div>
+                <div className="pMastMetaRow">
+                  <dt className="pMono pMastMetaK">ENTRIES</dt>
+                  <dd className="pMono pMastMetaV">04</dd>
+                </div>
+                <div className="pMastMetaRow">
+                  <dt className="pMono pMastMetaK">AVAILABLE</dt>
+                  <dd className="pMono pMastMetaV">Nov 2026</dd>
+                </div>
+              </dl>
+            </div>
 
-        <div className="slate-grid slate-grid-solo">
-          {projects.map((project) => (
-            <Clapboard
-              key={project.slug}
-              number={project.number}
-              year={project.year}
-              section="ENGINEERING"
-              title={project.title}
-              href={`/work/${project.slug}`}
-              metadata={[
-                ["RUNTIME", project.runtime],
-                ["FORMAT", project.format],
-                ["RUN ON", project.runOn],
-                ["STATUS", project.status],
-                ["CREDIT", project.credit],
-              ]}
-              metric={project.metric}
-              broke={project.broke}
-            />
-          ))}
+            <div className="pHeroPhoto pRise pD3">
+              <Plate
+                photo="aaryan-suit"
+                alt="Aaryan standing outdoors in a grey suit and black shirt, smiling, iron fence and trees behind him"
+                size="column"
+                ratio="4:5"
+                focus="center 20%"
+                priority
+                misreg={2}
+              />
+            </div>
+
+            <div className="pHeroIntro">
+              <p className="pMono pRise pD3" style={{ fontSize: 10, letterSpacing: "0.14em", color: "var(--accent)" }}>
+                Applied machine learning / Mumbai, India
+              </p>
+              <p className="pHomeIntro pRise pD4">
+                I build systems that make intelligence useful where the data lives: on device, at the edge, and in the narrow gap between two cloud services.
+              </p>
+              <p className="pHomeMetaLine pRise pD5">MUMBAI · 19°04′N 72°52′E · AVAILABLE / NOV 2026</p>
+            </div>
+          </section>
         </div>
+
+        <Sheet as="section" className="pHomeStage" aria-labelledby="projects-title">
+          <Rail className="pMono pEntryRail">
+            <div>№ 02</div>
+            <div className="pEntryRailSub">SELECTED WORK</div>
+            <div className="pEntryRailYear">04 ENTRIES</div>
+          </Rail>
+
+          <Content>
+            <div className="pHomeStageHead">
+              <h2 id="projects-title">Selected work</h2>
+              <PataphysicalLink href="/work">Full programme ↗</PataphysicalLink>
+            </div>
+
+            <div className="slate-grid" style={{ marginTop: 32 }}>
+              {PROJECTS.map((project, i) => (
+                <SlideIn key={project.slug} delayMs={Math.min(i, 4) * 60}>
+                  <Clapboard
+                    number={project.number}
+                    year={project.year}
+                    section="ENGINEERING"
+                    title={project.title}
+                    href={`/work/${project.slug}`}
+                    metadata={[
+                      ["RUNTIME", project.runtime],
+                      ["FORMAT", project.format],
+                      ["RUN ON", project.runOn],
+                      ["STATUS", project.status],
+                      ["CREDIT", project.credit],
+                    ]}
+                    metric={project.metric}
+                    broke={project.broke}
+                  />
+                </SlideIn>
+              ))}
+            </div>
+          </Content>
+
+          <Bleed aria-hidden="true" />
+        </Sheet>
 
         <PhotoBelt
           label="Reading + group frames + Samvad run"
@@ -140,17 +147,9 @@ export default function HomePage() {
             { photo: "lights-pair", alt: "Two friends arm in arm under strings of lanterns on a court at night" },
           ]}
         />
-      </section>
+      </main>
 
-      <footer id="contact" className="neo-footer neo-footer-slim">
-        <a href="mailto:aaryansingh2810@gmail.com">aaryansingh2810@gmail.com</a>
-        <span className="neo-footer-links">
-          <a href="https://github.com/aaryxnblondead/" target="_blank" rel="noreferrer noopener">github ↗</a>
-          <a href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" target="_blank" rel="noreferrer noopener">linkedin ↗</a>
-          <Link href="/about">about ↗</Link>
-        </span>
-        <span className="neo-muted">Mumbai · 19°04′N 72°52′E</span>
-      </footer>
-    </main>
+      <SiteFooter />
+    </div>
   );
 }

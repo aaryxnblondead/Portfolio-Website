@@ -198,6 +198,46 @@
   color: var(--ink, #16130f);
 }
 
+/* --- misregistered second plate ----------------------------------------------
+   Rust pass offset 10px / 12px behind the mount (or pair track) only.
+   The caption always sits outside the wrap with a 20px clearance, so text
+   never crosses the accent shape. Single prints are clipped to cut-out
+   polygons; pair prints stay rectangular and let the clipped rust disagree. */
+
+.plate__miswrap {
+  position: relative;
+}
+
+.plate__miswrap > .pPlate {
+  z-index: 0;
+}
+
+.plate__miswrap > .plate__mount,
+.plate__miswrap > .plate__pair-track {
+  position: relative;
+  z-index: 1;
+}
+
+.plate--misreg-1 .plate__img {
+  clip-path: polygon(0% 3%, 97% 0%, 100% 93%, 4% 100%, 1% 52%);
+}
+
+.plate--misreg-2 .plate__img {
+  clip-path: polygon(2% 0%, 100% 4%, 96% 100%, 0% 95%, 3% 41%);
+}
+
+.plate--misreg-3 .plate__img {
+  clip-path: polygon(0% 0%, 94% 2%, 100% 88%, 6% 100%);
+}
+
+.plate--pair.plate--misreg .plate__img {
+  clip-path: none;
+}
+
+.plate--misreg .plate__caption {
+  margin-top: 20px;
+}
+
 /* --- portrait in the rail -------------------------------------------------- */
 
 .plate--portrait .plate__caption {

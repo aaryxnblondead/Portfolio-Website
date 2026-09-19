@@ -55,6 +55,13 @@ export type PlateProps = {
   /** Load eagerly and at high priority — use once per page, above the fold. */
   priority?: boolean;
   className?: string;
+  /**
+   * Strike the misregistered second plate: a solid accent shape offset
+   * 10px / 12px behind the mount only (never behind the caption), with
+   * the print clipped to a cut-out polygon so the two passes disagree.
+   * Pass 1, 2 or 3 for the three cut pairings. Omit for a plain mount.
+   */
+  misreg?: 1 | 2 | 3;
 };
 
 export function Plate({
@@ -68,6 +75,7 @@ export function Plate({
   meta,
   priority = false,
   className,
+  misreg,
 }: PlateProps) {
   const p = typeof photo === 'string' ? getPhoto(photo) : photo;
   const resolved =
@@ -79,9 +87,34 @@ export function Plate({
     ...(resolved ? { '--plate-ratio': resolved } : {}),
   } as CSSProperties;
 
+  const misClass = misreg ? ` plate--misreg plate--misreg-${misreg}` : '';
+  const plateCut = misreg === 2 ? 'pCutoutC' : misreg === 3 ? 'pCutoutA' : 'pCutoutB';
+
+  const mount = (
+    <div className={`plate__mount${resolved ? ' plate__mount--cropped' : ''}`}>
+      <picture>
+        <source type="image/avif" srcSet={p.avif} sizes={SIZES[size]} />
+        <source type="image/webp" srcSet={p.webp} sizes={SIZES[size]} />
+        <img
+          className="plate__img"
+          src={p.src}
+          srcSet={p.jpg}
+          sizes={SIZES[size]}
+          width={p.width}
+          height={p.height}
+          alt={alt}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding={priority ? 'sync' : 'async'}
+          fetchPriority={priority ? 'high' : 'auto'}
+          style={focus ? { objectPosition: focus } : undefined}
+        />
+      </picture>
+    </div>
+  );
+
   return (
     <figure
-      className={`plate plate--${size}${className ? ` ${className}` : ''}`}
+      className={`plate plate--${size}${misClass}${className ? ` ${className}` : ''}`}
       style={style}
     >
       {plate !== undefined && (
@@ -90,25 +123,14 @@ export function Plate({
         </span>
       )}
 
-      <div className={`plate__mount${resolved ? ' plate__mount--cropped' : ''}`}>
-        <picture>
-          <source type="image/avif" srcSet={p.avif} sizes={SIZES[size]} />
-          <source type="image/webp" srcSet={p.webp} sizes={SIZES[size]} />
-          <img
-            className="plate__img"
-            src={p.src}
-            srcSet={p.jpg}
-            sizes={SIZES[size]}
-            width={p.width}
-            height={p.height}
-            alt={alt}
-            loading={priority ? 'eager' : 'lazy'}
-            decoding={priority ? 'sync' : 'async'}
-            fetchPriority={priority ? 'high' : 'auto'}
-            style={focus ? { objectPosition: focus } : undefined}
-          />
-        </picture>
-      </div>
+      {misreg ? (
+        <div className="plate__miswrap">
+          <span aria-hidden="true" className={`pPlate ${plateCut}`} />
+          {mount}
+        </div>
+      ) : (
+        mount
+      )}
 
       {(caption || meta) && (
         <figcaption className="plate__caption">
@@ -254,55 +276,74 @@ export function PlatePair({
   caption,
   plate,
   ratio = '3:2',
+  misreg,
 }: {
   left: { photo: string | Photo; alt: string; focus?: string };
   right: { photo: string | Photo; alt: string; focus?: string };
   caption?: ReactNode;
   plate?: string | number;
   ratio?: string | number;
+  /**
+   * Strike the misregistered second plate behind the pair track only
+   * (never behind the caption). Pair prints stay rectangular; the rust
+   * pass is clipped so the two passes disagree.
+   */
+  misreg?: 1 | 2 | 3;
 }) {
+  const misClass = misreg ? ` plate--misreg plate--misreg-${misreg}` : '';
+  const plateCut = misreg === 2 ? 'pCutoutC' : misreg === 3 ? 'pCutoutA' : 'pCutoutB';
+  const track = (
+    <div className="plate__pair-track">
+      {[left, right].map((side) => {
+        const p = typeof side.photo === 'string' ? getPhoto(side.photo) : side.photo;
+        return (
+          <div
+            key={p.slug}
+            className="plate__mount plate__mount--cropped"
+            style={
+              {
+                '--plate-tone': p.tone,
+                '--plate-lqip': `url("${p.lqip}")`,
+                '--plate-ratio': toRatio(ratio),
+              } as CSSProperties
+            }
+          >
+            <picture>
+              <source type="image/avif" srcSet={p.avif} sizes="(max-width: 900px) 92vw, 470px" />
+              <source type="image/webp" srcSet={p.webp} sizes="(max-width: 900px) 92vw, 470px" />
+              <img
+                className="plate__img"
+                src={p.src}
+                srcSet={p.jpg}
+                sizes="(max-width: 900px) 92vw, 470px"
+                width={p.width}
+                height={p.height}
+                alt={side.alt}
+                loading="lazy"
+                decoding="async"
+                style={side.focus ? { objectPosition: side.focus } : undefined}
+              />
+            </picture>
+          </div>
+        );
+      })}
+    </div>
+  );
   return (
-    <figure className="plate plate--pair">
+    <figure className={`plate plate--pair${misClass}`}>
       {plate !== undefined && (
         <span className="plate__number" aria-hidden="true">
           Pl. {plate}
         </span>
       )}
-      <div className="plate__pair-track">
-        {[left, right].map((side) => {
-          const p = typeof side.photo === 'string' ? getPhoto(side.photo) : side.photo;
-          return (
-            <div
-              key={p.slug}
-              className="plate__mount plate__mount--cropped"
-              style={
-                {
-                  '--plate-tone': p.tone,
-                  '--plate-lqip': `url("${p.lqip}")`,
-                  '--plate-ratio': toRatio(ratio),
-                } as CSSProperties
-              }
-            >
-              <picture>
-                <source type="image/avif" srcSet={p.avif} sizes="(max-width: 900px) 92vw, 470px" />
-                <source type="image/webp" srcSet={p.webp} sizes="(max-width: 900px) 92vw, 470px" />
-                <img
-                  className="plate__img"
-                  src={p.src}
-                  srcSet={p.jpg}
-                  sizes="(max-width: 900px) 92vw, 470px"
-                  width={p.width}
-                  height={p.height}
-                  alt={side.alt}
-                  loading="lazy"
-                  decoding="async"
-                  style={side.focus ? { objectPosition: side.focus } : undefined}
-                />
-              </picture>
-            </div>
-          );
-        })}
-      </div>
+      {misreg ? (
+        <div className="plate__miswrap">
+          <span aria-hidden="true" className={`pPlate ${plateCut}`} />
+          {track}
+        </div>
+      ) : (
+        track
+      )}
       {caption && (
         <figcaption className="plate__caption">
           <p className="plate__text">{caption}</p>

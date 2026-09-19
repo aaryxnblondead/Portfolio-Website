@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Grid, Rail, ContentColumn, SectionNumber } from "@/components/Grid";
 import { TopNav } from "@/components/TopNav";
+import { SiteFooter } from "@/components/programme/SiteFooter";
 
 const LAST_REVISED = "September 17, 2026";
 
@@ -11,6 +12,7 @@ export const metadata = {
 
 export default function ColophonPage() {
   return (
+    <>
     <main id="main" className="py-16">
       <TopNav />
       <Grid>
@@ -129,20 +131,11 @@ export default function ColophonPage() {
                 <Link href="/index-page" className="text-accent no-underline">Index</Link>
               </div>
             </div>
-
-            <div className="mt-8 text-meta">
-              <p className="text-ink-muted">Contact:</p>
-              <p>aaryansingh2810@gmail.com</p>
-              <p>
-                <Link href="https://github.com/aaryxnblondead" className="text-accent no-underline">github.com/aaryxnblondead</Link>
-              </p>
-              <p>
-                <Link href="https://www.linkedin.com/in/aaryan-singh-1b068828b/" className="text-accent no-underline">linkedin.com/in/aaryan-singh</Link>
-              </p>
-            </div>
           </section>
         </ContentColumn>
       </Grid>
     </main>
+    <SiteFooter />
+    </>
   );
 }

@@ -22,7 +22,7 @@ export function Sheet({ as: Tag = "section", className = "", children, ...rest }
 
 type DivProps = HTMLAttributes<HTMLDivElement> & {
   className?: string;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 /** Columns 1-2. Section numbers, never prose. */

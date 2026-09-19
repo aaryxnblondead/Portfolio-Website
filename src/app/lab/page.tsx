@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TopNav } from "@/components/TopNav";
+import { SiteFooter } from "@/components/programme/SiteFooter";
 
 const experiments = [
   {
@@ -47,6 +48,7 @@ export const metadata = {
 
 export default function LabPage() {
   return (
+    <>
     <main className="neo-site neo-inner">
       <TopNav />
       <header className="neo-inner-header">
@@ -89,5 +91,7 @@ export default function LabPage() {
         </Link>
       </div>
     </main>
+    <SiteFooter />
+    </>
   );
 }

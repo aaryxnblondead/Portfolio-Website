@@ -2,6 +2,7 @@ import Link from "next/link";
 import { tokens } from "@/lib/tokens";
 import { FilmStrip } from "@/components/FilmStrip";
 import { TopNav } from "@/components/TopNav";
+import { SiteFooter } from "@/components/programme/SiteFooter";
 
 export const metadata = {
   title: "Specimen | Aaryan Singh",
@@ -13,6 +14,7 @@ export default function SpecimenPage() {
   const spacingSteps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20];
 
   return (
+    <>
     <main id="main" className="py-16">
       <TopNav />
       <div className="grid-12">
@@ -196,5 +198,7 @@ export default function SpecimenPage() {
         </div>
       </div>
     </main>
+    <SiteFooter />
+    </>
   );
 }

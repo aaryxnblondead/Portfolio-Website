@@ -13,13 +13,22 @@ type Pass = {
   treat: "solid" | "outline" | "orange" | "ghost" | "knockout";
 };
 
-const PASSES: Pass[] = [
+const PASSES_FULL: Pass[] = [
   { width: "pWdth62", x: "0em", treat: "solid" },
   { width: "pWdth100", x: "0.05em", treat: "outline" },
   { width: "pWdth125", x: "-0.02em", treat: "solid" },
   { width: "pWdth88", x: "0.03em", treat: "knockout" },
   { width: "pWdth125", x: "-0.04em", treat: "orange" },
   { width: "pWdth62", x: "-0.16em", treat: "outline" },
+  { width: "pWdth100", x: "0.08em", treat: "ghost" },
+];
+
+/* Compact home wall: four plates only — solid / outline / knockout / ghost.
+   Same registration drift, smaller measure, one viewport. */
+const PASSES_COMPACT: Pass[] = [
+  { width: "pWdth62", x: "0em", treat: "solid" },
+  { width: "pWdth100", x: "0.05em", treat: "outline" },
+  { width: "pWdth88", x: "0.03em", treat: "knockout" },
   { width: "pWdth100", x: "0.08em", treat: "ghost" },
 ];
 
@@ -42,14 +51,18 @@ export function Masthead({
     ["ENTRIES", "04"],
     ["AVAILABLE", "Nov 2026"],
   ] as [string, string][],
+  compact = false,
 }: {
   word?: string;
   name?: string;
   role?: string;
   meta?: [string, string][];
+  /** Home gets the 4-pass compact wall; About and long pages get full 7-pass. */
+  compact?: boolean;
 }) {
+  const passes = compact ? PASSES_COMPACT : PASSES_FULL;
   return (
-    <Sheet as="header" className="pMasthead">
+    <Sheet as="header" className={`pMasthead${compact ? " pMasthead--compact" : ""}`}>
       <Rail className="pMono pMastRail">
         <div className="pRuleHeavy pMastRailRule">
           <div>№ 00</div>
@@ -62,24 +75,24 @@ export function Masthead({
           {name} — {role}
         </h1>
 
-        <div aria-hidden="true" className="pWall">
-          {PASSES.map((pass, i) => (
+        <div aria-hidden="true" className={`pWall${compact ? " pWall--compact" : ""}`}>
+          {passes.map((pass, i) => (
             <span
               key={i}
               style={{ transform: `translateX(${pass.x})` }}
-              className={`pWallPass ${pass.width} ${TREATMENT[pass.treat]}`}
+              className={`pWallPass pRise ${i === 0 ? "gateWeave" : ""} ${pass.width} ${TREATMENT[pass.treat]}${i === 1 ? " pD1" : i === 2 ? " pD2" : i === 3 ? " pD3" : i === 4 ? " pD4" : i >= 5 ? " pD5" : ""}`}
             >
               {word}
             </span>
           ))}
         </div>
 
-        <div className="pRuleHeavy pMastByline">
+        <div className="pRuleHeavy pMastByline pRise pD3">
           <span className="pMono pMastName">{name}</span>
           <span className="pMono pMastRole">{role}</span>
         </div>
 
-        <dl className="pMastMeta">
+        <dl className="pMastMeta pRise pD4">
           {meta.map(([k, v]) => (
             <div key={k} className="pMastMetaRow">
               <dt className="pMono pMastMetaK">{k}</dt>
