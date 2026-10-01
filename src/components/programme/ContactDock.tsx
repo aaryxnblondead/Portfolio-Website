@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { PataphysicalLink } from "./PataphysicalLink";
-import { IconGithub, IconLinkedin, IconDocument, IconArrowUpRight } from "@/components/Icons";
+import { IconGithub, IconLinkedin, IconDocument, IconArrowUpRight, IconChevron } from "@/components/Icons";
 import { useIntersectionObserver } from "@/lib/hooks";
 
 /**
  * Floating contact dock — fixed to the left edge on desktop, collapses to a
  * slim tab. Opens on hover/focus to reveal Resume, LinkedIn, GitHub links.
  * Tracks resume clicks via a lightweight API call.
+ * Mirrors the Soundtrack dock on the right edge.
  */
 export function ContactDock() {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,14 +71,16 @@ export function ContactDock() {
       tabIndex={0}
     >
       <button
+        type="button"
         className="contact-dock-tab"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-controls="contact-dock-panel"
         aria-label={isOpen ? "Close contact links" : "Open contact links"}
       >
-        <span className="contact-dock-tab-label">CONTACT</span>
-        <IconDocument size={14} className="contact-dock-icon" aria-hidden="true" />
+        <IconDocument size={16} className="contact-dock-icon" aria-hidden="true" />
+        <span className="contact-dock-tab-label text-meta font-space-mono">Contact</span>
+        <IconChevron size={12} direction={isOpen ? "left" : "right"} className="contact-dock-chevron" />
       </button>
 
       <div
@@ -85,9 +88,10 @@ export function ContactDock() {
         className="contact-dock-panel"
         role="navigation"
         aria-label="Contact and resume links"
+        aria-hidden={!isOpen}
       >
         <div className="contact-dock-head">
-          <h2 className="contact-dock-title">Channels</h2>
+          <h2 className="contact-dock-title text-meta font-space-mono-bold text-ink">Channels</h2>
         </div>
 
         <ul className="contact-dock-list">

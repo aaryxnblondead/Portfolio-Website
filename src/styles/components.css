@@ -358,7 +358,7 @@
 
 /* ===================================================== CONTACT DOCK =====
    Floating left-edge dock (desktop only), mirroring the Soundtrack dock's
-   visual language. Collapsed to a vertical tab; opens on hover/focus to
+   visual language. Collapsed to a slim tab; opens on hover/focus to
    reveal Resume / LinkedIn / GitHub links. Never rendered on mobile. */
 
 .contact-dock {
@@ -380,11 +380,10 @@
 
 .contact-dock-tab {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
-  width: 34px;
-  padding: 14px 0;
+  padding: 10px 12px;
   background-color: var(--paper);
   border: 1px solid var(--rule);
   border-left: none;
@@ -392,6 +391,7 @@
   cursor: pointer;
   align-self: center;
   transition: color 150ms ease-in-out;
+  white-space: nowrap;
 }
 
 .contact-dock-tab:hover,
@@ -400,35 +400,55 @@
 }
 
 .contact-dock-tab-label {
-  writing-mode: vertical-rl !important;
-  transform: rotate(180deg);
+  writing-mode: horizontal-tb !important;
+  transform: none;
   letter-spacing: 0.14em;
   white-space: nowrap;
   font-family: var(--font-space-mono);
   font-size: 0.6875rem;
   font-weight: 700;
   line-height: 1;
-  text-orientation: mixed;
+  text-transform: uppercase;
 }
 
 .contact-dock-icon {
   flex: none;
+  transition: transform 1s linear;
+}
+
+.contact-dock.is-open .contact-dock-icon {
+  animation: contact-dock-spin 8s linear infinite;
+}
+
+@keyframes contact-dock-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contact-dock-chevron {
+  flex: none;
+  transition: transform 150ms ease-in-out;
 }
 
 .contact-dock-panel {
   width: var(--cdock-panel-w);
-  max-height: 70vh;
+  max-height: 82vh;
   overflow-y: auto;
   background-color: var(--paper);
   border: 1px solid var(--rule);
   border-left: none;
-  padding: 16px;
+  padding: 20px;
 }
 
 .contact-dock-head {
-  padding-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 12px;
   border-bottom: 2px solid var(--ink);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .contact-dock-title {
@@ -494,6 +514,9 @@
 @media (prefers-reduced-motion: reduce) {
   .contact-dock {
     transition: none;
+  }
+  .contact-dock.is-open .contact-dock-icon {
+    animation: none;
   }
 }
 
