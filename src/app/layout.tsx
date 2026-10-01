@@ -4,6 +4,7 @@ import "@/styles/photos.css";
 import "@/styles/programme.css";
 import { archivo, archivoWdth, spaceMono } from "@/lib/fonts";
 import { Soundtrack } from "@/components/Soundtrack";
+import { ContactDock } from "@/components/programme/ContactDock";
 import { Analytics } from "@vercel/analytics/next";
 import { FilmGrain } from "@/components/programme/Analogue";
 import { Backdrop } from "@/components/programme/Backdrop";
@@ -61,6 +62,8 @@ export default function RootLayout({
         {children}
 
         <Soundtrack />
+
+        <ContactDock />
 
         <Analytics />
 
