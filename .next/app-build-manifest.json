@@ -40,22 +40,6 @@
       "static/chunks/619-ba102abea3e3d0e4.js",
       "static/chunks/app/colophon/page-32faa0db918bf342.js"
     ],
-    "/about/page": [
-      "static/chunks/webpack-d4e8ea0126d628e7.js",
-      "static/chunks/4bd1b696-c023c6e3521b1417.js",
-      "static/chunks/255-f7c4c205ddd80098.js",
-      "static/chunks/main-app-cae33d062418f6f4.js",
-      "static/chunks/619-ba102abea3e3d0e4.js",
-      "static/chunks/app/about/page-068df9b9304ceb02.js"
-    ],
-    "/index-page/page": [
-      "static/chunks/webpack-d4e8ea0126d628e7.js",
-      "static/chunks/4bd1b696-c023c6e3521b1417.js",
-      "static/chunks/255-f7c4c205ddd80098.js",
-      "static/chunks/main-app-cae33d062418f6f4.js",
-      "static/chunks/619-ba102abea3e3d0e4.js",
-      "static/chunks/app/index-page/page-32faa0db918bf342.js"
-    ],
     "/work/page": [
       "static/chunks/webpack-d4e8ea0126d628e7.js",
       "static/chunks/4bd1b696-c023c6e3521b1417.js",
@@ -63,6 +47,14 @@
       "static/chunks/main-app-cae33d062418f6f4.js",
       "static/chunks/619-ba102abea3e3d0e4.js",
       "static/chunks/app/work/page-70e2041a28d68aba.js"
+    ],
+    "/about/page": [
+      "static/chunks/webpack-d4e8ea0126d628e7.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-f7c4c205ddd80098.js",
+      "static/chunks/main-app-cae33d062418f6f4.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/about/page-068df9b9304ceb02.js"
     ],
     "/page": [
       "static/chunks/webpack-d4e8ea0126d628e7.js",
@@ -87,6 +79,14 @@
       "static/chunks/main-app-cae33d062418f6f4.js",
       "static/chunks/619-ba102abea3e3d0e4.js",
       "static/chunks/app/specimen/page-f96d8b4e55fd99eb.js"
+    ],
+    "/index-page/page": [
+      "static/chunks/webpack-d4e8ea0126d628e7.js",
+      "static/chunks/4bd1b696-c023c6e3521b1417.js",
+      "static/chunks/255-f7c4c205ddd80098.js",
+      "static/chunks/main-app-cae33d062418f6f4.js",
+      "static/chunks/619-ba102abea3e3d0e4.js",
+      "static/chunks/app/index-page/page-32faa0db918bf342.js"
     ]
   }
 }

@@ -152,13 +152,3 @@ export function IconSprocket(props: IconProps) {
     </Base>
   );
 }
-
-export function IconDocument(props: IconProps) {
-  return (
-    <Base {...props}>
-      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-      <path d="M14.5 2v6h6" strokeOpacity="0.5" />
-      <path d="M8 10h8M8 14h8M8 18h5" strokeOpacity="0.5" />
-    </Base>
-  );
-}
