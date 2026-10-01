@@ -400,13 +400,15 @@
 }
 
 .contact-dock-tab-label {
-  writing-mode: vertical-rl;
+  writing-mode: vertical-rl !important;
   transform: rotate(180deg);
   letter-spacing: 0.14em;
   white-space: nowrap;
   font-family: var(--font-space-mono);
   font-size: 0.6875rem;
   font-weight: 700;
+  line-height: 1;
+  text-orientation: mixed;
 }
 
 .contact-dock-icon {
