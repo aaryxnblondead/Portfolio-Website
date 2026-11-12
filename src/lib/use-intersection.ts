@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState, RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 
+/**
+ * Fires once, when the element first crosses into view, then disconnects.
+ * Entrance animations want a one-shot, not a boolean that keeps flipping.
+ */
 export function useIntersectionObserver(
   options: IntersectionObserverInit = {}
 ): [RefObject<HTMLDivElement>, boolean] {
@@ -31,22 +35,4 @@ export function useIntersectionObserver(
   }, [ref, options]);
 
   return [ref, isVisible];
-}
-
-export function usePrefersReducedMotion(): boolean {
-  const [prefersReduced, setPrefersReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReduced(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
-    mediaQuery.addEventListener("change", handler);
-
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
-
-  return prefersReduced;
 }

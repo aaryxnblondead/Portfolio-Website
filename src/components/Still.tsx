@@ -13,7 +13,6 @@ export function Still({
 }) {
   return (
     <figure className={["still", className].filter(Boolean).join(" ")} style={{ "--still-aspect": aspect } as React.CSSProperties}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="still-img" src={src} alt={alt} loading="lazy" decoding="async" />
       {caption ? <figcaption className="still-caption">{caption}</figcaption> : null}
     </figure>

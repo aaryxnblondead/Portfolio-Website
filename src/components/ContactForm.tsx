@@ -1,67 +1,13 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useContactSubmit } from "@/lib/use-contact-form";
 
 /**
- * Contact form posting straight to aaryansingh2810@gmail.com via the
- * FormSubmit endpoint, so it works on a fully static export with no
- * server of its own. AJAX first for an inline receipt; the native POST
- * action underneath keeps it working with JS off. A honeypot field
- * absorbs the bots. NOTE: the very first submission triggers a one-time
- * activation email from FormSubmit that must be clicked.
+ * Contact form fields only — the posting, honeypot and fallback logic live in
+ * useContactSubmit(), so this file is the markup it drives.
  */
-
-const ENDPOINT = "https://formsubmit.co/aaryansingh2810@gmail.com";
-const AJAX_ENDPOINT = "https://formsubmit.co/ajax/aaryansingh2810@gmail.com";
-
-type Status = "idle" | "sending" | "sent" | "error";
-
 export function ContactForm() {
-  const [status, setStatus] = useState<Status>("idle");
-
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (status === "sending") return;
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    // Honeypot filled: say nothing, pretend it worked.
-    if (String(data.get("_honey") ?? "").trim() !== "") {
-      setStatus("sent");
-      return;
-    }
-    setStatus("sending");
-    // Mobile networks hang and mobile blockers kill the AJAX endpoint, so
-    // the fetch gets a timeout — and any AJAX failure falls back to a
-    // native POST, which always delivers instead of stranding the button.
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 15000);
-    try {
-      const res = await fetch(AJAX_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: String(data.get("name") ?? ""),
-          email: String(data.get("email") ?? ""),
-          message: String(data.get("message") ?? ""),
-          _subject: `Portfolio contact from ${String(data.get("name") ?? "the site")}`,
-          _template: "table",
-          _honey: "",
-        }),
-        signal: controller.signal,
-      });
-      window.clearTimeout(timer);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setStatus("sent");
-      form.reset();
-    } catch {
-      window.clearTimeout(timer);
-      try {
-        form.submit();
-      } catch {
-        setStatus("error");
-      }
-    }
-  }
+  const { status, onSubmit, endpoint } = useContactSubmit();
 
   if (status === "sent") {
     return (
@@ -75,7 +21,7 @@ export function ContactForm() {
   return (
     <form
       className="contact-form"
-      action={ENDPOINT}
+      action={endpoint}
       method="POST"
       onSubmit={onSubmit}
       aria-label="Contact form"

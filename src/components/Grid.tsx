@@ -39,22 +39,6 @@ export function ContentColumn({ children, className }: ContentColumnProps) {
   );
 }
 
-interface RuleProps {
-  thickness?: "1px" | "2px";
-  className?: string;
-}
-
-export function Rule({ thickness = "1px", className }: RuleProps) {
-  const classes = thickness === "2px" ? "rule-2" : "rule";
-  return (
-    <div
-      className={`${classes} ${className || ""}`}
-      style={{ height: thickness }}
-      aria-hidden="true"
-    />
-  );
-}
-
 interface SectionRuleProps {
   className?: string;
 }

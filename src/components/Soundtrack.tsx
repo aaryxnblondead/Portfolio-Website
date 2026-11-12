@@ -1,92 +1,27 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  formatDuration,
-  formatPlayedAt,
-  useSpotifyFeed,
-  type Track,
-} from "@/lib/spotify";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { Feed, NowPlaying, RecentTrack, Track } from "@/lib/spotify";
+import { useSpotifyFeed } from "@/lib/spotify";
+import { formatDuration, formatPlayedAt } from "@/lib/track-format";
 import { IconChevron, IconVinyl } from "@/components/Icons";
 
-export function Soundtrack() {
-  const state = useSpotifyFeed();
-  const [manualOpen, setManualOpen] = useState(false);
-  const [dismissedTrackId, setDismissedTrackId] = useState<string | null>(null);
-  const anchor = useRef<{ progressMs: number; at: number } | null>(null);
-  const [tick, setTick] = useState(0);
-
-  const feed = state.status === "ready" ? state.feed : null;
-  // The worker reports the last touched item even when paused. Only a
-  // currently playing track drives the "On now" state and the progress line;
-  // anything else falls through to the recent list.
-  const playing = feed?.nowPlaying?.isPlaying ? feed.nowPlaying : null;
-
-  useEffect(() => {
-    anchor.current =
-      playing?.progressMs != null ? { progressMs: playing.progressMs, at: Date.now() } : null;
-  }, [playing?.id, playing?.progressMs]);
-
-  useEffect(() => {
-    if (!playing) return;
-    const id = setInterval(() => setTick((value) => value + 1), 1000);
-    return () => clearInterval(id);
-  }, [playing]);
-
-  let elapsed = playing?.progressMs ?? 0;
-  if (playing && anchor.current) {
-    elapsed = Math.min(
-      anchor.current.progressMs + (Date.now() - anchor.current.at),
-      playing.durationMs ?? Number.MAX_SAFE_INTEGER
-    );
-  }
-  void tick;
-
-  const progress =
-    playing?.durationMs && playing.durationMs > 0
-      ? Math.min(100, (elapsed / playing.durationMs) * 100)
-      : 0;
-  const hasContent = Boolean(feed && (playing || feed.recent.length > 0));
-  const isDismissed = playing ? dismissedTrackId === playing.id : false;
-  const open = playing ? !isDismissed : manualOpen;
-
-  if (state.status === "loading" || state.status === "unconfigured") return null;
-
-  if (state.status === "error") {
-    return (
-      <div className="sdtk-dock">
-        <button
-          type="button"
-          className="sdtk-tab"
-          aria-expanded={manualOpen}
-          aria-controls="soundtrack-panel"
-          onClick={() => setManualOpen((value) => !value)}
-        >
-          <IconVinyl size={16} className="sdtk-tab-vinyl" />
-          <span className="sdtk-tab-label text-meta font-space-mono">Soundtrack</span>
-          <IconChevron size={12} direction={manualOpen ? "right" : "left"} />
-        </button>
-
-        <section
-          id="soundtrack-panel"
-          className="sdtk-panel"
-          aria-labelledby="soundtrack-heading"
-          aria-hidden={!manualOpen}
-        >
-          <div className="sdtk-head">
-            <h2 id="soundtrack-heading" className="text-meta font-space-mono-bold text-ink">
-              Soundtrack
-            </h2>
-            <SpotifyMark />
-          </div>
-          <p className="sdtk-note text-meta font-space-mono text-ink-muted">{state.message}</p>
-        </section>
-      </div>
-    );
-  }
-
-  if (!hasContent) return null;
-
+/**
+ * The dock's tab plus its panel. Both open and error states share this shell,
+ * so the ARIA wiring and the heading exist in exactly one place.
+ */
+function Dock({
+  open,
+  spinning,
+  onToggle,
+  children,
+}: {
+  open: boolean;
+  /** Marks the tab as "On now" and sets the record turning. */
+  spinning: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
   return (
     <div className={`sdtk-dock${open ? " is-open" : ""}`}>
       <button
@@ -94,17 +29,11 @@ export function Soundtrack() {
         className="sdtk-tab"
         aria-expanded={open}
         aria-controls="soundtrack-panel"
-        onClick={() => {
-          if (playing) setDismissedTrackId(open ? playing.id : null);
-          else setManualOpen((value) => !value);
-        }}
+        onClick={onToggle}
       >
-        <IconVinyl
-          size={16}
-          className={playing ? "sdtk-tab-vinyl is-spinning" : "sdtk-tab-vinyl"}
-        />
+        <IconVinyl size={16} className={spinning ? "sdtk-tab-vinyl is-spinning" : "sdtk-tab-vinyl"} />
         <span className="sdtk-tab-label text-meta font-space-mono">
-          {playing ? "On now" : "Soundtrack"}
+          {spinning ? "On now" : "Soundtrack"}
         </span>
         <IconChevron size={12} direction={open ? "right" : "left"} />
       </button>
@@ -121,82 +50,200 @@ export function Soundtrack() {
           </h2>
           <SpotifyMark />
         </div>
-        <span className="sr-only" aria-live="polite">
-          {playing ? `Now playing ${playing.title} by ${playing.artist}` : ""}
-        </span>
-
-        {playing ? (
-          <article className="sdtk-now">
-            <div className="sdtk-art-wrap">
-              {playing.art && (
-                <img
-                  className="sdtk-art"
-                  src={playing.art}
-                  alt={playing.album ? `${playing.album} cover art` : "Album cover art"}
-                  width={240}
-                  height={240}
-                  loading="lazy"
-                  decoding="async"
-                />
-              )}
-              <IconVinyl size={28} className="sdtk-vinyl-sticker is-spinning" aria-hidden="true" />
-            </div>
-            <p className="sdtk-state text-meta font-space-mono text-accent">
-              <Equalizer /> On now
-            </p>
-            <h3 className="sdtk-title">
-              <TrackLink track={playing} />
-            </h3>
-            <p className="sdtk-artist text-small text-ink">{playing.artist}</p>
-            {playing.album && (
-              <p className="sdtk-album text-meta font-space-mono text-ink-muted">{playing.album}</p>
-            )}
-            <div
-              className="sdtk-progress"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={Math.round(progress)}
-              aria-label="Track progress"
-            >
-              <span className="sdtk-progress-fill" style={{ width: `${progress}%` }} />
-            </div>
-            <p className="sdtk-times text-meta font-space-mono text-ink-muted">
-              <span>{formatDuration(elapsed)}</span>
-              <span>{formatDuration(playing.durationMs)}</span>
-            </p>
-          </article>
-        ) : (
-          <p className="sdtk-note text-meta font-space-mono text-ink-muted">
-            Nothing playing right now
-          </p>
-        )}
-
-        {feed && feed.recent.length > 0 && (
-          <>
-            <p className="sdtk-divider text-meta font-space-mono text-ink-muted">Earlier</p>
-            <ol className="sdtk-list">
-              {feed.recent.map((track, index) => (
-                <li key={`${track.id}-${track.playedAt ?? index}`} className="sdtk-row">
-                  <span className="sdtk-index text-meta font-space-mono text-ink-muted">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="sdtk-row-body">
-                    <span className="sdtk-row-title">
-                      <TrackLink track={track} />
-                    </span>
-                    <span className="sdtk-row-meta text-meta font-space-mono text-ink-muted">
-                      {track.artist}
-                      {track.playedAt ? ` · ${formatPlayedAt(track.playedAt)}` : ""}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </>
-        )}
+        {children}
       </section>
     </div>
+  );
+}
+
+/**
+ * Open/closed ownership. A live track opens the dock by itself and can be
+ * dismissed until the track changes; with nothing playing the reader owns it.
+ */
+function useDockOpen(playing: NowPlaying | null) {
+  const [manualOpen, setManualOpen] = useState(false);
+  const [dismissedTrackId, setDismissedTrackId] = useState<string | null>(null);
+
+  const isDismissed = playing !== null && dismissedTrackId === playing.id;
+  const open = playing ? !isDismissed : manualOpen;
+
+  function toggle() {
+    if (!playing) {
+      setManualOpen((value) => !value);
+      return;
+    }
+    setDismissedTrackId(open ? playing.id : null);
+  }
+
+  return { open, toggle };
+}
+
+/**
+ * Elapsed time, extrapolated locally between polls. The worker only reports a
+ * progress snapshot, so without this the bar would jump once a minute.
+ */
+function useElapsed(track: NowPlaying | null): number {
+  const anchor = useRef<{ progressMs: number; at: number } | null>(null);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    anchor.current =
+      track?.progressMs != null ? { progressMs: track.progressMs, at: Date.now() } : null;
+  }, [track?.id, track?.progressMs]);
+
+  useEffect(() => {
+    if (!track) return;
+    const id = setInterval(() => setTick((value) => value + 1), 1000);
+    return () => clearInterval(id);
+  }, [track]);
+
+  if (!track || !anchor.current) return track?.progressMs ?? 0;
+
+  const elapsed = anchor.current.progressMs + (Date.now() - anchor.current.at);
+  return Math.min(elapsed, track.durationMs ?? Number.MAX_SAFE_INTEGER);
+}
+
+function NowPlayingCard({ track, elapsed }: { track: NowPlaying; elapsed: number }) {
+  const progress =
+    track.durationMs && track.durationMs > 0
+      ? Math.min(100, (elapsed / track.durationMs) * 100)
+      : 0;
+
+  return (
+    <article className="sdtk-now">
+      <div className="sdtk-art-wrap">
+        {track.art && (
+          <img
+            className="sdtk-art"
+            src={track.art}
+            alt={track.album ? `${track.album} cover art` : "Album cover art"}
+            width={240}
+            height={240}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+        <IconVinyl size={28} className="sdtk-vinyl-sticker is-spinning" aria-hidden="true" />
+      </div>
+      <p className="sdtk-state text-meta font-space-mono text-accent">
+        <Equalizer /> On now
+      </p>
+      <h3 className="sdtk-title">
+        <TrackLink track={track} />
+      </h3>
+      <p className="sdtk-artist text-small text-ink">{track.artist}</p>
+      {track.album && (
+        <p className="sdtk-album text-meta font-space-mono text-ink-muted">{track.album}</p>
+      )}
+      <div
+        className="sdtk-progress"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(progress)}
+        aria-label="Track progress"
+      >
+        <span className="sdtk-progress-fill" style={{ width: `${progress}%` }} />
+      </div>
+      <p className="sdtk-times text-meta font-space-mono text-ink-muted">
+        <span>{formatDuration(elapsed)}</span>
+        <span>{formatDuration(track.durationMs)}</span>
+      </p>
+    </article>
+  );
+}
+
+function RecentList({ tracks }: { tracks: RecentTrack[] }) {
+  return (
+    <>
+      <p className="sdtk-divider text-meta font-space-mono text-ink-muted">Earlier</p>
+      <ol className="sdtk-list">
+        {tracks.map((track, index) => (
+          <li key={`${track.id}-${track.playedAt ?? index}`} className="sdtk-row">
+            <span className="sdtk-index text-meta font-space-mono text-ink-muted">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="sdtk-row-body">
+              <span className="sdtk-row-title">
+                <TrackLink track={track} />
+              </span>
+              <span className="sdtk-row-meta text-meta font-space-mono text-ink-muted">
+                {track.artist}
+                {track.playedAt ? ` · ${formatPlayedAt(track.playedAt)}` : ""}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </>
+  );
+}
+
+/** The panel body for a live feed: the current track, then what came before. */
+function PanelBody({
+  feed,
+  playing,
+  elapsed,
+}: {
+  feed: Feed | null;
+  playing: NowPlaying | null;
+  elapsed: number;
+}) {
+  const recent = feed?.recent ?? [];
+
+  return (
+    <>
+      <span className="sr-only" aria-live="polite">
+        {playing ? `Now playing ${playing.title} by ${playing.artist}` : ""}
+      </span>
+
+      {playing ? (
+        <NowPlayingCard track={playing} elapsed={elapsed} />
+      ) : (
+        <p className="sdtk-note text-meta font-space-mono text-ink-muted">
+          Nothing playing right now
+        </p>
+      )}
+
+      {recent.length > 0 && <RecentList tracks={recent} />}
+    </>
+  );
+}
+
+/**
+ * What the panel needs to know about the feed, derived once. The worker reports
+ * the last touched item even when paused, so only a currently playing track
+ * counts as "on now"; anything else falls through to the recent list.
+ */
+function useFeedView() {
+  const state = useSpotifyFeed();
+  const feed = state.status === "ready" ? state.feed : null;
+  const playing = feed?.nowPlaying?.isPlaying ? feed.nowPlaying : null;
+  return { state, feed, playing };
+}
+
+export function Soundtrack() {
+  const { state, feed, playing } = useFeedView();
+  const elapsed = useElapsed(playing);
+  const { open, toggle } = useDockOpen(playing);
+
+  if (state.status === "loading" || state.status === "unconfigured") return null;
+
+  if (state.status === "error") {
+    return (
+      <Dock open={open} spinning={false} onToggle={toggle}>
+        <p className="sdtk-note text-meta font-space-mono text-ink-muted">{state.message}</p>
+      </Dock>
+    );
+  }
+
+  const hasContent = playing !== null || (feed?.recent.length ?? 0) > 0;
+  if (!hasContent) return null;
+
+  return (
+    <Dock open={open} spinning={playing !== null} onToggle={toggle}>
+      <PanelBody feed={feed} playing={playing} elapsed={elapsed} />
+    </Dock>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { SlideIn } from "@/components/Motion";
-import { Clapboard } from "@/components/Clapboard";
+import { ProjectSlate } from "@/components/programme/ProjectSlate";
 import type { ProjectRecord } from "@/lib/projects";
 
 const FILTERS = ["ALL", "Shipped", "In progress"] as const;
@@ -42,24 +42,9 @@ export function WorkIndex({ projects }: { projects: ProjectRecord[] }) {
       </div>
 
       <div className="slate-grid">
-        {visible.map((p, i) => (
-          <SlideIn key={p.slug} delayMs={Math.min(i, 4) * 60}>
-            <Clapboard
-              number={p.number}
-              year={p.year}
-              section="ENGINEERING"
-              title={p.title}
-              href={`/work/${p.slug}`}
-              metadata={[
-                ["RUNTIME", p.runtime],
-                ["FORMAT", p.format],
-                ["RUN ON", p.runOn],
-                ["STATUS", p.status],
-                ["CREDIT", p.credit],
-              ]}
-              metric={p.metric}
-              broke={p.broke}
-            />
+        {visible.map((project, i) => (
+          <SlideIn key={project.slug} delayMs={Math.min(i, 4) * 60}>
+            <ProjectSlate project={project} />
           </SlideIn>
         ))}
       </div>

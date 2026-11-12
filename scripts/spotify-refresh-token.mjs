@@ -18,12 +18,13 @@
 
 import http from "node:http";
 import crypto from "node:crypto";
-import { URL, URLSearchParams } from "node:url";
+import { URL } from "node:url";
+import { authorizeUrl, exchangeCode, receipt, REDIRECT_PATH } from "./spotify-auth.mjs";
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const PORT = 8888;
-const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
+const REDIRECT_URI = `http://127.0.0.1:${PORT}${REDIRECT_PATH}`;
 
 // Only what the panel actually renders. Nothing speculative.
 const SCOPES = ["user-read-currently-playing", "user-read-recently-played"];
@@ -34,65 +35,42 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
 }
 
 const state = crypto.randomBytes(16).toString("hex");
-
-const authorizeUrl =
-  "https://accounts.spotify.com/authorize?" +
-  new URLSearchParams({
-    response_type: "code",
-    client_id: CLIENT_ID,
-    scope: SCOPES.join(" "),
-    redirect_uri: REDIRECT_URI,
-    state,
-  });
+const consentUrl = authorizeUrl({ clientId: CLIENT_ID, redirectUri: REDIRECT_URI, scopes: SCOPES, state });
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://127.0.0.1:${PORT}`);
-  if (url.pathname !== "/callback") {
+  if (url.pathname !== REDIRECT_PATH) {
     res.writeHead(404).end();
     return;
   }
 
   const error = url.searchParams.get("error");
   if (error) {
-    finish(res, `Authorization failed: ${error}`);
+    respond(res, `Authorization failed: ${error}`);
     console.error(`\nSpotify returned: ${error}`);
-    server.close();
-    process.exit(1);
+    shutdown(1);
   }
 
   if (url.searchParams.get("state") !== state) {
-    finish(res, "State mismatch. Nothing was exchanged.");
+    respond(res, "State mismatch. Nothing was exchanged.");
     console.error("\nState mismatch — possible CSRF. Aborting.");
-    server.close();
-    process.exit(1);
+    shutdown(1);
   }
 
-  const code = url.searchParams.get("code");
-
-  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic " + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
-    },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      code,
-      redirect_uri: REDIRECT_URI,
-    }),
+  const { ok, body } = await exchangeCode({
+    clientId: CLIENT_ID,
+    clientSecret: CLIENT_SECRET,
+    code: url.searchParams.get("code"),
+    redirectUri: REDIRECT_URI,
   });
 
-  const body = await tokenRes.json();
-
-  if (!tokenRes.ok) {
-    finish(res, "Token exchange failed. Check the terminal.");
+  if (!ok) {
+    respond(res, "Token exchange failed. Check the terminal.");
     console.error("\nToken exchange failed:", body);
-    server.close();
-    process.exit(1);
+    shutdown(1);
   }
 
-  finish(res, "Done. You can close this tab.");
+  respond(res, "Done. You can close this tab.");
 
   console.log("\n  Refresh token:\n");
   console.log("    " + body.refresh_token + "\n");
@@ -100,20 +78,20 @@ const server = http.createServer(async (req, res) => {
   console.log("    cd worker && npx wrangler secret put SPOTIFY_REFRESH_TOKEN\n");
   console.log(`  Scopes granted: ${body.scope}\n`);
 
-  server.close();
-  process.exit(0);
+  shutdown(0);
 });
 
-function finish(res, message) {
+function respond(res, message) {
   res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-  res.end(
-    `<!doctype html><meta charset="utf-8"><title>Spotify</title>` +
-      `<body style="font:16px/1.5 ui-monospace,Menlo,monospace;background:#F2EEE6;color:#171412;padding:48px">` +
-      `<p>${message}</p></body>`
-  );
+  res.end(receipt(message));
+}
+
+function shutdown(code) {
+  server.close();
+  process.exit(code);
 }
 
 server.listen(PORT, "127.0.0.1", () => {
   console.log("\n  Open this URL and approve access:\n");
-  console.log("    " + authorizeUrl + "\n");
+  console.log("    " + consentUrl + "\n");
 });

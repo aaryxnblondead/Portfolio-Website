@@ -34,6 +34,63 @@ export type FeedState =
   | { status: 'error'; message: string }
   | { status: 'ready'; feed: Feed };
 
+/** A failed request: a message worth showing, plus how long to stop asking. */
+class FeedError extends Error {
+  retryAfterMs: number;
+
+  constructor(message: string, retryAfterMs = 0) {
+    super(message);
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
+const DEFAULT_COOL_MS = 60_000;
+const MAX_COOL_MS = 300_000;
+
+const UNREACHABLE =
+  'Could not reach the feed. This is almost always CORS: open the ' +
+  'Network tab and check the request to the worker, or hit the worker ' +
+  'URL directly with ?debug=1.';
+
+/** Honor the worker's Retry-After, capped so a bad header cannot mute the panel. */
+function coolDownMs(res: Response): number {
+  const header = parseInt(res.headers.get('retry-after') || '', 10);
+  const seconds = Number.isFinite(header) && header > 0 ? header : DEFAULT_COOL_MS / 1000;
+  return Math.min(seconds * 1000, MAX_COOL_MS);
+}
+
+function failureMessage(body: { message?: string } | null, status: number): string {
+  if (body?.message) return body.message;
+  return status === 403
+    ? 'Feed returned 403. The worker rejected this origin — add it to ALLOWED_ORIGINS.'
+    : `Feed returned ${status}. Check the worker logs with \`npx wrangler tail\`.`;
+}
+
+/**
+ * One GET against the worker. Returns null for a 2xx with an unparseable body,
+ * which the caller treats as "no news" rather than an error.
+ */
+async function requestFeed(url: string, signal: AbortSignal): Promise<Feed | null> {
+  const res = await fetch(url, { signal, cache: 'no-store', mode: 'cors' });
+  const body = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const retryAfterMs = res.status === 429 ? coolDownMs(res) : 0;
+    throw new FeedError(failureMessage(body, res.status), retryAfterMs);
+  }
+
+  return (body as Feed) ?? null;
+}
+
+function warnUnconfigured() {
+  if (process.env.NODE_ENV === 'production') return;
+  console.warn(
+    '[soundtrack] NEXT_PUBLIC_SPOTIFY_FEED_URL is undefined in this bundle. ' +
+      'Set it in Vercel > Settings > Environment Variables for every environment ' +
+      'you deploy, then trigger a NEW deploy — NEXT_PUBLIC_ vars are baked in at build time.',
+  );
+}
+
 /**
  * Poll interval in ms. Pass 0 for a single fetch with no polling and no
  * visibility refresh — for widgets like LastListened that show a moment,
@@ -51,15 +108,7 @@ export function useSpotifyFeed(pollMs = 60_000): FeedState {
 
   useEffect(() => {
     if (!FEED_URL) {
-      // Loud in dev, silent in production — but never a blank panel with no
-      // explanation of why.
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(
-          '[soundtrack] NEXT_PUBLIC_SPOTIFY_FEED_URL is undefined in this bundle. ' +
-            'Set it in Vercel > Settings > Environment Variables for every environment ' +
-            'you deploy, then trigger a NEW deploy — NEXT_PUBLIC_ vars are baked in at build time.',
-        );
-      }
+      warnUnconfigured();
       return;
     }
 
@@ -72,42 +121,13 @@ export function useSpotifyFeed(pollMs = 60_000): FeedState {
       abort.current = controller;
 
       try {
-        const res = await fetch(FEED_URL as string, {
-          signal: controller.signal,
-          cache: 'no-store',
-          mode: 'cors',
-        });
-
-        const body = await res.json().catch(() => null);
-
-        if (!res.ok) {
-          if (res.status === 429) {
-            const header = parseInt(res.headers.get('retry-after') || '', 10);
-            const wait =
-              Number.isFinite(header) && header > 0 ? Math.min(header, 300) : 60;
-            coolUntil.current = Date.now() + wait * 1000;
-          }
-          const message =
-            body?.message ||
-            `Feed returned ${res.status}. ${
-              res.status === 403
-                ? 'The worker rejected this origin — add it to ALLOWED_ORIGINS.'
-                : 'Check the worker logs with `npx wrangler tail`.'
-            }`;
-          if (!cancelled) setState({ status: 'error', message });
-          return;
-        }
-
-        if (!cancelled && body) setState({ status: 'ready', feed: body as Feed });
+        const feed = await requestFeed(FEED_URL as string, controller.signal);
+        if (!cancelled && feed) setState({ status: 'ready', feed });
       } catch (err) {
         if (controller.signal.aborted || cancelled) return;
-        setState({
-          status: 'error',
-          message:
-            'Could not reach the feed. This is almost always CORS: open the ' +
-            'Network tab and check the request to the worker, or hit the worker ' +
-            'URL directly with ?debug=1.',
-        });
+        const failure = err instanceof FeedError ? err : new FeedError(UNREACHABLE);
+        coolUntil.current = Date.now() + failure.retryAfterMs;
+        setState({ status: 'error', message: failure.message });
       }
     }
 
@@ -138,32 +158,4 @@ export function useSpotifyFeed(pollMs = 60_000): FeedState {
   }, [pollMs]);
 
   return state;
-}
-
-/** For the progress line. */
-export function formatDuration(ms: number | null): string {
-  if (!ms && ms !== 0) return '—';
-  const total = Math.round(ms / 1000);
-  const m = Math.floor(total / 60);
-  const s = total % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
-/** "14 min ago", "3 hr ago", "yesterday" — matched to the site's mono meta voice. */
-export function formatPlayedAt(iso: string | null): string {
-  if (!iso) return '';
-  const then = new Date(iso).getTime();
-  if (!Number.isFinite(then)) return '';
-
-  const minutes = Math.round((Date.now() - then) / 60_000);
-  if (minutes < 1) return 'just now';
-  if (minutes < 60) return `${minutes} min ago`;
-
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours} hr ago`;
-
-  const days = Math.round(hours / 24);
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  return new Date(then).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 }

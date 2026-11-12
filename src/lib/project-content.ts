@@ -1,10 +1,6 @@
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import matter from "gray-matter";
-import { remark } from "remark";
-import html from "remark-html";
-import gfm from "remark-gfm";
-import footnotes from "remark-footnotes";
 import { PROJECT_ORDER } from "@/lib/projects";
 
 const contentDirectory = join(process.cwd(), "src/content/work");
@@ -24,7 +20,7 @@ export interface ProjectMetadata {
   };
 }
 
-export async function getProjectSlugs(): Promise<string[]> {
+async function getProjectSlugs(): Promise<string[]> {
   const files = readdirSync(contentDirectory);
   return files
     .filter((file) => file.endsWith(".mdx"))
@@ -63,19 +59,4 @@ export async function getAllProjects(): Promise<ProjectMetadata[]> {
   return projects
     .map((project) => project.metadata)
     .sort((a, b) => PROJECT_ORDER.indexOf(a.slug as (typeof PROJECT_ORDER)[number]) - PROJECT_ORDER.indexOf(b.slug as (typeof PROJECT_ORDER)[number]));
-}
-
-export async function markdownToHtml(markdown: string): Promise<string> {
-  const processor = remark()
-    .use(gfm)
-    // @ts-ignore - type conflict between unified versions in remark packages
-    .use(footnotes, {
-      placement: "inline",
-      footnoteLabel: "Footnotes",
-      footnoteLabelTagName: "h3",
-      footnoteTagTagName: "details",
-      footnoteBackLabel: "Back to reference",
-    })
-    .use(html, { allowDangerousHtml: true });
-  return processor.processSync(markdown).toString();
 }
